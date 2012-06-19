@@ -1,6 +1,8 @@
 require 'multi_json'
+require 'active_support'
 # garner
 require 'garner/version'
+require 'garner/config'
 # objects
 require 'garner/objects/etag.rb'
 # middleware

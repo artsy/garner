@@ -3,6 +3,7 @@ source "http://rubygems.org"
 gem "rack"
 gem "json"
 gem "multi_json"
+gem "activesupport"
 
 group :development, :test do
   gem "bundler"
