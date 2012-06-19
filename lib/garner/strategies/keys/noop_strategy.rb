@@ -1,6 +1,6 @@
 module Garner
-  module Keys
-    module Strategies
+  module Strategies
+    module Keys
       # @abstract
       # A noop base strategy
       module Noop

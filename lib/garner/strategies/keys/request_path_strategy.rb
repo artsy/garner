@@ -1,6 +1,6 @@
 module Garner
-  module Keys
-    module Strategies
+  module Strategies
+    module Keys
       # @abstract
       # Inject the request path into the key.
       module RequestPath

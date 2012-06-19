@@ -1,6 +1,6 @@
 module Garner
-  module Keys
-    module Strategies
+  module Strategies
+    module Keys
       # @abstract 
       # Injects the caller's location into the key.
       module Caller
