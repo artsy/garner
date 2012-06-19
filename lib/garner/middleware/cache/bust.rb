@@ -1,7 +1,9 @@
 module Garner
   module Middleware
     module Cache
-      class Bust < Garner::Middleware::Base
+      # @abstract
+      # Add the necessary Cache-Control and Expires headers to bust client cache.
+      class Bust < Garner::Middleware::Base      
         def after
           # private: ok to store API results in a private cache
           # max-age: don't reuse the cached result without checking with the server (server might say 304 Not Modified)

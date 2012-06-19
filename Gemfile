@@ -1,11 +1,11 @@
 source "http://rubygems.org"
 
-gem "rack", "~> 1.3"
+gem "rack"
+gem "json"
+gem "multi_json"
 
 group :development, :test do
   gem "bundler"
-  gem "json",       "1.7.3"
-  gem "multi_json", "1.3.6"  
   gem "grape",      "0.2.0"
   gem "rack-test",  "0.6.1"
   gem "rspec",      "~> 2.10"
