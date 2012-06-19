@@ -1,7 +1,7 @@
 Garner [![Build Status](https://secure.travis-ci.org/dblock/garner.png)](http://travis-ci.org/dblock/garner)
 ======
 
-Garner is a set of Rack middleware and cache helpers that implement various cachin;.   strategies.
+Garner is a set of Rack middleware and cache helpers that implement various caching strategies.
 
 Caching Dynamic Data
 --------------------
