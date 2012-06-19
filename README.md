@@ -34,6 +34,14 @@ One possibility is to include an `If-Modified-Since` header with a timestamp. Th
 
 A more robust solution is to generate a unique signature, called ETag, for this data and to use it to find out whether the counter has changed. The implementation of `Garner::Objects::ETag` matches the one of the existing `Rack::ETag` middleware.
 
+Key Strategies
+--------------
+
+* `Garner::Keys::Strategies::Noop`: a noop strategy.
+* `Garner::Keys::Strategies::Caller`, injects the location of the caller.
+* `Garner::Keys::Strategies::RequestPath`, injects the request path.
+* `Garner::Keys::Strategies::RequestGet`, injects the request GET parameters.
+
 Configuration
 -------------
 

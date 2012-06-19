@@ -3,7 +3,7 @@ module Garner
     module Strategies
       # @abstract
       # A noop base strategy
-      module Base
+      module Noop
         class << self
           def apply(key, options = {})
             key
