@@ -39,4 +39,30 @@ describe Garner::Strategies::Bindings::ObjectIdentity do
       end
     end
   end
+  context "key" do
+    it "nil" do
+      lambda { subject.key(nil) }.should raise_error(ArgumentError, "you cannot key nil")
+    end
+    it "generates an MD5 pair for class and object with id" do
+      key_pair = subject.key(:bind => { :klass => Module, :object => { :id => 42 } }).split(":")
+      key_pair.length.should == 2
+      key_pair[0].length.should == 32 # MD5
+      key_pair[0].length.should == key_pair[1].length
+    end
+    it "generates the same key twice" do
+      key1 = subject.key(:bind => { :klass => Module, :object => { :id => 42 } })
+      key2 = subject.key(:bind => { :klass => Module, :object => { :id => 42 } })
+      key1.should == key2
+    end
+    it "generates a different key for different IDs" do
+      key1 = subject.key(:bind => { :klass => Module, :object => { :id => 42 } })
+      key2 = subject.key(:bind => { :klass => Module, :object => { :id => 24 } })
+      key1.should_not == key2
+    end
+    it "standardizes shortcuts" do
+      key1 = subject.key(:bind => [Module])
+      key2 = subject.key(:bind => { :klass => Module })
+      key1.should == key2
+    end
+  end
 end

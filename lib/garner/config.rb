@@ -96,9 +96,6 @@ module Garner
    
     # Default cache expiration time.
     option(:expires_in, :default => nil)
-
-    # Strategies.    
-    option(:binding_strategies, :default => [])
   end
 end
 

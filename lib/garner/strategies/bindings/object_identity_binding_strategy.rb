@@ -40,12 +40,49 @@ module Garner
             rc
           end
 
-          def identity_field
-            :id
+          def identity_fields
+            [ :id ]
+          end
+
+          def key_strategies
+            [ 
+              Garner::Strategies::Keys::Caller, 
+              Garner::Strategies::Keys::RequestPath,
+              Garner::Strategies::Keys::RequestGet
+            ]
           end
           
+          # Generate a key in the Klass/id format.
+          # @example Widget/id=1,Gadget/slug=forty-two,Fudget/*
+          def key(binding)
+            raise ArgumentError, "you cannot key nil" unless binding
+            rc = binding[:params]
+            bound = standardize(binding[:bind])
+            bound = (bound.is_a?(Array) ? bound : [ bound ]).compact
+            bound.collect { |el|
+              if el[:object] && ! identity_fields.map { |id| el[:object][id] }.compact.any?
+                raise ArgumentError, ":bind object arguments (#{bound}) can only be keyed by #{identity_fields.join(", ")}"
+              end
+              find_or_create_key_prefix_for(el[:klass], el[:object])
+            }.join(",") + ":" +
+            Digest::MD5.hexdigest(
+              key_strategies.map { |strategy| binding[strategy.field] }.compact.join("\n") +
+              MultiJson.dump((rc || {}).delete_if { |k, v| v.nil? }.to_a)
+            )
+          end
+
           private
-          
+
+            def find_or_create_key_prefix_for(klass, object = nil)
+              Garner.config.cache.fetch(index_string_for(klass, object), {}) do
+                new_key_prefix_for(klass, object)
+              end
+            end
+  
+            def new_key_prefix_for(klass, object = nil)
+              Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{SecureRandom.uuid}")
+            end
+
             def standardize(binding)
               case binding
               when Hash
@@ -64,11 +101,21 @@ module Garner
               when Class
                 h = { :klass => ary[0] }
                 h.merge!({
-                  :object => (ary[1].is_a?(Hash) ? ary[1] : { identity_field => ary[1] }) 
+                  :object => (ary[1].is_a?(Hash) ? ary[1] : { identity_fields[0] => ary[1] }) 
                 }) if ary[1]
                 h
               else
-                raise "invalid argument type #{ary[0].class} in :bind (#{ary[0]})"
+                raise ArgumentError, "invalid argument type #{ary[0].class} in :bind (#{ary[0]})"
+              end
+            end
+            
+            def index_string_for(klass, object = nil)
+              prefix = "INDEX"
+              identity_fields.each do |field|
+                if object && object[field]
+                  return "#{prefix}:#{klass}/#{field}=#{object[field]}"
+                end
+                "#{prefix}:#{klass}/*"
               end
             end
           
