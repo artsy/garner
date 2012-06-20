@@ -1,7 +1,7 @@
 module Garner
   module Cache
     #
-    # Object identity binding strategy. 
+    # A cache that uses an object identity binding strategy. 
     # 
     # Allows some flexibility in how caller binds objects in cache.
     # The binding can be an object, class, array of objects, or array of classes 
@@ -57,18 +57,17 @@ module Garner
         # cache the result of an executable block        
         def cache(binding = nil, context = {})
           # apply binding and key strategies
-          binding ||= {}
+          context ||= {}
+          new_context = {}
           key_strategies.each do |strategy| 
-            binding = strategy.apply(binding, context)
+            new_context = strategy.apply(new_context, context)
           end
-          # apply binding strategy
-          binding = apply(binding, context)
           # apply cache strategies          
           cache_options = context[:cache_options] || {}
           cache_strategies.each do |strategy|
             cache_options = strategy.apply(cache_options)
           end
-          key = key(binding)
+          key = key(binding, new_context)
           result = Garner.config.cache.fetch(key, cache_options) do
             object = yield
             reset_cache_metadata(object, context)
@@ -98,27 +97,26 @@ module Garner
           # metadata for cached objects:
           #   :etag - Unique hash of object content
           #   :last_modified - Timestamp of last modification event
-          def cache_metadata(options = {})
+          def cache_metadata(binding, context = {})
             default_metadata = {
-              etag: etag_for(SecureRandom.uuid),
+              etag: Garner::Objects::ETag.from(SecureRandom.uuid),
               last_modified: Time.now
             }
-            options = standardize_options(options)
-            Garner.config.cache.read(meta(options)) || default_metadata
+            Garner.config.cache.read(meta(binding, context)) || default_metadata
           end
   
           def reset_cache_metadata(object, options = {})
             return unless object
             metadata = {
-              etag: etag_for(object),
+              etag: Garner::Objects::ETag.from(object),
               last_modified: Time.now
             }
-            Ganer.config.cache.write(meta(options), metadata)
+            Garner.config.cache.write(meta(options), metadata)
           end
   
           def reset_key_prefix_for(klass, object = nil)
             cache_options = {}
-            Ganer.config.cache.write(
+            Garner.config.cache.write(
               index_string_for(klass, object), 
               new_key_prefix_for(klass, object),
               cache_options
@@ -129,18 +127,10 @@ module Garner
             Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{SecureRandom.uuid}")
           end
            
-          def apply(binding, options = {})
-            rc = {}
-            rc[:bind] = standardize(binding[:bind]) if binding && binding[:bind]
-            rc
-          end
-
           # Generate a key in the Klass/id format.
           # @example Widget/id=1,Gadget/slug=forty-two,Fudget/*
-          def key(binding)
-            raise ArgumentError, "you cannot key nil" unless binding
-            rc = binding[:params]
-            bound = standardize(binding[:bind])
+          def key(binding = nil, context = {})
+            bound = binding && binding[:bind] ? standardize(binding[:bind]) : {}
             bound = (bound.is_a?(Array) ? bound : [ bound ]).compact
             bound.collect { |el|
               if el[:object] && ! identity_fields.map { |id| el[:object][id] }.compact.any?
@@ -149,7 +139,7 @@ module Garner
               find_or_create_key_prefix_for(el[:klass], el[:object])
             }.join(",") + ":" +
             Digest::MD5.hexdigest(
-              key_strategies.map { |strategy| binding[strategy.field] }.compact.join("\n")
+              key_strategies.map { |strategy| context[strategy.field] }.compact.join("\n")
             )
           end
         
@@ -194,8 +184,8 @@ module Garner
           end
           
           # Generate a metadata key.
-          def meta(binding = {})
-            "#{key(binding)}:meta"
+          def meta(binding = nil, context = {})
+            "#{key(binding, context)}:meta"
           end
 
           def bind_array(ary)

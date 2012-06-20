@@ -10,44 +10,44 @@ describe Garner::Cache::ObjectIdentity do
   after :each do
     subject.identity_fields = nil
   end
-  context "apply" do
+  context "standardize" do
     it "nil" do
-      subject.send(:apply, nil).should eq({})
+      subject.send(:standardize, nil).should be_nil
     end
     it "class and object with id" do
-      subject.send(:apply, :bind => { :klass => Module, :object => { :id => 42 } }).should eq({
-        :bind => { :klass => Module, :object => { :id => 42 } }
+      subject.send(:standardize, { :klass => Module, :object => { :id => 42 } }).should eq({
+        :klass => Module, :object => { :id => 42 }
       })
     end
     it "class" do
-      subject.send(:apply, :bind => { :klass => Module }).should eq({
-        :bind => { :klass => Module }
+      subject.send(:standardize, { :klass => Module }).should eq({
+        :klass => Module
       })
     end
     it "class and class with object with id" do
-      subject.send(:apply, :bind => [{ :klass => Module }, { :klass => Class, :object => { :id => 42 } }]).should eq({
-        :bind => [{ :klass => Module }, { :klass => Class, :object => { :id => 42 } }]
-      })
+      subject.send(:standardize, [{ :klass => Module }, { :klass => Class, :object => { :id => 42 } }]).should eq([
+        { :klass => Module }, { :klass => Class, :object => { :id => 42 } }
+      ])
     end
     context "shorthands" do
       it "array of type" do
-        subject.send(:apply, :bind => [Module]).should eq({ :bind => { :klass => Module } })
+        subject.send(:standardize, [Module]).should eq({ :klass => Module })
       end
       it "array of type and id" do
-        subject.send(:apply, :bind => [Module, 42]).should eq({ 
-          :bind => { :klass => Module, :object => { :slug => 42 } }
+        subject.send(:standardize, [Module, 42]).should eq({
+          :klass => Module, :object => { :slug => 42 }
         })
       end
       it "array of types" do
-        subject.send(:apply, :bind => [[Module], [Class, { :id => 42 }]]).should eq({
-          :bind => [{ :klass => Module }, { :klass => Class, :object => { :id => 42 }}]
-        })
+        subject.send(:standardize, [[Module], [Class, { :id => 42 }]]).should eq([
+          { :klass => Module }, { :klass => Class, :object => { :id => 42 }}
+        ])
       end
     end
   end
   context "key" do
     it "nil" do
-      lambda { subject.send(:key, nil) }.should raise_error(ArgumentError, "you cannot key nil")
+      subject.send(:key, nil).should end_with ":#{Digest::MD5.hexdigest('')}"
     end
     it "generates an MD5 pair for class and object with id" do
       key_pair = subject.send(:key, :bind => { :klass => Module, :object => { :id => 42 } }).split(":")
@@ -71,12 +71,13 @@ describe Garner::Cache::ObjectIdentity do
       key1.should == key2
     end
     it "keys all parameters" do
-      key = subject.send(:key, {
-        :bind => { :klass => Module, :object => { :id => 42 } },
+      binding = { :bind => { :klass => Module, :object => { :id => 42 } } }
+      options = {
         :version => "v1",
         :path => "method",
         :params => { "param1" => "arg1" }
-      })
+      }
+      key = subject.send(:key, binding, options)
       prefix = subject.send(:find_or_create_key_prefix_for, Module, { :id => 42 })
       digest = Digest::MD5.hexdigest("v1\nmethod\n{\"param1\"=>\"arg1\"}")
       key.should == "#{prefix}:#{digest}"
@@ -100,13 +101,13 @@ describe Garner::Cache::ObjectIdentity do
   end
   context "index" do
     it "should convert class-only calls appropriately" do
-      subject.send(:index, Class).should == { klass: Class }
+      subject.send(:index, Class).should == { :klass => Class }
     end
     it "should convert class-and-slug calls appropriately" do
-      subject.send(:index, Class, "slug").should == { klass: Class, object: { slug: "slug" } }
+      subject.send(:index, Class, "slug").should == { :klass => Class, object: { slug: "slug" } }
     end
     it "should convert class-and-id calls appropriately" do
-      subject.send(:index, Module, { id: 42 }).should == { klass: Module, object: { id: 42 } }
+      subject.send(:index, Module, { id: 42 }).should == { :klass => Module, object: { id: 42 } }
     end
   end
   context "index_string_for" do
@@ -120,101 +121,94 @@ describe Garner::Cache::ObjectIdentity do
       subject.send(:index_string_for, Class, { id: 42 }).should == "INDEX:Class/id=42"
     end
   end
-  
-=begin
-  
-  describe "cache" do
-
-    it "caches values across calls" do
-      r1 = ApiCache::cache(version: "v1", path: "method") { "one" }
-      r2 = ApiCache::cache(version: "v1", path: "method") { "two" }
-      [r1, r2].should == [ "one", "one" ]
+  context "cached" do
+    before :each do
+      Garner.config.cache.clear
     end
-
-    it "caches values across calls with params" do
-      r1 = ApiCache::cache(version: "v1", path: "method", params: { "name" => "value" }) { "one" }
-      r2 = ApiCache::cache(version: "v1", path: "method", params: { "name" => "value" }) { "two" }
-      [r1, r2].should == [ "one", "one" ]
+    context "cache" do
+      it "caches values across calls" do
+        request = Rack::Request.new({ "PATH_INFO" => "method" })
+        r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
+        r2 = subject.cache(nil, { :version => "v1", :request => request }) { "two" }
+        [r1, r2].should == [ "one", "one" ]
+      end
+      it "caches values across calls with params" do
+        request = Rack::Request.new({ "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
+        r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
+        r2 = subject.cache(nil, { :version => "v1", :request => request }) { "two" }
+        [r1, r2].should == [ "one", "one" ]
+      end
+      it "makes a cache miss when force_miss=true" do
+        request = Rack::Request.new({ "PATH_INFO" => "method" })
+        r1 = subject.cache(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "one" }
+        r2 = subject.cache(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "two" }
+        [r1, r2].should == [ "one", "two" ]
+      end
+      it "makes a cache miss when params change" do
+        request1 = Rack::Request.new({ "PATH_INFO" => "method" })
+        request2 = Rack::Request.new({ "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
+        r1 = subject.cache(nil, { :version => "v1", :request => request1 }) { "one" }
+        r2 = subject.cache(nil, { :version => "v1", :request => request2 }) { "two" }
+        [r1, r2].should == [ "one", "two" ]
+      end
+      it "caches different values for different versions" do
+        request = Rack::Request.new({ "PATH_INFO" => "method" })
+        r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
+        r2 = subject.cache(nil, { :version => "v2", :request => request }) { "two" }
+        [r1, r2].should == [ "one", "two" ]
+      end
+      it "does not cache nil results" do
+        var = Object.new
+        request = Rack::Request.new({ "PATH_INFO" => "method" })
+        r1 = subject.cache(nil, { :version => "v1", :request => request }) { nil }
+        r2 = subject.cache(nil, { :version => "v1", :request => request }) { var }
+        [r1, r2].should == [ nil, var ]
+      end
     end
-
-    it "makes a cache miss when force_miss=true" do
-      r1 = ApiCache::cache(version: "v1", path:  "method", params: {}, cache_options: { force: true }) { "one" }
-      r2 = ApiCache::cache(version: "v1", path:  "method", params: {}, cache_options: { force: true }) { "two" }
-      [r1, r2].should == [ "one", "two" ]
-    end
-
-    it "makes a cache miss when params change" do
-      r1 = ApiCache::cache(version: "v1", path: "method", params: {}) { "one" }
-      r2 = ApiCache::cache(version: "v1", path: "method", params: {"name" => "value"}) { "two" }
-      [r1, r2].should == [ "one", "two" ]
-    end
-
-    it "caches different values for different versions" do
-      r1 = ApiCache::cache(version: "v1", path: "method") { "one" }
-      r2 = ApiCache::cache(version: "v2", path: "method") { "two" }
-      [r1, r2].should == [ "one", "two" ]
-    end
-    
-    it "does not cache nil results" do
-      r1 = ApiCache::cache(version: "v1", path: "method") { Class.first }
-      Class = Fabricate(:Class)
-      r2 = ApiCache::cache(version: "v1", path: "method") { Class.first }
-      [r1, r2].should == [ nil, Class ]
-    end
-    
-  end
-  
-  describe "invalidate" do
-    it "invalidates klass-bound results when a klass is invalidated" do
-      r1 = ApiCache::cache(bind: { klass: Class }) { "one" }
-      r2 = ApiCache::cache(bind: { klass: Class }) { "one" }
-      ApiCache::invalidate(klass: Class)
-      r3 = ApiCache::cache(bind: { klass: Class }) { "two" }
-      [r1, r2, r3].should == [ "one", "one", "two" ]
-    end
-
-    it "invalidates klass-bound results when any member of a klass is invalidated" do
-      r1 = ApiCache::cache(bind: { klass: Class }) { "one" }
-      r2 = ApiCache::cache(bind: { klass: Class }) { "one" }
-      ApiCache::invalidate(klass: Class, object: { slug: "slug" })
-      r3 = ApiCache::cache(bind: { klass: Class }) { "two" }
-      [r1, r2, r3].should == [ "one", "one", "two" ]
-    end
-    
-    it "invalidates object-bound results" do
-      r1 = ApiCache::cache(bind: { klass: Class, object: { slug: "slug" } }) { "one" }
-      r2 = ApiCache::cache(bind: { klass: Class, object: { slug: "slug" } }) { "one" }
-      ApiCache::invalidate(klass: Class, object: { slug: "slug" })
-      r3 = ApiCache::cache(bind: { klass: Class, object: { slug: "slug" } }) { "two" }
-      [r1, r2, r3].should == [ "one", "one", "two" ]
-    end
-
-    it "does NOT invalidate object-bound results for different objects in the same klass" do
-      r1 = ApiCache::cache(bind: { klass: Class, object: { slug: "slug" } }) { "one" }
-      ApiCache::invalidate(klass: Class, object: { slug: "otherslug" })
-      r2 = ApiCache::cache(bind: { klass: Class, object: { slug: "slug" } }) { "two" }
-      [r1, r2].should == [ "one", "one" ]
-    end
-    
-    it "updates the key prefix for the given object" do
-      key1 = ApiCache::find_or_create_key_prefix_for(Class, { slug: "slug" })
-      key2 = ApiCache::find_or_create_key_prefix_for(Class, { slug: "slug" })
-      ApiCache::invalidate(klass: Class, object: { slug: "slug" })
-      key3 = ApiCache::find_or_create_key_prefix_for(Class, { slug: "slug" })
-      key1.should == key2
-      key2.should_not == key3
-    end
-    
-    it "updates the key prefix for the given klass, even if an object is specified" do
-      key1 = ApiCache::find_or_create_key_prefix_for(Class)
-      key2 = ApiCache::find_or_create_key_prefix_for(Class)
-      ApiCache::invalidate(klass: Class, object: { slug: "slug" })
-      key3 = ApiCache::find_or_create_key_prefix_for(Class)
-      key1.should == key2
-      key2.should_not == key3
+    context "invalidate" do
+      it "invalidates klass-bound results when a klass is invalidated" do
+        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
+        r2 = subject.cache(:bind => { :klass => Class }) { "one" }
+        subject.invalidate(:klass => Class)
+        r3 = subject.cache(:bind => { :klass => Class }) { "two" }
+        [r1, r2, r3].should == [ "one", "one", "two" ]
+      end
+      it "invalidates klass-bound results when any member of a klass is invalidated" do
+        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
+        r2 = subject.cache(:bind => { :klass => Class }) { "one" }
+        subject.invalidate(:klass => Class, object: { slug: "slug" })
+        r3 = subject.cache(:bind => { :klass => Class }) { "two" }
+        [r1, r2, r3].should == [ "one", "one", "two" ]
+      end
+      it "invalidates object-bound results" do
+        r1 = subject.cache(:bind => { :klass => Class, object: { slug: "slug" } }) { "one" }
+        r2 = subject.cache(:bind => { :klass => Class, object: { slug: "slug" } }) { "one" }
+        subject.invalidate(:klass => Class, object: { slug: "slug" })
+        r3 = subject.cache(:bind => { :klass => Class, object: { slug: "slug" } }) { "two" }
+        [r1, r2, r3].should == [ "one", "one", "two" ]
+      end
+      it "does NOT invalidate object-bound results for different objects in the same klass" do
+        r1 = subject.cache(:bind => { :klass => Class, object: { slug: "slug" } }) { "one" }
+        subject.invalidate(:klass => Class, object: { slug: "otherslug" })
+        r2 = subject.cache(:bind => { :klass => Class, object: { slug: "slug" } }) { "two" }
+        [r1, r2].should == [ "one", "one" ]
+      end
+      it "updates the key prefix for the given object" do
+        key1 = subject.send(:find_or_create_key_prefix_for, Class, { slug: "slug" })
+        key2 = subject.send(:find_or_create_key_prefix_for, Class, { slug: "slug" })
+        subject.invalidate(:klass => Class, object: { slug: "slug" })
+        key3 = subject.send(:find_or_create_key_prefix_for, Class, { slug: "slug" })
+        key1.should == key2
+        key2.should_not == key3
+      end
+      it "updates the key prefix for the given klass, even if an object is specified" do
+        key1 = subject.send(:find_or_create_key_prefix_for, Class)
+        key2 = subject.send(:find_or_create_key_prefix_for, Class)
+        subject.invalidate(:klass => Class, object: { slug: "slug" })
+        key3 = subject.send(:find_or_create_key_prefix_for, Class)
+        key1.should == key2
+        key2.should_not == key3
+      end
     end
   end
-  
-  
-=end
 end

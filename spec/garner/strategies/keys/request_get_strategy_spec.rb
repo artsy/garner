@@ -12,9 +12,4 @@ describe Garner::Strategies::Keys::RequestGet do
     subject.apply({}, @options).should eq({ :params => { "foo" => "bar" } })
     subject.apply({ :x => :y }, @options).should eq({ :x => :y, :params => { "foo" => "bar" } })
   end
-  it "doesn't trash existing params" do
-    subject.apply({ :x => :y, :params => { "x" => "y" } }, @options).should eq(
-      { :x => :y, :params => { "x" => "y", "foo" => "bar" } }
-    )
-  end
 end

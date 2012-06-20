@@ -10,11 +10,9 @@ module Garner
           end
           
           def apply(key, context = {})
-            raise "missing :request in context" unless context[:request]
-            raise "invalid :request in context" unless context[:request].respond_to?(:path)
-            (key || {}).merge({ 
-              field => context[:request].path 
-            })
+            key = key ? key.dup : {}
+            key[field] = context[:request].path if context && context[:request] && context[:request].respond_to?(:path)
+            key
           end
         end
       end
