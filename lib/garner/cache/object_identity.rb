@@ -34,12 +34,17 @@ module Garner
       class << self
 
         def identity_fields
-          [ :id ]
+          @identity_fields ||= [ :id ]
+        end
+        
+        def identity_fields=(value)
+          @identity_fields = value
         end
         
         def key_strategies
           [ 
-            Garner::Strategies::Keys::Caller, 
+            Garner::Strategies::Keys::Caller,
+            Garner::Strategies::Keys::Version, 
             Garner::Strategies::Keys::RequestPath,
             Garner::Strategies::Keys::RequestGet
           ]
@@ -144,8 +149,7 @@ module Garner
               find_or_create_key_prefix_for(el[:klass], el[:object])
             }.join(",") + ":" +
             Digest::MD5.hexdigest(
-              key_strategies.map { |strategy| binding[strategy.field] }.compact.join("\n") +
-              MultiJson.dump((rc || {}).delete_if { |k, v| v.nil? }.to_a)
+              key_strategies.map { |strategy| binding[strategy.field] }.compact.join("\n")
             )
           end
         
@@ -215,8 +219,8 @@ module Garner
               if object && object[field]
                 return "#{prefix}:#{klass}/#{field}=#{object[field]}"
               end
-              "#{prefix}:#{klass}/*"
             end
+            "#{prefix}:#{klass}/*"
           end
         
       end

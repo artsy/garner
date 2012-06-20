@@ -9,6 +9,7 @@ require 'garner/objects/etag'
 require 'garner/middleware/base'
 require 'garner/middleware/cache/bust'
 # key strategies
+require 'garner/strategies/keys/version_strategy'
 require 'garner/strategies/keys/caller_strategy'
 require 'garner/strategies/keys/request_path_strategy'
 require 'garner/strategies/keys/request_get_strategy'
