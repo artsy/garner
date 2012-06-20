@@ -15,3 +15,5 @@ require 'garner/strategies/keys/request_path_strategy'
 require 'garner/strategies/keys/request_get_strategy'
 # binding strategies
 require 'garner/strategies/bindings/object_identity_binding_strategy'
+# cache option strategies
+require 'garner/strategies/cache/expiration_strategy'

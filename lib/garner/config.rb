@@ -93,7 +93,12 @@ module Garner
     def reset!
       settings.replace(defaults)
     end
-    
+   
+    # Default cache expiration time.
+    option(:expires_in, :default => nil)
+
+    # Strategies.    
+    option(:binding_strategies, :default => [])
   end
 end
 
