@@ -9,11 +9,11 @@ module Garner
             :path
           end
           
-          def apply(key, options = {})
-            raise "missing :request in options" unless options[:request]
-            raise "invalid :request in options" unless options[:request].respond_to?(:path)
+          def apply(key, context = {})
+            raise "missing :request in context" unless context[:request]
+            raise "invalid :request in context" unless context[:request].respond_to?(:path)
             (key || {}).merge({ 
-              field => options[:request].path 
+              field => context[:request].path 
             })
           end
         end

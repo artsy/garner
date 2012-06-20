@@ -9,12 +9,12 @@ module Garner
             :params
           end
           
-          def apply(key, options = {})
-            raise "missing :request in options" unless options[:request]
-            raise "invalid :request in options" unless options[:request].respond_to?(:GET)
+          def apply(key, context = {})
+            raise "missing :request in options" unless context[:request]
+            raise "invalid :request in options" unless context[:request].respond_to?(:GET)
             rc = key ? key.dup : {}
             rc[field] = {} unless rc[field]
-            rc[field].merge!(options[:request].GET.dup)
+            rc[field].merge!(context[:request].GET.dup)
             rc
           end
           

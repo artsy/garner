@@ -9,7 +9,7 @@ module Garner
             :caller
           end
           
-          def apply(key, options = {})
+          def apply(key, context = {})
             rc = key ? key.dup : {}
             clr = caller.detect { |line| ! line.end_with?("/#{File.basename(__FILE__)}") }
             rc[field] = clr if clr
