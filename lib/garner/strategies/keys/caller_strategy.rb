@@ -5,10 +5,10 @@ module Garner
       module Caller
         class << self
           def apply(key, options = {})
-            api_caller = caller.detect { |line| !(line =~ /\/#{File.basename(__FILE__)}/) }
-            md = api_caller.match(/(.*\.rb:[0-9]*):/) if api_caller
-            key[:caller] = md[1] if md
-            key
+            rc = key ? key.dup : {}
+            clr = caller.detect { |line| ! line.end_with?("/#{File.basename(__FILE__)}") }
+            rc[:caller] = clr if clr
+            rc
           end
         end
       end

@@ -38,7 +38,5 @@ describe Garner::Strategies::Bindings::ObjectIdentity do
         })
       end
     end
-        # @example `bind: [[Artwork], [User, { id: current_user.id }]]` is shorthand for `bind: [{ klass: Artwork }, { klass: User, object: { id: current_user.id } }]`
-
   end
 end

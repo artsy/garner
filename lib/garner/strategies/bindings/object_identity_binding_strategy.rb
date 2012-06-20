@@ -62,9 +62,9 @@ module Garner
               when Array, Hash
                 ary.collect { |subary| standardize(subary) }
               when Class
-                h = { klass: ary[0] }
+                h = { :klass => ary[0] }
                 h.merge!({
-                  object: (ary[1].is_a?(Hash) ? ary[1] : { identity_field => ary[1] }) 
+                  :object => (ary[1].is_a?(Hash) ? ary[1] : { identity_field => ary[1] }) 
                 }) if ary[1]
                 h
               else
