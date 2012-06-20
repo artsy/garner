@@ -1,7 +1,6 @@
 module Garner
   module Strategies
     module Keys
-      # @abstract
       # A noop base strategy
       module Noop
         class << self

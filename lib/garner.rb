@@ -4,13 +4,14 @@ require 'active_support'
 require 'garner/version'
 require 'garner/config'
 # objects
-require 'garner/objects/etag.rb'
+require 'garner/objects/etag'
 # middleware
-require 'garner/middleware/base.rb'
-require 'garner/middleware/cache/bust.rb'
+require 'garner/middleware/base'
+require 'garner/middleware/cache/bust'
 # key strategies
-require 'garner/strategies/keys/noop_strategy.rb'
-require 'garner/strategies/keys/caller_strategy.rb'
-require 'garner/strategies/keys/request_path_strategy.rb'
-require 'garner/strategies/keys/request_get_strategy.rb'
-
+require 'garner/strategies/keys/noop_strategy'
+require 'garner/strategies/keys/caller_strategy'
+require 'garner/strategies/keys/request_path_strategy'
+require 'garner/strategies/keys/request_get_strategy'
+# binding strategies
+require 'garner/strategies/bindings/object_identity_binding_strategy'

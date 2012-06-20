@@ -1,9 +1,12 @@
 require 'spec_helper'
 
 describe Garner::Strategies::Keys::Noop do
+  subject do
+    Garner::Strategies::Keys::Noop
+  end
   [ nil, {}, { :x => :y } ].each do |example|
     it "#{example}" do
-      Garner::Strategies::Keys::Noop.apply(example).should eq example
+      subject.apply(example).should eq example
     end
   end
 end
