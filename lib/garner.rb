@@ -17,4 +17,6 @@ require 'garner/strategies/keys/request_get_strategy'
 require 'garner/strategies/cache/expiration_strategy'
 # caches
 require 'garner/cache/object_identity'
+# mixins
+require 'garner/mixins/grape_cache'
 

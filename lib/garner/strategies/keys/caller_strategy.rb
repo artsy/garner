@@ -11,12 +11,14 @@ module Garner
           
           def apply(key, context = {})
             rc = key ? key.dup : {}
-            clr = caller.detect { |line|
-              line = line.split(":", 2)
-              next unless line.length == 2
-              ! (line[0].end_with?("/#{File.basename(__FILE__)}") || line[0].end_with?("garner/cache/object_identity.rb"))
-            }
-            rc[field] = clr if clr
+            clr = nil
+            caller.each do |line|
+              line = line.split(":", 3)
+              next unless line.length == 3
+              next unless line[0].include?("/app/") || line[0].include?("/spec/")
+              rc[field] = "#{line[0]}:#{line[1]}"
+              break
+            end
             rc
           end
         end

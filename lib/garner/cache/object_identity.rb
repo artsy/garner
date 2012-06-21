@@ -56,27 +56,21 @@ module Garner
       
         # cache the result of an executable block        
         def cache(binding = nil, context = {})
-          # apply binding and key strategies
-          context ||= {}
-          new_context = {}
-          key_strategies.each do |strategy| 
-            new_context = strategy.apply(new_context, context)
-          end
           # apply cache strategies          
           cache_options = context[:cache_options] || {}
           cache_strategies.each do |strategy|
             cache_options = strategy.apply(cache_options)
           end
-          key = key(binding, new_context)
+          key = key(binding, key_context(context))
           result = Garner.config.cache.fetch(key, cache_options) do
             object = yield
-            reset_cache_metadata(object, context)
+            reset_cache_metadata(key, object)
             object
           end
           Garner.config.cache.delete(key) unless result
           result
         end
-        
+                
         # invalidate an object that has been cached
         def invalidate(* args)
           options = index(*args)
@@ -84,7 +78,25 @@ module Garner
           reset_key_prefix_for(options[:klass]) if options[:object]
         end
         
+        # metadata for cached objects:
+        #   :etag - Unique hash of object content
+        #   :last_modified - Timestamp of last modification event
+        def cache_metadata(binding, context = {})
+          key = key(binding, key_context(context))
+          Garner.config.cache.read(meta(key))
+        end
+        
         private
+        
+          # applied key context
+          def key_context(context)
+            new_context = {}
+            context ||= {}
+            key_strategies.each do |strategy| 
+              new_context = strategy.apply(new_context, context)
+            end
+            new_context
+          end
 
           def reset_key_prefix_for(klass, object = nil)
              Garner.config.cache.write(
@@ -94,33 +106,14 @@ module Garner
              )
            end
 
-          # metadata for cached objects:
-          #   :etag - Unique hash of object content
-          #   :last_modified - Timestamp of last modification event
-          def cache_metadata(binding, context = {})
-            default_metadata = {
-              etag: Garner::Objects::ETag.from(SecureRandom.uuid),
-              last_modified: Time.now
-            }
-            Garner.config.cache.read(meta(binding, context)) || default_metadata
-          end
-  
-          def reset_cache_metadata(object, options = {})
+          def reset_cache_metadata(key, object)
             return unless object
             metadata = {
-              etag: Garner::Objects::ETag.from(object),
-              last_modified: Time.now
+              :etag => Garner::Objects::ETag.from(object),
+              :last_modified => Time.now
             }
-            Garner.config.cache.write(meta(options), metadata)
-          end
-  
-          def reset_key_prefix_for(klass, object = nil)
-            cache_options = {}
-            Garner.config.cache.write(
-              index_string_for(klass, object), 
-              new_key_prefix_for(klass, object),
-              cache_options
-            )
+            meta_key = meta(key)
+            Garner.config.cache.write(meta_key, metadata)
           end
   
           def new_key_prefix_for(klass, object = nil)
@@ -184,8 +177,8 @@ module Garner
           end
           
           # Generate a metadata key.
-          def meta(binding = nil, context = {})
-            "#{key(binding, context)}:meta"
+          def meta(key)
+            "#{key}:meta"
           end
 
           def bind_array(ary)
@@ -212,7 +205,7 @@ module Garner
             end
             "#{prefix}:#{klass}/*"
           end
-        
+          
       end
     end
   end
