@@ -1,4 +1,4 @@
-# based on https://github.com/intridea/grape/blob/master/lib/grape/middleware/base.rb
+# Based on https://github.com/intridea/grape/blob/master/lib/grape/middleware/base.rb.
 module Garner
   module Middleware
     class Base
@@ -27,6 +27,7 @@ module Garner
       # @abstract
       # Called before the application is called in the middleware lifecycle.
       def before; end
+      
       # @abstract
       # Called after the application is called in the middleware lifecycle.
       # @return [Response, nil] a Rack SPEC response or nil to call the application afterwards.

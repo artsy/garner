@@ -10,14 +10,17 @@ module Garner
           cattr_accessor :api_cache_class
         end
 
+        # invalidate API cache
         def invalidate_api_cache
           self.all_embedding_documents.each { |doc| doc.invalidate_api_cache }
           cache_class = self.class.api_cache_class || self.class
           Garner::Cache::ObjectIdentity.invalidate(cache_class, { :id => self.id })
           Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end
+        
+        private
 
-        # Wrapper for navigating the parent embedding document hierarchy.
+        # navigate the parent embedding document hierarchy
         def all_embedding_documents
           obj = self
           docs = []
@@ -31,9 +34,9 @@ module Garner
         end
 
         module ClassMethods
-          # Including classes can call cache as to specify a different class
-          # on which to bind API cache objects. For example, Admin (which
-          # extends User), can.
+          # Including classes can call `cache_as` to specify a different class
+          # on which to bind API cache objects. 
+          # @example `Admin`, which extends `User` should call `cache_as User`
           def cache_as(klass)
             self.api_cache_class = klass
           end

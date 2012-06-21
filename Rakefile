@@ -37,14 +37,12 @@ end
 
 task :default => :spec
 
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+require 'yard'
+YARD_OPTS = ['-m', 'github-markup', '-M', 'redcarpet']
+DOC_FILES = ['lib/**/*.rb', '*.md']
 
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "garner #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('LICENSE*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+YARD::Rake::YardocTask.new(:doc) do |t|
+  t.files   = DOC_FILES
+  t.options = YARD_OPTS
 end
 

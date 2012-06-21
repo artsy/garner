@@ -45,7 +45,6 @@ module Garner
   
         private
         
-          # @override
           def cache_context(context)
             (context || {}).merge({
               :request => request
