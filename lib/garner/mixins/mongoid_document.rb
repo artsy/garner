@@ -18,8 +18,6 @@ module Garner
           Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end
         
-        private
-
         # navigate the parent embedding document hierarchy
         def all_embedding_documents
           obj = self
