@@ -66,7 +66,7 @@ Bind supports some nice shorthands.
 Invalidation
 ------------
 
-You must take care of data invalidation on save. Garner currently includes a mixin with support for [Mongoid](https://github.com/mongoid/mongoid). Add `config/initializers/mongoid_document.rb`.
+You must take care of data invalidation on save. Garner currently includes a mixin with support for [Mongoid](https://github.com/mongoid/mongoid). Extend `Mongoid::Document` as follows (eg. in `config/initializers/mongoid_document.rb`).
 
 ``` ruby
 module Mongoid

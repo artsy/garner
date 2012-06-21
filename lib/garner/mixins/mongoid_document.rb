@@ -13,7 +13,7 @@ module Garner
         def invalidate_api_cache
           self.all_embedding_documents.each { |doc| doc.invalidate_api_cache }
           cache_class = self.class.api_cache_class || self.class
-          Garner::Cache::ObjectIdentity.invalidate(cache_class, { id: self.id })
+          Garner::Cache::ObjectIdentity.invalidate(cache_class, { :id => self.id })
           Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end
 

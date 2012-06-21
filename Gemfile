@@ -12,5 +12,7 @@ group :development, :test do
   gem "rspec",      "~> 2.10"
   gem "jeweler",    "1.8.3"
   gem "yard",       "~> 0.8.2"
+  gem "mongoid",    "~> 2.4"
+  gem "bson_ext",   "~> 1.6"
 end
 
