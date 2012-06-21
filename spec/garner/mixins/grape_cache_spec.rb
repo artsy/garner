@@ -13,7 +13,7 @@ describe Garner::Mixins::Grape do
       end
       api.get "/widget/:id" do
         @counts ||= {}
-        cache_or_304(bind: [Module, params[:id]]) do
+        cache_or_304(:bind => [Module, params[:id]]) do
           @counts[params[:id]] = (@counts[params[:id]] || 0) + 1
           MultiJson.dump({ :count => @counts[params[:id]] })
         end

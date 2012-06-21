@@ -117,7 +117,7 @@ module Garner
           end
   
           def new_key_prefix_for(klass, object = nil)
-            Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{SecureRandom.uuid}")
+            Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{new_key_postfix}")
           end
            
           # Generate a key in the Klass/id format.
@@ -162,7 +162,11 @@ module Garner
           end
 
           def new_key_prefix_for(klass, object = nil)
-            Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{SecureRandom.uuid}")
+            Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{new_key_postfix}")
+          end
+          
+          def new_key_postfix
+            SecureRandom.respond_to?(:uuid) ? SecureRandom.uuid : (0...16).map{ ('a'..'z').to_a[rand(26)] }.join
           end
 
           def standardize(binding)

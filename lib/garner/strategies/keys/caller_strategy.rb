@@ -13,10 +13,11 @@ module Garner
             rc = key ? key.dup : {}
             clr = nil
             caller.each do |line|
-              line = line.split(":", 3)
-              next unless line.length == 3
-              next unless line[0].include?("/app/") || line[0].include?("/spec/")
-              rc[field] = "#{line[0]}:#{line[1]}"
+              split = line.split(":")
+              next unless split.length >= 2
+              path = Pathname.new(split[0]).realpath.to_s
+              next unless path.include?("/app/") || path.include?("/spec/")
+              rc[field] = "#{path}:#{split[1]}"
               break
             end
             rc
