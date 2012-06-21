@@ -15,6 +15,7 @@ module Garner
           self.all_embedding_documents.each { |doc| doc.invalidate_api_cache }
           cache_class = self.class.api_cache_class || self.class
           Garner::Cache::ObjectIdentity::IDENTITY_FIELDS.each do |identity_field|
+            next unless self.respond_to?(identity_field)
             Garner::Cache::ObjectIdentity.invalidate(cache_class, { identity_field => self.send(identity_field) })
           end
           Garner::Cache::ObjectIdentity.invalidate(cache_class)

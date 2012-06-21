@@ -2,16 +2,7 @@ require 'spec_helper'
 
 describe Garner::Mixins::Mongoid::Document do
   describe "all_embedding_documents" do
-    before(:each) do
-      class Foo
-        include Mongoid::Document
-        embeds_one :bars
-        embedded_in :bar
-      end
-      class Bar
-        include Mongoid::Document
-        embedded_in :foo
-      end
+    before :each do
       @foo = Foo.new
       @bar = Bar.new
       @foo.bar = @bar
@@ -21,36 +12,47 @@ describe Garner::Mixins::Mongoid::Document do
     end
   end
   describe "api_cache_class" do
-    before(:each) do
-      class TestModel
-        def self.before_save(* args)
-        end
-        def self.before_destroy(* args)
-        end
-        attr_accessor :id
-        include Garner::Mixins::Mongoid::Document
-      end
-      class OtherModel ; end
-    end
     it "is used by :invalidate_api_cache" do
-      @test = TestModel.new
-      @test.stub(:metadata) { nil }
-      @test.id = 42
+      t = TestModel.new
+      t.stub(:metadata).and_return(nil)
       Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
-      Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => 42 })
-      @test.invalidate_api_cache
+      Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => t.id })
+      t.invalidate_api_cache
     end
     it "allows for an override" do
-      class TestModel
-        cache_as OtherModel
-      end
-      TestModel.api_cache_class.should == OtherModel
-      @test = TestModel.new
-      @test.stub(:metadata) { nil }
-      @test.id = 42
+      TestModelChild.api_cache_class.should == TestModel
+      t = TestModelChild.new
+      t.stub(:metadata).and_return(nil)
       Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
-      Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(OtherModel, { :id => 42 })
-      @test.invalidate_api_cache
+      Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => t.id })
+      t.invalidate_api_cache
+    end
+    context "with mutliple identity fields" do
+      before :each do
+        silence_warnings do
+          Garner::Cache::ObjectIdentity::IDENTITY_FIELDS = [ :slug, :id ]
+        end
+      end
+      after :each do
+        silence_warnings do
+          Garner::Cache::ObjectIdentity::IDENTITY_FIELDS = [ :id ]
+        end
+      end
+      it "invalidates only identity fields that exist" do
+        t = TestModel.new
+        t.stub(:metadata).and_return(nil)
+        Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+        Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => t.id })
+        t.invalidate_api_cache
+      end
+      it "invalidates all identity fields" do
+        t = TestModelWithSlug.new({ :slug => "forty-two" })
+        t.stub(:metadata).and_return(nil)
+        Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+        Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModelWithSlug, { :id => t.id })
+        Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModelWithSlug, { :slug => "forty-two" })
+        t.invalidate_api_cache
+      end
     end
   end
 end
