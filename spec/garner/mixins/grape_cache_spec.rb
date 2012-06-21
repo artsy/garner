@@ -42,5 +42,29 @@ describe Garner::Mixins::Grape do
       get "/widget/42", {}, { "HTTP_IF_NONE_MATCH" => last_response.headers["ETag"] }
       last_response.status.should == 304
     end
+    it "sends a 200 response if content has changed (If-None-Match)" do
+      get "/widget/42"
+      last_response.status.should == 200
+      get "/widget/42", {}, { "HTTP_IF_NONE_MATCH" => Garner::Objects::ETag.from("foobar") }
+      last_response.status.should == 200
+    end
+    it "sends a 304 response if content has not changed (If-Modified-Since)" do
+      get "/widget/42"
+      last_response.status.should == 200
+      get "/widget/42", {}, { "HTTP_IF_MODIFIED_SINCE" => (Time.now + 1).httpdate }
+      last_response.status.should == 304
+    end
+    it "sends a 200 response if content has changed (If-Modified-Since)" do
+      get "/widget/42"
+      last_response.status.should == 200
+      get "/widget/42", {}, { "HTTP_IF_MODIFIED_SINCE" => (Time.now - 1).httpdate }
+      last_response.status.should == 200
+    end
+    it "sends a 200 response if content has changed (valid If-Modified-Since but invalid If-None-Match)" do
+      get "/widget/42"
+      last_response.status.should == 200
+      get "/widget/42", {}, { "HTTP_IF_MODIFIED_SINCE" => (Time.now + 1).httpdate, "HTTP_IF_NONE_MATCH" => Garner::Objects::ETag.from("foobar") }
+      last_response.status.should == 200
+    end
   end
 end
