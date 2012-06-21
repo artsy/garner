@@ -5,10 +5,14 @@ describe Garner::Cache::ObjectIdentity do
     Garner::Cache::ObjectIdentity
   end
   before :each do
-    subject.identity_fields = [ :slug, :id ]        
+    silence_warnings do
+      Garner::Cache::ObjectIdentity::IDENTITY_FIELDS = [ :slug, :id ]
+    end
   end
   after :each do
-    subject.identity_fields = nil
+    silence_warnings do
+      Garner::Cache::ObjectIdentity::IDENTITY_FIELDS = [ :id ]
+    end
   end
   context "standardize" do
     it "nil" do

@@ -1,64 +1,57 @@
 module Garner
   module Cache
     #
-    # A cache that uses an object identity binding strategy. 
-    # 
+    # A cache that uses an object identity binding strategy.
+    #
     # Allows some flexibility in how caller binds objects in cache.
-    # The binding can be an object, class, array of objects, or array of classes 
+    # The binding can be an object, class, array of objects, or array of classes
     # on which to bind the validity of the cached result contained in the subsequent
     # block.
-    # 
+    #
     # @example `bind: { klass: Widget, object: { id: params[:id] } }` will cause a cached instance to be
     # invalidated on any change to the `Widget` object whose slug attribute equals `params[:id]`
     #
     # @example `bind: { klass: User, object: { id: current_user.id } }` will cause a cached instance to be
-    # invalidated on any change to the `User` object whose id attribute equals current_user.id. 
+    # invalidated on any change to the `User` object whose id attribute equals current_user.id.
     # This is one way to bind a cache result to any change in the current user.
     #
     # @example `bind: { klass: Widget }` will cause the cached instance to be invalidated on any change to
     # any object of class Widget. This is the appropriate strategy for index paths like /widgets.
     #
-    # @example `bind: [{ klass: Widget }, { klass: User, object: { id: current_user.id } }]` will cause a 
+    # @example `bind: [{ klass: Widget }, { klass: User, object: { id: current_user.id } }]` will cause a
     # cached instance to be invalidated on any change to either the current user, or any object of class Widget.
     #
     # @example `bind: [Artwork]` is shorthand for `bind: { klass: Artwork }`
-    #      
+    #
     # @example `bind: [Artwork, params[:id]]` is shorthand for `bind: { klass: Artwork, object: { id: params[:id] } }`
     #
     # @example `bind: [User, { id: current_user.id }] is shorthand for `bind: { klass: User, object: { id: current_user.id } }`
     #
-    # @example `bind: [[Artwork], [User, { id: current_user.id }]]` is shorthand for 
+    # @example `bind: [[Artwork], [User, { id: current_user.id }]]` is shorthand for
     # `bind: [{ klass: Artwork }, { klass: User, object: { id: current_user.id } }]`
     #
     module ObjectIdentity
+      
+      IDENTITY_FIELDS = [ :id ]
+
+      KEY_STRATEGIES = [
+        Garner::Strategies::Keys::Caller,
+        Garner::Strategies::Keys::Version,
+        Garner::Strategies::Keys::RequestPath,
+        Garner::Strategies::Keys::RequestGet
+      ]
+      
+      CACHE_STRATEGIES = [
+        Garner::Strategies::Cache::Expiration
+      ]
+      
       class << self
 
-        def identity_fields
-          @identity_fields ||= [ :id ]
-        end
-        
-        def identity_fields=(value)
-          @identity_fields = value
-        end
-        
-        def key_strategies
-          [ 
-            Garner::Strategies::Keys::Caller,
-            Garner::Strategies::Keys::Version, 
-            Garner::Strategies::Keys::RequestPath,
-            Garner::Strategies::Keys::RequestGet
-          ]
-        end
-          
-        def cache_strategies
-          [ Garner::Strategies::Cache::Expiration ]
-        end
-      
-        # cache the result of an executable block        
+        # cache the result of an executable block
         def cache(binding = nil, context = {})
-          # apply cache strategies          
-          cache_options = context[:cache_options] || {}
-          cache_strategies.each do |strategy|
+          # apply cache strategies
+          cache_options = cache_options(context)
+          CACHE_STRATEGIES.each do |strategy|
             cache_options = strategy.apply(cache_options)
           end
           key = key(binding, key_context(context))
@@ -87,12 +80,17 @@ module Garner
         end
         
         private
+
+          # applied cache options
+          def cache_options(context)
+            context[:cache_options] || {}
+          end
         
           # applied key context
           def key_context(context)
             new_context = {}
             context ||= {}
-            key_strategies.each do |strategy| 
+            KEY_STRATEGIES.each do |strategy|
               new_context = strategy.apply(new_context, context)
             end
             new_context
@@ -100,7 +98,7 @@ module Garner
 
           def reset_key_prefix_for(klass, object = nil)
              Garner.config.cache.write(
-               index_string_for(klass, object), 
+               index_string_for(klass, object),
                new_key_prefix_for(klass, object),
                {}
              )
@@ -126,13 +124,13 @@ module Garner
             bound = binding && binding[:bind] ? standardize(binding[:bind]) : {}
             bound = (bound.is_a?(Array) ? bound : [ bound ]).compact
             bound.collect { |el|
-              if el[:object] && ! identity_fields.map { |id| el[:object][id] }.compact.any?
-                raise ArgumentError, ":bind object arguments (#{bound}) can only be keyed by #{identity_fields.join(", ")}"
+              if el[:object] && ! IDENTITY_FIELDS.map { |id| el[:object][id] }.compact.any?
+                raise ArgumentError, ":bind object arguments (#{bound}) can only be keyed by #{IDENTITY_FIELDS.join(", ")}"
               end
               find_or_create_key_prefix_for(el[:klass], el[:object])
             }.join(",") + ":" +
             Digest::MD5.hexdigest(
-              key_strategies.map { |strategy| context[strategy.field] }.compact.join("\n")
+              KEY_STRATEGIES.map { |strategy| context[strategy.field] }.compact.join("\n")
             )
           end
         
@@ -148,7 +146,7 @@ module Garner
               when NilClass
                 { :klass => args[0] }
               else
-                { :klass => args[0], :object => { identity_fields.first => args[1] } }
+                { :klass => args[0], :object => { IDENTITY_FIELDS.first => args[1] } }
               end
             else
               raise ArgumentError, "invalid args, must be (klass, identifier) or hash (#{args})"
@@ -192,7 +190,7 @@ module Garner
             when Class
               h = { :klass => ary[0] }
               h.merge!({
-                :object => (ary[1].is_a?(Hash) ? ary[1] : { identity_fields.first => ary[1] }) 
+                :object => (ary[1].is_a?(Hash) ? ary[1] : { IDENTITY_FIELDS.first => ary[1] })
               }) if ary[1]
               h
             else
@@ -202,7 +200,7 @@ module Garner
           
           def index_string_for(klass, object = nil)
             prefix = "INDEX"
-            identity_fields.each do |field|
+            IDENTITY_FIELDS.each do |field|
               if object && object[field]
                 return "#{prefix}:#{klass}/#{field}=#{object[field]}"
               end
