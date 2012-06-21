@@ -19,4 +19,4 @@ require 'garner/strategies/cache/expiration_strategy'
 require 'garner/cache/object_identity'
 # mixins
 require 'garner/mixins/grape_cache'
-
+require 'garner/mixins/mongoid_document'
