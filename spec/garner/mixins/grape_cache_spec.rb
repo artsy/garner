@@ -18,6 +18,11 @@ describe Garner::Mixins::Grape do
           MultiJson.dump({ :count => @counts[params[:id]] })
         end
       end
+      api.get "/gadget/:id" do
+        cache(:bind => [Module, params[:id]], :identity => params[:id]) do
+          MultiJson.dump({ :count => 1 })
+        end
+      end
     end
   end
   before :each do
@@ -28,6 +33,13 @@ describe Garner::Mixins::Grape do
       Garner.config.cache.should_receive(:write).exactly(3).times
       get "/"
       last_response.body.should == MultiJson.dump({ :meaning_of_life => 42 })
+    end
+    it "splits parameters between the binding and the context" do
+      Garner::Cache::ObjectIdentity.should_receive(:cache).with(
+        { :bind => [Module, "42"]},
+        { :identity => "42", :request => anything }
+      )
+      get "/gadget/42"
     end
   end
   context "cache_or_304" do
