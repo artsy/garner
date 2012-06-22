@@ -3,6 +3,8 @@ Garner [![Build Status](https://secure.travis-ci.org/dblock/garner.png)](http://
 
 Garner is a practical Rack-based cache implementation for RESTful APIs with support for HTTP 304 Not Modified based on time and ETags, model and instance binding and hierarchical invalidation. Garner is currently targeted at [Grape](https://github.com/intridea/grape), other systems may need some work.
 
+To "garner" means to gather data from various sources and to make it readily available in one place, kind-of like a cache!
+
 Usage
 -----
 
@@ -39,7 +41,7 @@ The cached value can also be bound to other models. For example, if a user has a
 
 ``` ruby
 get "/me/address" do
-  cache_or_304(:bind => [ User, current_user.id ]) do
+  cache_or_304({ :bind => [ User, current_user.id ] }) do
     current_user.address
   end
 end
@@ -76,6 +78,44 @@ end
 ```
 
 Please contribute other invalidation mixins.
+
+Role-Based Caching
+------------------
+
+Role-Based caching is a subset of the generic problem of binding data to groups of other objects. For example, a `Widget` may have a different representation for an `admin` vs. a `user`. In Garner you can inject something called a "key strategy" into the current key generation pipeline. A strategy is a plain module that must implement two methods: `apply` and `field`. The former applies a strategy to a key within a context and the latter is a unique name that is produced by the strategy.
+
+The following example introduces the role of the current user into the cache key.
+
+``` ruby
+module MyApp
+  module Garner
+    module RoleStrategy
+      class << self
+        def field
+          :role
+        end
+        def apply(key, context = {})
+          key = key ? key.dup : {}
+          key[:role] = current_user.role
+          key
+        end
+      end
+    end
+  end
+end
+```
+
+Garner key strategies are applied in order and can be currently set at application startup time.
+
+```
+Garner::Cache::ObjectIdentity::KEY_STRATEGIES = [
+  Garner::Strategies::Keys::Caller, # support multiple calls from the same function
+  MyApp::Garner::RoleStrategy, # custom strategy for role-based access
+  Garner::Strategies::Keys::RequestPath # injects the HTTP request's URL
+]
+```
+
+This method of registration does need improvement, please contribute.
 
 Configuration
 -------------
