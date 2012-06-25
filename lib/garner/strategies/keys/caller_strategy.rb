@@ -11,7 +11,6 @@ module Garner
           
           def apply(key, context = {})
             rc = key ? key.dup : {}
-            clr = nil
             caller.each do |line|
               split = line.split(":")
               next unless split.length >= 2
