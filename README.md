@@ -1,4 +1,4 @@
-Garner [![Build Status](https://secure.travis-ci.org/dblock/garner.png)](http://travis-ci.org/dblock/garner)
+Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://travis-ci.org/artsy/garner)
 ======
 
 Garner is a practical Rack-based cache implementation for RESTful APIs with support for HTTP 304 Not Modified based on time and ETags, model and instance binding and hierarchical invalidation. Garner is currently targeted at [Grape](https://github.com/intridea/grape), other systems may need some work.
