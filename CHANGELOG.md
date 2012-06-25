@@ -1,3 +1,14 @@
+0.1.2
+-----
+
+* Fix: `Garner::Mixins::Grape::Cache` improperly handles `nil` cache hits or `cache_enabled?` returning `false` in `cache_or_304` - [@dblock](https://github.com/dblock).
+
+0.1.1
+-----
+
+* Initial public release at [GoRuCo](http://goruco.com), read the [announcement](http://artsy.github.com/blog/2012/05/30/restful-api-caching-with-garner/).
+* Grape mixin takes a single parameter, binding and context are extracted from it - [@dblock](https://github.com/dblock).
+
 0.1
 ---
 

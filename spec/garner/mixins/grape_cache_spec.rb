@@ -5,6 +5,11 @@ describe Garner::Mixins::Grape do
   def app
     Class.new(Grape::API).tap do |api|
       api.helpers Garner::Mixins::Grape::Cache
+      api.helpers do
+        def cache_enabled?
+          ENV['CACHE_DISABLED'] != "1"
+        end
+      end
       api.format :json
       api.get "/" do
         cache do
@@ -21,6 +26,11 @@ describe Garner::Mixins::Grape do
       api.get "/gadget/:id" do
         cache(:bind => [Module, params[:id]], :identity => params[:id]) do
           MultiJson.dump({ :count => 1 })
+        end
+      end
+      api.get "/null" do
+        cache_or_304 do
+          nil
         end
       end
     end
@@ -77,6 +87,27 @@ describe Garner::Mixins::Grape do
       last_response.status.should == 200
       get "/widget/42", {}, { "HTTP_IF_MODIFIED_SINCE" => (Time.now + 1).httpdate, "HTTP_IF_NONE_MATCH" => Garner::Objects::ETag.from("foobar") }
       last_response.status.should == 200
+    end
+    it "works with null" do
+      2.times do
+        get "/null"
+        last_response.status.should == 200
+        last_response.body.should == "null"
+      end
+    end
+    context "cache_enabled? false" do
+      before :each do
+        ENV['CACHE_DISABLED'] = "1"
+      end
+      after :each do
+        ENV['CACHE_DISABLED'] = nil
+      end
+      it "304" do
+        get "/widget/42"
+        last_response.status.should == 200
+        get "/widget/42", {}, { "HTTP_IF_MODIFIED_SINCE" => (Time.now + 1).httpdate }
+        last_response.status.should == 200
+      end
     end
   end
 end
