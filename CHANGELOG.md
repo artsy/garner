@@ -1,3 +1,8 @@
+Next Release
+------------
+
+* Fix: `Garner::Strategies::Keys::Caller` excludes lines with `lib/garner`, workaround for Heroku - [@dblock](https://github.com/dblock).
+
 0.1.2
 -----
 
