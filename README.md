@@ -117,6 +117,15 @@ Garner::Cache::ObjectIdentity::KEY_STRATEGIES = [
 
 This method of registration does need improvement, please contribute.
 
+Available Key Strategies
+------------------------
+
+* `Garner::Strategies::Keys::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different keys.
+* `Garner::Strategies::Keys::Version` inserts the output of a `version` method, when available, primarily targeted at API implementations.
+* `Garner::Strategies::Keys::Key` inserts the value of `:key` within the requested context, useful to explicitly declare an element of a cache key.
+* `Garner::Strategies::Keys::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
+* `Garner::Strategies::Keys::RequestPath` inserts the value of the HTTP request's path into the cache key when `:request` is present in the context.
+
 Configuration
 -------------
 
