@@ -44,6 +44,8 @@ module Garner
       CACHE_STRATEGIES = [
         Garner::Strategies::Cache::Expiration
       ]
+
+      ETAG_STRATEGY = Garner::Strategies::ETags::Grape
       
       class << self
 
@@ -107,7 +109,7 @@ module Garner
           def reset_cache_metadata(key, object)
             return unless object
             metadata = {
-              :etag => Garner::Objects::ETag.from(object),
+              :etag => ETAG_STRATEGY.apply(object),
               :last_modified => Time.now
             }
             meta_key = meta(key)
