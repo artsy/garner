@@ -14,6 +14,7 @@ require 'garner/strategies/keys/request_get_strategy'
 require 'garner/strategies/keys/key_strategy'
 # etag strategies
 require 'garner/strategies/etags/grape_strategy'
+require 'garner/strategies/etags/marshal_strategy'
 # cache option strategies
 require 'garner/strategies/cache/expiration_strategy'
 # caches
