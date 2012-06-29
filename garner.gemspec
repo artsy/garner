@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2012-06-25"
+  s.date = "2012-06-29"
   s.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
@@ -24,9 +24,11 @@ Gem::Specification.new do |s|
     "lib/garner/middleware/cache/bust.rb",
     "lib/garner/mixins/grape_cache.rb",
     "lib/garner/mixins/mongoid_document.rb",
-    "lib/garner/objects/etag.rb",
     "lib/garner/strategies/cache/expiration_strategy.rb",
+    "lib/garner/strategies/etags/grape_strategy.rb",
+    "lib/garner/strategies/etags/marshal_strategy.rb",
     "lib/garner/strategies/keys/caller_strategy.rb",
+    "lib/garner/strategies/keys/key_strategy.rb",
     "lib/garner/strategies/keys/request_get_strategy.rb",
     "lib/garner/strategies/keys/request_path_strategy.rb",
     "lib/garner/strategies/keys/version_strategy.rb",
@@ -44,7 +46,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rack>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<multi_json>, [">= 0"])
+      s.add_runtime_dependency(%q<multi_json>, [">= 1.3.0"])
       s.add_runtime_dependency(%q<activesupport>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<grape>, ["= 0.2.0"])
@@ -59,7 +61,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rack>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<multi_json>, [">= 0"])
+      s.add_dependency(%q<multi_json>, [">= 1.3.0"])
       s.add_dependency(%q<activesupport>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<grape>, ["= 0.2.0"])
@@ -75,7 +77,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rack>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<multi_json>, [">= 0"])
+    s.add_dependency(%q<multi_json>, [">= 1.3.0"])
     s.add_dependency(%q<activesupport>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<grape>, ["= 0.2.0"])
