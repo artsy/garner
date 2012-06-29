@@ -3,8 +3,6 @@ require 'active_support'
 # garner
 require 'garner/version'
 require 'garner/config'
-# objects
-require 'garner/objects/etag'
 # middleware
 require 'garner/middleware/base'
 require 'garner/middleware/cache/bust'
@@ -14,6 +12,9 @@ require 'garner/strategies/keys/caller_strategy'
 require 'garner/strategies/keys/request_path_strategy'
 require 'garner/strategies/keys/request_get_strategy'
 require 'garner/strategies/keys/key_strategy'
+# etag strategies
+require 'garner/strategies/etags/grape_strategy'
+require 'garner/strategies/etags/marshal_strategy'
 # cache option strategies
 require 'garner/strategies/cache/expiration_strategy'
 # caches

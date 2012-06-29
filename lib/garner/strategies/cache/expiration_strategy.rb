@@ -1,7 +1,7 @@
 module Garner
   module Strategies
     module Cache
-      # Injects an expires_in value from the globl configuration.
+      # Injects an expires_in value from the global configuration.
       module Expiration
         class << self
           def apply(current, options = {})

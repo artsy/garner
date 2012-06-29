@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem "rack"
 gem "json"
-gem "multi_json"
+gem "multi_json", ">= 1.3.0"
 gem "activesupport"
 
 group :development, :test do

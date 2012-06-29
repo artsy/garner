@@ -47,6 +47,22 @@ get "/me/address" do
 end
 ```
 
+ETag Generation Strategies
+--------------------------
+
+The primary purpose of the ETag header is to define a short string representation of a cached object that is both (a) deterministic and (b) unique, so that Garner's `cache_or_304` method can quickly determine whether a client's cached content matches the latest server object. As such, an MD5 hash applied to *any* object serialization would suffice. However, some applications may wish to control the manner in which ETags are generated, and so Garner supports arbitrary ETag strategies.
+
+The default strategy, `Garner::Strategies::ETags::Grape`, follows the serialization strategy used by Grape for coercing objects into JSON. Using this strategy, Garner will generate an ETag for each cache object that is identical to what `Rack::ETag` would return if that object was returned by Grape. This property could be useful for Grape applications.
+
+Another, simpler strategy, `Garner::Strategies::ETags::Marshal`, simply applies an MD5 hash to `Marshal.dump(object)`. This strategy might be more applicable for applications not using Grape.
+
+An ETag strategy may be defined at application startup time:
+
+```
+ETAG_STRATEGY = Garner::Strategies::ETags::Grape
+```
+
+
 Binding Strategies
 ------------------
 

@@ -9,7 +9,7 @@ module Garner
     #     config.cache = Rails.cache
     #   end
     #
-    # @return [ Config ] The configuration obejct.
+    # @return [ Config ] The configuration object.
     def configure
       block_given? ? yield(Garner::Config) : Garner::Config
     end
