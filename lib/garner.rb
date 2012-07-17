@@ -20,5 +20,5 @@ require 'garner/strategies/cache/expiration_strategy'
 # caches
 require 'garner/cache/object_identity'
 # mixins
-require 'garner/mixins/grape_cache'
-require 'garner/mixins/mongoid_document'
+require 'garner/mixins/grape_cache' if defined?(Grape)
+require 'garner/mixins/mongoid_document' if defined?(Mongoid)
