@@ -56,6 +56,7 @@ module Garner
             cache_context = {}
             cache_context.merge!(options.dup)
             cache_context[:request] = request
+            cache_context[:version] = version if self.respond_to(:version)
             cache_context.delete(:bind)
             cache_binding = (options || {})[:bind]
             cache_binding = cache_binding ? { :bind => cache_binding } : {}
