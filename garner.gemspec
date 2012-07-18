@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2012-06-29"
+  s.date = "2012-07-18"
   s.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "lib/garner/strategies/etags/grape_strategy.rb",
     "lib/garner/strategies/etags/marshal_strategy.rb",
     "lib/garner/strategies/keys/caller_strategy.rb",
+    "lib/garner/strategies/keys/jsonp_strategy.rb",
     "lib/garner/strategies/keys/key_strategy.rb",
     "lib/garner/strategies/keys/request_get_strategy.rb",
     "lib/garner/strategies/keys/request_path_strategy.rb",

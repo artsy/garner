@@ -9,6 +9,9 @@ describe Garner::Mixins::Grape do
         def cache_enabled?
           ENV['CACHE_DISABLED'] != "1"
         end
+        def version
+          "v7"
+        end
       end
       api.format :json
       api.get "/" do
@@ -47,9 +50,16 @@ describe Garner::Mixins::Grape do
     it "splits parameters between the binding and the context" do
       Garner::Cache::ObjectIdentity.should_receive(:cache).with(
         { :bind => [Module, "42"]},
-        { :identity => "42", :request => anything }
+        { :identity => "42", :request => anything, :version => anything }
       )
       get "/gadget/42"
+    end
+    it "sets context[:version] if available" do
+      Garner::Cache::ObjectIdentity.should_receive(:cache).with(
+        {},
+        { :request => anything, :version => "v7" }
+      )
+      get "/"
     end
   end
   context "cache_or_304" do
