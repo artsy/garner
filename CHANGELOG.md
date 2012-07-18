@@ -5,6 +5,8 @@ Next Release
 * Added `Garner::Strategies::Keys::Key`, that inserts the value of `:key` within the requested context, useful to explicitly declare an element of a cache key - [@dblock](https://github.com/dblock).
 * Fix: `Garner::Strategies::Keys::Caller` excludes lines with `lib/garner`, workaround for Heroku - [@dblock](https://github.com/dblock).
 * Only load Grape and Mongoid mixins when necessary - [@billgloff](https://github.com/billgloff).
+* Fix: Grape API version is properly passed through to key context when using `Garner::Strategies::Keys::Version` - [@macreery](https://github.com/macreery).
+* Added support for caching responses to JSONP requests, via `Garner::Strategies::Keys::Jsonp` - [@macreery](https://github.com/macreery).
 
 0.1.2
 -----
