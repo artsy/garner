@@ -16,7 +16,7 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "garner"
-  gem.homepage = "http://github.com/dblock/garner"
+  gem.homepage = "http://github.com/artsy/garner"
   gem.license = "MIT"
   gem.summary = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
   gem.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
