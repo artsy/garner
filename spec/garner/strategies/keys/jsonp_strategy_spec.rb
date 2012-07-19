@@ -9,6 +9,6 @@ describe Garner::Strategies::Keys::Jsonp do
     Garner::Strategies::Keys::Jsonp
   end
   it "adds path" do
-    subject.apply(Garner::Strategies::Keys::RequestGet.apply({}, @options)).should eq(params: {})
+    subject.apply(Garner::Strategies::Keys::RequestGet.apply({}, @options)).should eq(:params => {})
   end
 end
