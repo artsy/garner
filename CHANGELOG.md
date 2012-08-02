@@ -1,3 +1,7 @@
+Next Release
+------------
+* Fix: `invalidate` no longer writes a new index key for each object binding; instead it only deletes existing index keys.
+
 0.1.3
 -----
 
