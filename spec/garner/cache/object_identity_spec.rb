@@ -209,6 +209,15 @@ describe Garner::Cache::ObjectIdentity do
         r3 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "two" }
         [r1, r2, r3].should == [ "one", "one", "two" ]
       end
+      it "invalidates bound results with multiple bindings" do
+        class OtherClass ; end
+        r1 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "one" }
+        subject.invalidate(:klass => Class)
+        r2 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "two" }
+        subject.invalidate(:klass => OtherClass)
+        r3 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "three" }
+        [r1, r2, r3].should == [ "one", "two", "three" ]
+      end
       it "does NOT invalidate object-bound results for different objects in the same klass" do
         r1 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
         subject.invalidate(:klass => Class, :object => { :slug => "otherslug" })
