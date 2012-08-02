@@ -99,12 +99,8 @@ module Garner
           end
 
           def reset_key_prefix_for(klass, object = nil)
-             Garner.config.cache.write(
-               index_string_for(klass, object),
-               new_key_prefix_for(klass, object),
-               {}
-             )
-           end
+            Garner.config.cache.delete(index_string_for(klass, object))
+          end
 
           def reset_cache_metadata(key, object)
             return unless object

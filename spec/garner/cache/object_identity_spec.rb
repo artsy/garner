@@ -183,6 +183,11 @@ describe Garner::Cache::ObjectIdentity do
           key
         end
       end
+      it "does not write new records to cache" do
+        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
+        Garner.config.cache.should_not_receive(:write)
+        subject.invalidate(:klass => Class)
+      end
       it "invalidates klass-bound results when a klass is invalidated" do
         r1 = subject.cache(:bind => { :klass => Class }) { "one" }
         r2 = subject.cache(:bind => { :klass => Class }) { "one" }
@@ -203,6 +208,15 @@ describe Garner::Cache::ObjectIdentity do
         subject.invalidate(:klass => Class, :object => { :slug => "slug" })
         r3 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "two" }
         [r1, r2, r3].should == [ "one", "one", "two" ]
+      end
+      it "invalidates bound results with multiple bindings" do
+        class OtherClass ; end
+        r1 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "one" }
+        subject.invalidate(:klass => Class)
+        r2 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "two" }
+        subject.invalidate(:klass => OtherClass)
+        r3 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "three" }
+        [r1, r2, r3].should == [ "one", "two", "three" ]
       end
       it "does NOT invalidate object-bound results for different objects in the same klass" do
         r1 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
