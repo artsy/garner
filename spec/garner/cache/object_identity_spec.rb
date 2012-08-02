@@ -183,6 +183,11 @@ describe Garner::Cache::ObjectIdentity do
           key
         end
       end
+      it "does not write new records to cache" do
+        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
+        Garner.config.cache.should_not_receive(:write)
+        subject.invalidate(:klass => Class)
+      end
       it "invalidates klass-bound results when a klass is invalidated" do
         r1 = subject.cache(:bind => { :klass => Class }) { "one" }
         r2 = subject.cache(:bind => { :klass => Class }) { "one" }
