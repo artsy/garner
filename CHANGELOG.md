@@ -1,6 +1,7 @@
 Next Release
 ------------
 * Fix: `invalidate` no longer writes a new index key for each object binding; instead it only deletes existing index keys.
+* Fix: Invoking Garner helper methods from within an IRB session no longer crashes inside the `Keys::Caller` strategy.
 
 0.1.3
 -----
