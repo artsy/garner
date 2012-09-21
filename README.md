@@ -136,7 +136,7 @@ This method of registration does need improvement, please contribute.
 Available Key Strategies
 ------------------------
 
-* `Garner::Strategies::Keys::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different keys.
+* `Garner::Strategies::Keys::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different keys. The caller can be specified explicitly by passing a value for `:caller` in the requesting context.
 * `Garner::Strategies::Keys::Version` inserts the output of a `version` method, when available, primarily targeted at API implementations.
 * `Garner::Strategies::Keys::Key` inserts the value of `:key` within the requested context, useful to explicitly declare an element of a cache key.
 * `Garner::Strategies::Keys::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
