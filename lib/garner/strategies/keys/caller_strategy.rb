@@ -11,6 +11,11 @@ module Garner
           
           def apply(key, context = {})
             rc = key ? key.dup : {}
+            if context.keys.include?(field)
+              rc[field] = context[field]
+              return rc
+            end
+
             caller.each do |line|
               split = line.split(":")
               next unless split.length >= 2
