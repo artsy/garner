@@ -11,8 +11,7 @@ group :development, :test do
   gem "rack-test",  "0.6.1"
   gem "rspec",      "~> 2.10"
   gem "jeweler",    "1.8.3"
-  gem "mongoid",    "~> 2.4"
-  gem "bson_ext",   "~> 1.6"
+  gem "mongoid",    "~> 3.0"
 end
 
 group :development do

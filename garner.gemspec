@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2012-07-18"
+  s.date = "2012-11-02"
   s.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/artsy/garner"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.24"
   s.summary = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
 
   if s.respond_to? :specification_version then
@@ -54,8 +54,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rack-test>, ["= 0.6.1"])
       s.add_development_dependency(%q<rspec>, ["~> 2.10"])
       s.add_development_dependency(%q<jeweler>, ["= 1.8.3"])
-      s.add_development_dependency(%q<mongoid>, ["~> 2.4"])
-      s.add_development_dependency(%q<bson_ext>, ["~> 1.6"])
+      s.add_development_dependency(%q<mongoid>, ["~> 3.0"])
       s.add_development_dependency(%q<yard>, [">= 0"])
       s.add_development_dependency(%q<redcarpet>, [">= 0"])
       s.add_development_dependency(%q<github-markup>, [">= 0"])
@@ -69,8 +68,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rack-test>, ["= 0.6.1"])
       s.add_dependency(%q<rspec>, ["~> 2.10"])
       s.add_dependency(%q<jeweler>, ["= 1.8.3"])
-      s.add_dependency(%q<mongoid>, ["~> 2.4"])
-      s.add_dependency(%q<bson_ext>, ["~> 1.6"])
+      s.add_dependency(%q<mongoid>, ["~> 3.0"])
       s.add_dependency(%q<yard>, [">= 0"])
       s.add_dependency(%q<redcarpet>, [">= 0"])
       s.add_dependency(%q<github-markup>, [">= 0"])
@@ -85,8 +83,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rack-test>, ["= 0.6.1"])
     s.add_dependency(%q<rspec>, ["~> 2.10"])
     s.add_dependency(%q<jeweler>, ["= 1.8.3"])
-    s.add_dependency(%q<mongoid>, ["~> 2.4"])
-    s.add_dependency(%q<bson_ext>, ["~> 1.6"])
+    s.add_dependency(%q<mongoid>, ["~> 3.0"])
     s.add_dependency(%q<yard>, [">= 0"])
     s.add_dependency(%q<redcarpet>, [">= 0"])
     s.add_dependency(%q<github-markup>, [">= 0"])
