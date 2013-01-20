@@ -10,6 +10,8 @@ Usage
 
 Add Garner to Gemfile with `gem "garner"` and run `bundle install`. Include the Garner mixin into your API. Currently Grape is supported out of the box. It's also recommended to prevent clients from caching dynamic data by default using the `Garner::Middleware::Cache::Bust` middleware. See below for a detailed explanation.
 
+Note that if you are using Grape, `gem "garner"` must be listed AFTER `gem "grape"` in the Gemfile (see [#6](https://github.com/artsy/garner/issues/6)).
+
 ```ruby
 class API < Grape::API
   use Garner::Middleware::Cache::Bust
