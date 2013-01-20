@@ -1,8 +1,9 @@
-Next Release
-------------
+0.2
+---
+
+* The `Keys::Caller` strategy now allows specifying the caller explicitly by passing a `:caller` as part of the context - [@macreery](https://github.com/macreery).
 * Fix: `invalidate` no longer writes a new index key for each object binding; instead it only deletes existing index keys - [@macreery](https://github.com/macreery).
 * Fix: Invoking Garner helper methods from within an IRB session no longer crashes inside the `Keys::Caller` strategy - [@macreery](https://github.com/macreery).
-* Feature: The `Keys::Caller` strategy now allows specifying the caller explicitly by passing a `:caller` as part of the context - [@macreery](https://github.com/macreery).
 
 0.1.3
 -----
