@@ -54,5 +54,40 @@ describe Garner::Mixins::Mongoid::Document do
         t.invalidate_api_cache
       end
     end
+    context "callbacks" do
+      before do
+        Mongoid.configure do |config|
+          config.connect_to('garner_test')
+        end
+      end
+      after do
+        Mongoid.purge!
+      end
+      it "create" do
+        Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+        Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel)
+        TestModel.create!
+      end
+      context "with an instance" do
+        before do
+          @t = TestModel.create!
+        end
+        it "update" do
+          Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+          Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => @t.id })
+          @t.update_attributes!({ :x => "y" })
+        end
+        it "save! without changes" do
+          Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+          Garner::Cache::ObjectIdentity.should_not_receive(:invalidate)
+          @t.save!
+        end
+        it "destroy" do
+          Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+          Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => @t.id })
+          @t.destroy
+        end
+      end
+    end
   end
 end

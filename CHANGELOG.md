@@ -1,3 +1,9 @@
+0.2.1
+-----
+* Faster invalidation on Mongoid model creation, only invalidate class - [@dblock](https://github.com/dblock).
+* Do not invalidate Mongoid models that have not changed on update - [@dblock](https://github.com/dblock).
+* Invalidate cache after a Mongoid model has been destroyed, not before - [@dblock](https://github.com/dblock).
+
 0.2
 ---
 

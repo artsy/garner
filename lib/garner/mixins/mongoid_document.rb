@@ -5,22 +5,33 @@ module Garner
         extend ActiveSupport::Concern
 
         included do
-          before_save :invalidate_api_cache
-          before_destroy :invalidate_api_cache
+          after_create :invalidate_api_cache_for_class!
+          before_update :invalidate_api_cache
+          after_destroy :invalidate_api_cache!
           cattr_accessor :api_cache_class
         end
 
-        # invalidate API cache
+        # invalidate API cache if the document has changed
         def invalidate_api_cache
+          return unless self.changed?
+          invalidate_api_cache!
+        end
+
+        # invalidate API cache
+        def invalidate_api_cache!
           self.all_embedding_documents.each { |doc| doc.invalidate_api_cache }
           cache_class = self.class.api_cache_class || self.class
           Garner::Cache::ObjectIdentity::IDENTITY_FIELDS.each do |identity_field|
             next unless self.respond_to?(identity_field)
             Garner::Cache::ObjectIdentity.invalidate(cache_class, { identity_field => self.send(identity_field) })
           end
+        end
+
+        def invalidate_api_cache_for_class!
+          cache_class = self.class.api_cache_class || self.class
           Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end
-        
+
         # navigate the parent embedding document hierarchy
         def all_embedding_documents
           obj = self
