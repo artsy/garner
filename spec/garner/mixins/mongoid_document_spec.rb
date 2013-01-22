@@ -79,7 +79,7 @@ describe Garner::Mixins::Mongoid::Document do
         end
         it "save! without changes" do
           Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
-          Garner::Cache::ObjectIdentity.should_not_receive(:invalidate)
+          Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => @t.id })
           @t.save!
         end
         it "destroy" do
