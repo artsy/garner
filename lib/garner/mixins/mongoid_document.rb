@@ -6,7 +6,7 @@ module Garner
 
         included do
           after_create :invalidate_api_cache_for_class
-          before_update :invalidate_api_cache
+          after_update :invalidate_api_cache
           after_destroy :invalidate_api_cache
           cattr_accessor :api_cache_class
         end
