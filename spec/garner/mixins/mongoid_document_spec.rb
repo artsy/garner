@@ -75,16 +75,19 @@ describe Garner::Mixins::Mongoid::Document do
         it "update" do
           Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
           Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => @t.id })
+          Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel)
           @t.update_attributes!({ :x => "y" })
         end
         it "save! without changes" do
           Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
           Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => @t.id })
+          Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel)
           @t.save!
         end
         it "destroy" do
           Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
           Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => @t.id })
+          Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel)
           @t.destroy
         end
       end

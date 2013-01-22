@@ -19,6 +19,7 @@ module Garner
             next unless self.respond_to?(identity_field)
             Garner::Cache::ObjectIdentity.invalidate(cache_class, { identity_field => self.send(identity_field) })
           end
+          Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end
 
         def invalidate_api_cache_for_class
