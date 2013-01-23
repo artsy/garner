@@ -24,7 +24,7 @@ To cache a value, invoke `cache` from within your API. Without any parameters it
 ``` ruby
 get "/" do
   cache do
-    { :counter => 42 }
+    { counter: 42 }
   end
 end
 ```
@@ -34,7 +34,7 @@ To enable support for the date-based `If-Modified-Since` and the ETag-based `If-
 ``` ruby
 get "/" do
   cache_or_304 do
-    { :counter => 42 }
+    { counter: 42 }
   end
 end
 ```
@@ -43,7 +43,7 @@ The cached value can also be bound to other models. For example, if a user has a
 
 ``` ruby
 get "/me/address" do
-  cache_or_304({ :bind => [ User, current_user.id ] }) do
+  cache_or_304({ bind: [ User, current_user.id ] }) do
     current_user.address
   end
 end
@@ -143,6 +143,31 @@ Available Key Strategies
 * `Garner::Strategies::Keys::Key` inserts the value of `:key` within the requested context, useful to explicitly declare an element of a cache key.
 * `Garner::Strategies::Keys::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
 * `Garner::Strategies::Keys::RequestPath` inserts the value of the HTTP request's path into the cache key when `:request` is present in the context.
+
+Fetching Objects Directly from Cache
+------------------------------------
+
+Garner supports fetching objects or collections of objects directly from cache by supplying a binding or an array of bindings.
+
+``` ruby
+object_id = ...
+Garner::Cache::ObjectIdentity.cache({ bind: [ Model, { id: object_id }] }) do
+  Model.find(object_id)
+end
+```
+
+Various cache stores, including Memcached, support bulk read operations. The [Dalli gem](https://github.com/mperham/dalli) exposes this via the `read_multi` method. When invoked with a collection of bindings, Garner will call `read_multi` if available. This may significantly reduce the number of network roundtrips to the cache servers.
+
+``` ruby
+object_ids = [ ... ]
+bindings = object_ids.map do |object_id|
+  { bind: [ Model, { id: object_id }]}
+end
+Garner::Cache::ObjectIdentity.cache({ bind: [ Model, { id: object_id }] }) do |binding|
+  # the object binding is passed into the block for every cache miss
+  Model.find(binding[:bind][1][:id])
+end
+```
 
 Configuration
 -------------

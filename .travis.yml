@@ -1,5 +1,6 @@
 services:
   - mongodb
+  - memcache
 
 rvm:
   - 1.9.3

@@ -31,7 +31,7 @@ module Garner
     # `bind: [{ klass: Artwork }, { klass: User, object: { id: current_user.id } }]`
     #
     module ObjectIdentity
-      
+
       IDENTITY_FIELDS = [ :id ]
 
       KEY_STRATEGIES = [
@@ -40,39 +40,44 @@ module Garner
         Garner::Strategies::Keys::RequestPath,
         Garner::Strategies::Keys::RequestGet
       ]
-      
+
       CACHE_STRATEGIES = [
         Garner::Strategies::Cache::Expiration
       ]
 
       ETAG_STRATEGY = Garner::Strategies::ETags::Grape
-      
+
       class << self
 
         # cache the result of an executable block
-        def cache(binding = nil, context = {})
+        def cache(binding_or_bindings = nil, context = {}, &block)
           # apply cache strategies
           cache_options = cache_options(context)
           CACHE_STRATEGIES.each do |strategy|
             cache_options = strategy.apply(cache_options)
           end
-          key = key(binding, key_context(context))
-          result = Garner.config.cache.fetch(key, cache_options) do
-            object = yield
-            reset_cache_metadata(key, object)
-            object
+          ctx = key_context(context)
+          if binding_or_bindings && binding_or_bindings.is_a?(Array)
+            keys = binding_or_bindings.map do |binding|
+              key(binding, ctx)
+            end
+            local_cache = keys.size > 1 && Garner.config.cache.respond_to?(:read_multi) ? Garner.config.cache.read_multi(keys) : {}
+            binding_or_bindings.each_with_index.map do |binding, index|
+              key = keys[index]
+              local_cache[key] || fetch(key, binding, cache_options, &block)
+            end
+          else
+            fetch(key(binding_or_bindings, ctx), nil, cache_options, &block)
           end
-          Garner.config.cache.delete(key) unless result
-          result
         end
-                
+
         # invalidate an object that has been cached
         def invalidate(* args)
           options = index(*args)
           reset_key_prefix_for(options[:klass], options[:object])
           reset_key_prefix_for(options[:klass]) if options[:object]
         end
-        
+
         # metadata for cached objects:
         #   :etag - Unique hash of object content
         #   :last_modified - Timestamp of last modification event
@@ -80,14 +85,24 @@ module Garner
           key = key(binding, key_context(context))
           Garner.config.cache.read(meta(key))
         end
-        
+
         private
+
+          def fetch(key, binding, cache_options = {}, &block)
+            result = Garner.config.cache.fetch(key, cache_options) do
+              object = binding ? yield(binding) : yield
+              reset_cache_metadata key, object
+              object
+            end
+            Garner.config.cache.delete(key) unless result
+            result
+          end
 
           # applied cache options
           def cache_options(context)
             context[:cache_options] || {}
           end
-        
+
           # applied key context
           def key_context(context)
             new_context = {}
@@ -111,11 +126,11 @@ module Garner
             meta_key = meta(key)
             Garner.config.cache.write(meta_key, metadata)
           end
-  
+
           def new_key_prefix_for(klass, object = nil)
             Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{new_key_postfix}")
           end
-           
+
           # Generate a key in the Klass/id format.
           # @example Widget/id=1,Gadget/slug=forty-two,Fudget/*
           def key(binding = nil, context = {})
@@ -131,7 +146,7 @@ module Garner
               KEY_STRATEGIES.map { |strategy| context[strategy.field] }.compact.join("\n")
             )
           end
-        
+
           # Generate an index key from args
           def index(* args)
             case args[0]
@@ -150,7 +165,7 @@ module Garner
               raise ArgumentError, "invalid args, must be (klass, identifier) or hash (#{args})"
             end
           end
-               
+
           def find_or_create_key_prefix_for(klass, object = nil)
             Garner.config.cache.fetch(index_string_for(klass, object), {}) do
               new_key_prefix_for(klass, object)
@@ -160,7 +175,7 @@ module Garner
           def new_key_prefix_for(klass, object = nil)
             Digest::MD5.hexdigest("#{klass}/#{object || "*"}:#{new_key_postfix}")
           end
-          
+
           def new_key_postfix
             SecureRandom.respond_to?(:uuid) ? SecureRandom.uuid : (0...16).map{ ('a'..'z').to_a[rand(26)] }.join
           end
@@ -175,7 +190,7 @@ module Garner
               nil
             end
           end
-          
+
           # Generate a metadata key.
           def meta(key)
             "#{key}:meta"
@@ -195,7 +210,7 @@ module Garner
               raise ArgumentError, "invalid argument type #{ary[0].class} in :bind (#{ary[0]})"
             end
           end
-          
+
           def index_string_for(klass, object = nil)
             prefix = "INDEX"
             IDENTITY_FIELDS.each do |field|
@@ -205,7 +220,7 @@ module Garner
             end
             "#{prefix}:#{klass}/*"
           end
-          
+
       end
     end
   end

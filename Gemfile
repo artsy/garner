@@ -12,6 +12,7 @@ group :development, :test do
   gem "rspec",      "~> 2.10"
   gem "jeweler",    "1.8.3"
   gem "mongoid",    "~> 3.0"
+  gem "dalli",      "~> 2.6"
 end
 
 group :development do

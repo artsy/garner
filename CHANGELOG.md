@@ -1,3 +1,8 @@
+Next Release
+------------
+* `Garner::Cache::ObjectIdentity.cache` can now take an array of bindings to return an array of objects - [@dblock](https://github.com/dblock).
+* When fetching an array of objects via `Garner::Cache::ObjectIdentity.cache`, Garner will use `read_multi` if provided by the cache store - [@dblock](https://github.com/dblock).
+
 0.2.1
 -----
 * Faster invalidation on Mongoid model creation, only invalidate class - [@dblock](https://github.com/dblock).
