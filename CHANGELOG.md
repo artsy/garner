@@ -1,7 +1,7 @@
 Next Release
 ------------
-* `Garner::Cache::ObjectIdentity.cache` can now take an array of bindings to return an array of objects - [@dblock](https://github.com/dblock).
-* When fetching an array of objects via `Garner::Cache::ObjectIdentity.cache`, Garner will use `read_multi` if provided by the cache store - [@dblock](https://github.com/dblock).
+* Added `Garner::Cache::ObjectIdentity.cache_multi` that can now take an array of bindings to return an array of objects - [@dblock](https://github.com/dblock).
+* When fetching an array of objects via `Garner::Cache::ObjectIdentity.cache_multi`, Garner will use `read_multi` if provided by the cache store - [@dblock](https://github.com/dblock).
 
 0.2.1
 -----

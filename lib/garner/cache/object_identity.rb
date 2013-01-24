@@ -50,24 +50,25 @@ module Garner
       class << self
 
         # cache the result of an executable block
-        def cache(binding_or_bindings = nil, context = {}, &block)
-          # apply cache strategies
-          cache_options = cache_options(context)
-          CACHE_STRATEGIES.each do |strategy|
-            cache_options = strategy.apply(cache_options)
-          end
+        def cache(binding = nil, context = {}, &block)
+          cache_options = apply_cache_options(context)
           ctx = key_context(context)
-          if binding_or_bindings && binding_or_bindings.is_a?(Array)
-            keys = binding_or_bindings.map do |binding|
-              key(binding, ctx)
-            end
-            local_cache = keys.size > 1 && Garner.config.cache.respond_to?(:read_multi) ? Garner.config.cache.read_multi(keys) : {}
-            binding_or_bindings.each_with_index.map do |binding, index|
-              key = keys[index]
-              local_cache[key] || fetch(key, binding, cache_options, &block)
-            end
-          else
-            fetch(key(binding_or_bindings, ctx), nil, cache_options, &block)
+          fetch(key(binding, ctx), nil, cache_options, &block)
+        end
+
+        # cache a collection of results
+        def cache_multi(bindings, context = {}, &block)
+          cache_options = apply_cache_options(context)
+          ctx = key_context(context)
+          keys = bindings.map do |binding|
+            key(binding, ctx)
+          end
+          # attempt to do a read_multi if the cache supports it
+          local_cache = keys.size > 1 && Garner.config.cache.respond_to?(:read_multi) ? Garner.config.cache.read_multi(keys) : {}
+          # fetch all missing values
+          bindings.each_with_index.map do |binding, index|
+            key = keys[index]
+            local_cache[key] || fetch(key, binding, cache_options, &block)
           end
         end
 
@@ -99,8 +100,12 @@ module Garner
           end
 
           # applied cache options
-          def cache_options(context)
-            context[:cache_options] || {}
+          def apply_cache_options(context)
+            cache_options = context[:cache_options] || {}
+            CACHE_STRATEGIES.each do |strategy|
+              cache_options = strategy.apply(cache_options)
+            end
+            cache_options
           end
 
           # applied key context

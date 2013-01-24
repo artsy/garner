@@ -242,53 +242,55 @@ describe Garner::Cache::ObjectIdentity do
       end
     end
   end
-  [ :dalli_store, :memory_store ].each do |cache_store|
-    context "#{cache_store}" do
-      before :each do
-        @cache = Garner.config.cache
-        Garner.config.cache = ActiveSupport::Cache.lookup_store(cache_store)
-        Garner.config.cache.clear
-        Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
-          key
+  context "cache_multi" do
+    [ :dalli_store, :memory_store ].each do |cache_store|
+      context "#{cache_store}" do
+        before :each do
+          @cache = Garner.config.cache
+          Garner.config.cache = ActiveSupport::Cache.lookup_store(cache_store)
+          Garner.config.cache.clear
+          Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
+            key
+          end
         end
-      end
-      after :each do
-        Garner.config.cache = @cache
-      end
-      context "cache multiple bindings" do
-        it "caches values across calls from different loc" do
-          data = { "one" => 1, "two" => 2 }
-          bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
-          2.times do
-            result = subject.cache(bindings) do |binding|
-              data[binding[:bind][1][:id]]
+        after :each do
+          Garner.config.cache = @cache
+        end
+        context "cache multiple bindings" do
+          it "caches values across calls from different loc" do
+            data = { "one" => 1, "two" => 2 }
+            bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
+            2.times do
+              result = subject.cache_multi(bindings) do |binding|
+                data[binding[:bind][1][:id]]
+              end
+              result.should == [ 1, 2 ]
             end
-            result.should == [ 1, 2 ]
           end
         end
       end
-    end
-    context "dalli_store" do
-      before :each do
-        @cache = Garner.config.cache
-        Garner.config.cache = ActiveSupport::Cache.lookup_store(:dalli_store)
-        Garner.config.cache.clear
-        Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
-          key
+      context "dalli_store" do
+        before :each do
+          @cache = Garner.config.cache
+          Garner.config.cache = ActiveSupport::Cache.lookup_store(:dalli_store)
+          Garner.config.cache.clear
+          Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
+            key
+          end
         end
-      end
-      after :each do
-        Garner.config.cache = @cache
-      end
-      it "uses read_multi" do
-        data = { "one" => 1, "two" => 2 }
-        bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
-        # cache results
-        result = subject.cache(bindings) do |binding|
-          data[binding[:bind][1][:id]]
+        after :each do
+          Garner.config.cache = @cache
         end
-        result = subject.cache(bindings) do |binding|
-          raise "this should not be called, data is cached"
+        it "cache_multi" do
+          data = { "one" => 1, "two" => 2 }
+          bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
+          # cache results
+          result = subject.cache_multi(bindings) do |binding|
+            data[binding[:bind][1][:id]]
+          end
+          result = subject.cache_multi(bindings) do |binding|
+            raise "this should not be called, data is cached"
+          end
         end
       end
     end
