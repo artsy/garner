@@ -163,7 +163,7 @@ object_ids = [ ... ]
 bindings = object_ids.map do |object_id|
   { bind: [ Model, { id: object_id }]}
 end
-Garner::Cache::ObjectIdentity.cache({ bind: [ Model, { id: object_id }] }) do |binding|
+Garner::Cache::ObjectIdentity.cache(bindings) do |binding|
   # the object binding is passed into the block for every cache miss
   Model.find(binding[:bind][1][:id])
 end
