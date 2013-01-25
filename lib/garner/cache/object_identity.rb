@@ -64,11 +64,15 @@ module Garner
             key(binding, ctx)
           end
           # attempt to do a read_multi if the cache supports it
-          local_cache = keys.size > 1 && Garner.config.cache.respond_to?(:read_multi) ? Garner.config.cache.read_multi(keys) : {}
+          read_multi = keys.size > 1 && Garner.config.cache.respond_to?(:read_multi)
+          local_cache = read_multi ? Garner.config.cache.read_multi(keys) : {}
           # fetch all missing values
           bindings.each_with_index.map do |binding, index|
             key = keys[index]
-            local_cache[key] || fetch(key, binding, cache_options, &block)
+            # just write the value if the key was not fetched in read_multi
+            local_cache[key] || (read_multi ?
+              write(key, binding, cache_options, &block) :
+              fetch(key, binding, cache_options, &block))
           end
         end
 
@@ -89,6 +93,7 @@ module Garner
 
         private
 
+          # fetch an object from cache, write if not present
           def fetch(key, binding, cache_options = {}, &block)
             result = Garner.config.cache.fetch(key, cache_options) do
               object = binding ? yield(binding) : yield
@@ -97,6 +102,17 @@ module Garner
             end
             Garner.config.cache.delete(key) unless result
             result
+          end
+
+          # write an object to cache
+          def write(key, binding, cache_options = {}, &block)
+            object = binding ? yield(binding) : yield
+            if object
+              Garner.config.cache.write(key, object, cache_options)
+              reset_cache_metadata key, object
+            end
+            Garner.config.cache.delete(key) unless object
+            object
           end
 
           # applied cache options

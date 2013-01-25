@@ -1,3 +1,8 @@
+Next Release
+------------
+
+* Do not attempt to fetch again objects in `Garner::Cache::ObjectIdentity.cache_multi` after they were not retrieved from `read_multi`, write them directly to cache - [@dblock](https://github.com/dblock).
+
 0.3
 ---
 

@@ -269,29 +269,44 @@ describe Garner::Cache::ObjectIdentity do
           end
         end
       end
-      context "dalli_store" do
-        before :each do
-          @cache = Garner.config.cache
-          Garner.config.cache = ActiveSupport::Cache.lookup_store(:dalli_store)
-          Garner.config.cache.clear
-          Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
-            key
-          end
+    end
+    context "dalli_store" do
+      before :each do
+        @cache = Garner.config.cache
+        Garner.config.cache = ActiveSupport::Cache.lookup_store(:dalli_store)
+        Garner.config.cache.clear
+        Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
+          key
         end
-        after :each do
-          Garner.config.cache = @cache
+      end
+      after :each do
+        Garner.config.cache = @cache
+      end
+      it "cache_multi" do
+        data = { "one" => 1, "two" => 2 }
+        bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
+        # cache results
+        result = subject.cache_multi(bindings) do |binding|
+          data[binding[:bind][1][:id]]
         end
-        it "cache_multi" do
-          data = { "one" => 1, "two" => 2 }
-          bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
-          # cache results
-          result = subject.cache_multi(bindings) do |binding|
-            data[binding[:bind][1][:id]]
-          end
-          result = subject.cache_multi(bindings) do |binding|
-            raise "this should not be called, data is cached"
-          end
+        result = subject.cache_multi(bindings) do |binding|
+          raise "this should not be called, data is cached"
         end
+      end
+      it "writes objects not fetched from cache" do
+        binding1 = { :bind => [ Object, :id => "one" ]}
+        binding2 = { :bind => [ Object, :id => "two" ]}
+        # write an entry to cache
+        subject.cache(binding1) do
+          "one"
+        end
+        subject.should_not_receive(:fetch)
+        subject.should_receive(:write).once.and_return("two")
+        # cache results
+        result = subject.cache_multi([ binding1, binding2 ]) do |binding|
+          # stubbed
+        end
+        result.should == [ "one", "two" ]
       end
     end
   end
