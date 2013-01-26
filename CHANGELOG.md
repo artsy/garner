@@ -1,3 +1,9 @@
+0.3.2
+-----
+
+* Does not depend on unncessary active_support methods
+  [@oripekelman](https://github.com/oripekelman).
+  
 0.3.1
 -----
 
