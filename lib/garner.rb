@@ -11,6 +11,7 @@ require 'garner/strategies/keys/version_strategy'
 require 'garner/strategies/keys/caller_strategy'
 require 'garner/strategies/keys/request_path_strategy'
 require 'garner/strategies/keys/request_get_strategy'
+require 'garner/strategies/keys/request_post_strategy'
 require 'garner/strategies/keys/key_strategy'
 require 'garner/strategies/keys/jsonp_strategy'
 # etag strategies
