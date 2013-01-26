@@ -20,7 +20,7 @@ module Garner
               split = line.split(":")
               next unless split.length >= 2
               path = (Pathname.new(split[0]).realpath.to_s rescue nil)
-              next if path.blank? || path.include?("lib/garner")
+              next if path.empty || path.include?("lib/garner")
               next unless path.include?("/app/") || path.include?("/spec/")
               rc[field] = "#{path}:#{split[1]}"
               break
