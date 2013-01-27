@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe Garner::Strategies::Keys::Jsonp do
   before :each do
-    @request = Rack::Request.new({ "QUERY_STRING" => "callback=jQuery21435&_=34234"})
+    @request = Rack::Request.new({ 
+      "REQUEST_METHOD" => "GET",
+      "QUERY_STRING" => "callback=jQuery21435&_=34234"
+    })
     @options = { :request => @request }
   end
   subject do

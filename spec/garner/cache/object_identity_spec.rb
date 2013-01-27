@@ -126,13 +126,13 @@ describe Garner::Cache::ObjectIdentity do
     end
     context "cache" do
       it "caches values across calls from different loc" do
-        request = Rack::Request.new({ "PATH_INFO" => "method" })
+        request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
         r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
         r2 = subject.cache(nil, { :version => "v1", :request => request }) { "two" }
         [r1, r2].should == [ "one", "two" ]
       end
       it "caches values across calls from the same loc" do
-        request = Rack::Request.new({ "PATH_INFO" => "method" })
+        request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
         context = { :version => "v1", :request => request }
         r1 = subject.cache(nil, context) { "one" }; r2 = subject.cache(nil, context) { "two" }
         [r1, r2].should == [ "one", "one" ]
@@ -144,33 +144,33 @@ describe Garner::Cache::ObjectIdentity do
           end
         end
         it "caches values across calls with params" do
-          request = Rack::Request.new({ "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
+          request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
           context = { :version => "v1", :request => request }
           r1 = subject.cache(nil, context) { "one" }; r2 = subject.cache(nil, context) { "two" }
           [r1, r2].should == [ "one", "one" ]
         end
         it "makes a cache miss when force_miss=true" do
-          request = Rack::Request.new({ "PATH_INFO" => "method" })
+          request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
           r1 = subject.cache(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "one" }
           r2 = subject.cache(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "two" }
           [r1, r2].should == [ "one", "two" ]
         end
         it "makes a cache miss when params change" do
-          request1 = Rack::Request.new({ "PATH_INFO" => "method" })
-          request2 = Rack::Request.new({ "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
+          request1 = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
+          request2 = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
           r1 = subject.cache(nil, { :version => "v1", :request => request1 }) { "one" }
           r2 = subject.cache(nil, { :version => "v1", :request => request2 }) { "two" }
           [r1, r2].should == [ "one", "two" ]
         end
         it "caches different values for different versions" do
-          request = Rack::Request.new({ "PATH_INFO" => "method" })
+          request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
           r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
           r2 = subject.cache(nil, { :version => "v2", :request => request }) { "two" }
           [r1, r2].should == [ "one", "two" ]
         end
         it "does not cache nil results" do
           var = Object.new
-          request = Rack::Request.new({ "PATH_INFO" => "method" })
+          request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
           r1 = subject.cache(nil, { :version => "v1", :request => request }) { nil }
           r2 = subject.cache(nil, { :version => "v1", :request => request }) { var }
           [r1, r2].should == [ nil, var ]

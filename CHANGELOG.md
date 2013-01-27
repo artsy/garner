@@ -2,6 +2,7 @@ Next Release
 ------------
 
 * `Garner::Strategies::Keys::Caller` no longer depends on ActiveSupport - [@oripekelman](https://github.com/oripekelman), [@dblock](https://github.com/dblock).
+* Added `Garner::Strategies::Keys::RequestPost` for POST parameters - [@oripekelman](https://github.com/oripekelman).
 
 0.3.1
 -----

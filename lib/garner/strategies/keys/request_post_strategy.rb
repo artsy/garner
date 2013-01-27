@@ -1,8 +1,8 @@
 module Garner
   module Strategies
     module Keys
-      # Inject the request GET parameters into the key.
-      module RequestGet
+      # Inject the request POST parameters into the key.
+      module RequestPost
         class << self
         
           def field
@@ -11,8 +11,8 @@ module Garner
           
           def apply(key, context = {})
             key = key ? key.dup : {}
-            if context && (request = context[:request]) && [ "GET", "HEAD" ].include?(request.request_method)
-              key[field] = context[:request].GET.dup
+            if context && (request = context[:request]) && request.request_method == "POST"
+              key[field] = request.POST.dup
             end
             key
           end
