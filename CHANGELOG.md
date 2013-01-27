@@ -1,7 +1,7 @@
 0.3.3
 -----
 
-* Add strategy for POST parameters. Sometimes you wan to cache posts (when
+* Add strategy for POST parameters. Sometimes you want to cache posts (when
     get would have been nicer but request length limits force you to go 
     with post)
   [@oripekelman](https://github.com/oripekelman).
