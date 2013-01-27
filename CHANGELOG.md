@@ -1,3 +1,8 @@
+Next Release
+------------
+
+* `Garner::Strategies::Keys::Caller` no longer depends on ActiveSupport - [@oripekelman](https://github.com/oripekelman), [@dblock](https://github.com/dblock).
+
 0.3.1
 -----
 
