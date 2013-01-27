@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/garner/strategies/keys/jsonp_strategy.rb",
     "lib/garner/strategies/keys/key_strategy.rb",
     "lib/garner/strategies/keys/request_get_strategy.rb",
+    "lib/garner/strategies/keys/request_post_strategy.rb",
     "lib/garner/strategies/keys/request_path_strategy.rb",
     "lib/garner/strategies/keys/version_strategy.rb",
     "lib/garner/version.rb"

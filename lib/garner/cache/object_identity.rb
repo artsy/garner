@@ -38,7 +38,8 @@ module Garner
         Garner::Strategies::Keys::Caller,
         Garner::Strategies::Keys::Version,
         Garner::Strategies::Keys::RequestPath,
-        Garner::Strategies::Keys::RequestGet
+        Garner::Strategies::Keys::RequestGet,
+        Garner::Strategies::Keys::RequestPost,
       ]
 
       CACHE_STRATEGIES = [
