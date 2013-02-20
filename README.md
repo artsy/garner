@@ -157,6 +157,22 @@ Garner::Cache::ObjectIdentity.cache({ bind: [ Model, { id: object_id }] }) do
 end
 ```
 
+When fetching directly from the cache, it may be useful to supply a generational cache key in addition to the bindings. (When the generational component changes, the cache result is invalidated independent of the bindings' state.) E.g.:
+
+```ruby
+Garner::Cache::ObjectIdentity.cache(bind: [Model, {id: object_id}], key: {v: '1'}) do
+  # ...
+end
+```
+
+Or, using the Grape mix-in:
+
+```ruby
+cache_or_304(bind: [User, current_user.id], key: {v: '1'}) do
+  # ...
+end
+```
+
 Various cache stores, including Memcached, support bulk read operations. The [Dalli gem](https://github.com/mperham/dalli) exposes this via the `read_multi` method. When invoked with a collection of bindings, Garner will call `read_multi` if available. This may significantly reduce the number of network roundtrips to the cache servers.
 
 ``` ruby
