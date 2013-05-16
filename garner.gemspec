@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2013-01-25"
+  s.date = "2013-05-16"
   s.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
@@ -31,8 +31,8 @@ Gem::Specification.new do |s|
     "lib/garner/strategies/keys/jsonp_strategy.rb",
     "lib/garner/strategies/keys/key_strategy.rb",
     "lib/garner/strategies/keys/request_get_strategy.rb",
-    "lib/garner/strategies/keys/request_post_strategy.rb",
     "lib/garner/strategies/keys/request_path_strategy.rb",
+    "lib/garner/strategies/keys/request_post_strategy.rb",
     "lib/garner/strategies/keys/version_strategy.rb",
     "lib/garner/version.rb"
   ]
@@ -50,13 +50,13 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_runtime_dependency(%q<multi_json>, [">= 1.3.0"])
       s.add_runtime_dependency(%q<activesupport>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, [">= 0"])
-      s.add_development_dependency(%q<grape>, ["= 0.2.0"])
-      s.add_development_dependency(%q<rack-test>, ["= 0.6.1"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.10"])
-      s.add_development_dependency(%q<jeweler>, ["= 1.8.3"])
-      s.add_development_dependency(%q<mongoid>, ["~> 3.0"])
-      s.add_development_dependency(%q<dalli>, ["~> 2.6"])
+      s.add_development_dependency(%q<bundler>, [">= 1.3.0"])
+      s.add_development_dependency(%q<grape>, [">= 0.2.0"])
+      s.add_development_dependency(%q<rack-test>, [">= 0"])
+      s.add_development_dependency(%q<rspec>, [">= 2.10.0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<mongoid>, [">= 3.0.0"])
+      s.add_development_dependency(%q<dalli>, [">= 0"])
       s.add_development_dependency(%q<yard>, [">= 0"])
       s.add_development_dependency(%q<redcarpet>, [">= 0"])
       s.add_development_dependency(%q<github-markup>, [">= 0"])
@@ -65,13 +65,13 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<multi_json>, [">= 1.3.0"])
       s.add_dependency(%q<activesupport>, [">= 0"])
-      s.add_dependency(%q<bundler>, [">= 0"])
-      s.add_dependency(%q<grape>, ["= 0.2.0"])
-      s.add_dependency(%q<rack-test>, ["= 0.6.1"])
-      s.add_dependency(%q<rspec>, ["~> 2.10"])
-      s.add_dependency(%q<jeweler>, ["= 1.8.3"])
-      s.add_dependency(%q<mongoid>, ["~> 3.0"])
-      s.add_dependency(%q<dalli>, ["~> 2.6"])
+      s.add_dependency(%q<bundler>, [">= 1.3.0"])
+      s.add_dependency(%q<grape>, [">= 0.2.0"])
+      s.add_dependency(%q<rack-test>, [">= 0"])
+      s.add_dependency(%q<rspec>, [">= 2.10.0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<mongoid>, [">= 3.0.0"])
+      s.add_dependency(%q<dalli>, [">= 0"])
       s.add_dependency(%q<yard>, [">= 0"])
       s.add_dependency(%q<redcarpet>, [">= 0"])
       s.add_dependency(%q<github-markup>, [">= 0"])
@@ -81,13 +81,13 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<multi_json>, [">= 1.3.0"])
     s.add_dependency(%q<activesupport>, [">= 0"])
-    s.add_dependency(%q<bundler>, [">= 0"])
-    s.add_dependency(%q<grape>, ["= 0.2.0"])
-    s.add_dependency(%q<rack-test>, ["= 0.6.1"])
-    s.add_dependency(%q<rspec>, ["~> 2.10"])
-    s.add_dependency(%q<jeweler>, ["= 1.8.3"])
-    s.add_dependency(%q<mongoid>, ["~> 3.0"])
-    s.add_dependency(%q<dalli>, ["~> 2.6"])
+    s.add_dependency(%q<bundler>, [">= 1.3.0"])
+    s.add_dependency(%q<grape>, [">= 0.2.0"])
+    s.add_dependency(%q<rack-test>, [">= 0"])
+    s.add_dependency(%q<rspec>, [">= 2.10.0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<mongoid>, [">= 3.0.0"])
+    s.add_dependency(%q<dalli>, [">= 0"])
     s.add_dependency(%q<yard>, [">= 0"])
     s.add_dependency(%q<redcarpet>, [">= 0"])
     s.add_dependency(%q<github-markup>, [">= 0"])
