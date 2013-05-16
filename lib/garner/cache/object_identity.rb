@@ -66,7 +66,7 @@ module Garner
           end
           # attempt to do a read_multi if the cache supports it
           read_multi = keys.size > 1 && Garner.config.cache.respond_to?(:read_multi)
-          local_cache = read_multi ? Garner.config.cache.read_multi(keys) : {}
+          local_cache = read_multi ? Garner.config.cache.read_multi(*keys) : {}
           # fetch all missing values
           bindings.each_with_index.map do |binding, index|
             key = keys[index]
