@@ -1,5 +1,5 @@
-Next Release
-------------
+0.3.2 (5/16/2013)
+-----------------
 
 * Fix: calling `invalidate` on an embedded document in an `embeds_many` relationship - [@macreery](https://github.com/macreery).
 * `Garner::Strategies::Keys::Caller` no longer depends on ActiveSupport - [@oripekelman](https://github.com/oripekelman), [@dblock](https://github.com/dblock).
