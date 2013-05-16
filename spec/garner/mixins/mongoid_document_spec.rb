@@ -6,9 +6,16 @@ describe Garner::Mixins::Mongoid::Document do
       @foo = Foo.new
       @bar = Bar.new
       @foo.bar = @bar
+      @baz = Baz.new
     end
     it "should not follow cycles in documents" do
       @bar.all_embedding_documents.should == [ @foo ]
+    end
+    it "should respect orphaned documents" do
+      @baz.all_embedding_documents.should == []
+      @baz.foo = Foo.new
+      @baz.foo = nil
+      @baz.all_embedding_documents.should == []
     end
   end
   describe "api_cache_class" do
