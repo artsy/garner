@@ -31,7 +31,7 @@ module Garner
         def all_embedding_documents
           obj = self
           docs = []
-          while defined?(obj.metadata) && obj.metadata && obj.embedded?
+          while obj.metadata && obj.embedded?
             # FIXME: This is not a robust check for cycles
             break if docs.detect { |doc| doc.class == obj.class }
             parent = obj.send(obj.metadata.inverse)
