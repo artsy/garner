@@ -1,7 +1,7 @@
 Next Release
 ------------
 
-* Fix: Calling `invalidate` on an embedded document in an `embeds_many` relationship no longer raises an exception - [@macreery](https://github.com/macreery).
+* Fix: calling `invalidate` on an embedded document in an `embeds_many` relationship - [@macreery](https://github.com/macreery).
 * `Garner::Strategies::Keys::Caller` no longer depends on ActiveSupport - [@oripekelman](https://github.com/oripekelman), [@dblock](https://github.com/dblock).
 * Added `Garner::Strategies::Keys::RequestPost` for POST parameters - [@oripekelman](https://github.com/oripekelman).
 
