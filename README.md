@@ -1,91 +1,62 @@
-Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://travis-ci.org/artsy/garner)
+Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://travis-ci.org/artsy/garner) [![Dependency Status](https://gemnasium.com/artsy/garner.png)](https://gemnasium.com/artsy/garner)
 ======
 
-Garner is a practical Rack-based cache implementation for RESTful APIs with support for HTTP 304 Not Modified based on time and ETags, model and instance binding and hierarchical invalidation. Garner is currently targeted at [Grape](https://github.com/intridea/grape), other systems may need some work.
-
-To "garner" means to gather data from various sources and to make it readily available in one place, kind-of like a cache!
+Garner is an application cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
 
 Usage
 -----
 
-Add Garner to Gemfile with `gem "garner"` and run `bundle install`. Include the Garner mixin into your API. Currently Grape is supported out of the box. It's also recommended to prevent clients from caching dynamic data by default using the `Garner::Middleware::Cache::Bust` middleware. See below for a detailed explanation.
+### Application Logic Caching
 
-Note that if you are using Grape, `gem "garner"` must be listed AFTER `gem "grape"` in the Gemfile (see [#6](https://github.com/artsy/garner/issues/6)).
+Add Garner to your Gemfile with `gem "garner"` and run `bundle install`. Include the Rack mixin in your application. For Grape, this could be done like so:
 
 ```ruby
 class API < Grape::API
-  use Garner::Middleware::Cache::Bust
-  helpers Garner::Mixins::Grape::Cache
+  helpers Garner::Mixins::Rack
 end
 ```
 
-To cache a value, invoke `cache` from within your API. Without any parameters it generates a key based on the source code location, request parameters and path, and stores the value in the cache configured as `Garner.config.cache`. The cache is automatically `Rails.cache` when mounted in Rails and an instance of `ActiveSupport::Cache::MemoryStore` otherwise.
+Now, to use Garner's cache, invoke `garner` with a logic block from within your application. The result of the block will be computed once, and then stored in the cache.
 
 ``` ruby
-get "/" do
-  cache do
-    { counter: 42 }
+get "/system/counts/all" do
+  # Compute once and cache for subsequent reads
+  garner do
+    {
+      "orders_count" => Order.count,
+      "users_count"  => User.count
+    }
   end
 end
 ```
 
-To enable support for the date-based `If-Modified-Since` and the ETag-based `If-None-Match`, use `cache_or_304`. If the data hasn't changed, the API will return `304 Not Modified` without a cache miss. For example, if the inside of a cached block is a database query, it will not be executed the second time. This is possible because Garner stores an entry for every cache binding with the last-modified timestamp and ETag.
-
-``` ruby
-get "/" do
-  cache_or_304 do
-    { counter: 42 }
-  end
-end
-```
-
-The cached value can also be bound to other models. For example, if a user has an address that may or may not change when the user is saved, you will want the cached address to be invalidated every time the user record changes.
+The cached value can be bound to a particular model instance. For example, if a user has an address that may or may not change when the user is saved, you will want the cached address to be invalidated every time the user record is modified.
 
 ``` ruby
 get "/me/address" do
-  cache_or_304({ bind: [ User, current_user.id ] }) do
+  # Invalidate when current_user is modified
+  garner.bind(current_user) do
     current_user.address
   end
 end
 ```
 
-ETag Generation Strategies
---------------------------
+But what if you want to bind a cache result to a persisted object that hasn't been retrieved yet? Consider the example of caching a particular order without a database query:
 
-The primary purpose of the ETag header is to define a short string representation of a cached object that is both (a) deterministic and (b) unique, so that Garner's `cache_or_304` method can quickly determine whether a client's cached content matches the latest server object. As such, an MD5 hash applied to *any* object serialization would suffice. However, some applications may wish to control the manner in which ETags are generated, and so Garner supports arbitrary ETag strategies.
-
-The default strategy, `Garner::Strategies::ETags::Grape`, follows the serialization strategy used by Grape for coercing objects into JSON. Using this strategy, Garner will generate an ETag for each cache object that is identical to what `Rack::ETag` would return if that object was returned by Grape. This property could be useful for Grape applications.
-
-Another, simpler strategy, `Garner::Strategies::ETags::Marshal`, simply applies an MD5 hash to `Marshal.dump(object)`. This strategy might be more applicable for applications not using Grape.
-
-An ETag strategy may be defined at application startup time:
-
-```
-ETAG_STRATEGY = Garner::Strategies::ETags::Grape
+```ruby
+get "/order/:id" do
+  # Invalidate when Order.find(params[:id]) is modified
+  garner.bind(Order.identify(params[:id])) do
+    Order.find(params[:id])
+  end
+end
 ```
 
+In the above example, the `Order.identify` call will not result in a database query. Instead, it just communicates to Garner's cache sweeper that whenever the order with identity `params[:id]` is updated, this cache result should be invalidated.
 
-Binding Strategies
-------------------
+### Caching Persisted Objects
 
-The binding parameter can be an object, class, array of objects, or array of classes on which to bind the validity of the cached result contained in the subsequent block. If no bind argument is specified, the subsequent block result will remain valid until it expires due to natural causes (e.g., passage of default memcached expiry, or memcached overflow). Here are some examples of how to use the bind option.
-
-* `bind: { klass: Widget, object: { id: params[:id] } }` will cause the subsequent block result to be invalidated on any change to the `Widget` object whose `id` attribute equals `params[:id]`.
-* `bind: { klass: User, object: { id: current_user.id } }` will cause the subsequent block result to be invalidated on any change to the `User` object whose `id` attribute equals `current_user.id`. This is one way to bind a cache result to any change in the current user.
-* `bind: { klass: Widget }` will cause the subsequent block result to be invalidated on any change to any object of class `Widget`. This is the appropriate strategy for index paths like `/widgets`.
-* `bind: [{ klass: Widget }, { klass: User, object: { id: current_user.id } }]` will cause the subsequent block result to be invalidated on any change to either the current user, or any object of class `Widget`.
-
-Bind supports some nice shorthands.
-
-* `bind: [Widget]` is shorthand for `bind: { klass: Widget }`
-* `bind: [Widget, params[:id]]` is shorthand for `bind: { klass: Widget, object: { id: params[:slug] } }`
-* `bind: [User, { id: current_user.id }]` is shorthand for `bind: { klass: User, object: { id: current_user.id } }`
-* `bind: [[Widget], [User, { id: current_user.id }]]` is shorthand for `bind: [{ klass: Widget }, { klass: User, object: { id: current_user.id } }]`
-
-Invalidation
-------------
-
-You must take care of data invalidation on save. Garner currently includes a mixin with support for [Mongoid](https://github.com/mongoid/mongoid). Extend `Mongoid::Document` as follows (eg. in `config/initializers/mongoid_document.rb`).
+Garner provides helper methods for cached `find` operations in Mongoid. To use, just include the Mongoid mixin with the following code snippet, which can go in an initializer:
 
 ``` ruby
 module Mongoid
@@ -95,96 +66,92 @@ module Mongoid
 end
 ```
 
-Please contribute other invalidation mixins.
+Now, we can use the following code to fetch an order by ID once from the database, and then from the cache on subsequent requests. The cache will be invalidated whenever the underlying persisted object changes in the database.
 
-Role-Based Caching
-------------------
+```ruby
+order = Order.garnered_find(3)
+```
 
-Role-Based caching is a subset of the generic problem of binding data to groups of other objects. For example, a `Widget` may have a different representation for an `admin` vs. a `user`. In Garner you can inject something called a "key strategy" into the current key generation pipeline. A strategy is a plain module that must implement two methods: `apply` and `field`. The former applies a strategy to a key within a context and the latter is a unique name that is produced by the strategy.
 
-The following example introduces the role of the current user into the cache key.
+Under The Hood: Bindings
+------------------------
 
-``` ruby
-module MyApp
-  module Garner
-    module RoleStrategy
-      class << self
-        def field
-          :role
-        end
-        def apply(key, context = {})
-          key = key ? key.dup : {}
-          key[:role] = current_user.role
-          key
-        end
-      end
-    end
+As we've seen, a cache result can be bound to a model instance (e.g., `current_user`) or a virtual instance reference (`Order.identify(params[:id])`). It can also be bound to an entire model class. In this case, whenever any order is created, updated or deleted, the cache result will be invalidated:
+
+```ruby
+get "/system/counts/orders" do
+  # Invalidate when any order is created, updated or deleted
+  garner.bind(Order) do
+    {
+      "orders_count" => Order.count,
+    }
   end
 end
 ```
 
-Garner key strategies are applied in order and can be currently set at application startup time.
+We can compose bindings, too:
 
+```ruby
+get "/system/counts/all" do
+  # Invalidate when any order or user is modified
+  # (Equivalent to `garner.bind(Order, User)`)
+  garner.bind(Order).bind(User) do
+    {
+      "orders_count" => Order.count,
+      "users_count"  => User.count
+    }
+  end
+end
 ```
-Garner::Cache::ObjectIdentity::KEY_STRATEGIES = [
-  Garner::Strategies::Keys::Caller, # support multiple calls from the same function
-  MyApp::Garner::RoleStrategy, # custom strategy for role-based access
-  Garner::Strategies::Keys::RequestPath # injects the HTTP request's URL
-]
-```
 
-This method of registration does need improvement, please contribute.
+In the first route above, the cache result will be invalidated whenever the order with identity `params[:order_id]` and belonging to a user with identity `params[:user_id]` is updated. In the second route, the cache result will be invalidated whenever *any order* belonging to that user is updated.
 
-Available Key Strategies
-------------------------
 
-* `Garner::Strategies::Keys::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different keys. The caller can be specified explicitly by passing a value for `:caller` in the requesting context.
-* `Garner::Strategies::Keys::Version` inserts the output of a `version` method, when available, primarily targeted at API implementations.
-* `Garner::Strategies::Keys::Key` inserts the value of `:key` within the requested context, useful to explicitly declare an element of a cache key.
+Under The Hood: Cache Keys
+--------------------------
+
+Explicit cache keys are usually unnecessary in Garner. Given a cache binding, Garner will compute an appropriately unique cache key. Moreover, in the context of `Garner::Mixins::Rack`, Garner will compose the following key factors by default:
+
+* `Garner::Strategies::Keys::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different results.
 * `Garner::Strategies::Keys::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
 * `Garner::Strategies::Keys::RequestPost` inserts the value of HTTP request's POST parameters into the cache key when `:request` is present in the context.
 * `Garner::Strategies::Keys::RequestPath` inserts the value of the HTTP request's path into the cache key when `:request` is present in the context.
 
-Fetching Objects Directly from Cache
-------------------------------------
-
-Garner supports fetching objects or collections of objects directly from cache by supplying a binding or an array of bindings.
-
-``` ruby
-object_id = ...
-Garner::Cache::ObjectIdentity.cache({ bind: [ Model, { id: object_id }] }) do
-  Model.find(object_id)
-end
-```
-
-When fetching directly from the cache, it may be useful to supply a generational cache key in addition to the bindings. (When the generational component changes, the cache result is invalidated independent of the bindings' state.) E.g.:
+Additional key factors may be specified explicitly using the `key` method. To see a specific example of this in action, let's consider the case of role-based caching. For example, an order may have a different representation for an admin versus an ordinary user:
 
 ```ruby
-Garner::Cache::ObjectIdentity.cache(bind: [Model, {id: object_id}], key: {v: '1'}) do
-  # ...
+get "/order/:id" do
+  garner.bind(Order.identify(params[:id])).key({ role: current_user.role }) do
+    Order.find(params[:id])
+  end
 end
 ```
 
-Or, using the Grape mix-in:
+As with cache bindings, key factors may be composed by calling `key()` multiple times on a `garner` invocation. The keys will be applied in the order in which they are called.
+
+
+Under The Hood: Invalidation
+----------------------------
+
+Invalidation can be triggered programmatically by calling `invalidate_garner_cache` on a model class or instance. Both of the following invocations will work:
 
 ```ruby
-cache_or_304(bind: [User, current_user.id], key: {v: '1'}) do
-  # ...
-end
+Order.invalidate_garner_cache
+Order.find(3).invalidate_garner_cache
 ```
 
-Various cache stores, including Memcached, support bulk read operations. The [Dalli gem](https://github.com/mperham/dalli) exposes this via the `read_multi` method. When invoked with a collection of bindings, Garner will call `read_multi` if available. This may significantly reduce the number of network roundtrips to the cache servers.
+The application is responsible for ensuring invalidation on create, update and save actions. Garner currently provides a [Mongoid](https://github.com/mongoid/mongoid) mixin, which does exactly this. Extend `Mongoid::Document` as follows (e.g., in `config/initializers/mongoid_document.rb`).
 
 ``` ruby
-object_ids = [ ... ]
-bindings = object_ids.map do |object_id|
-  { bind: [ Model, { id: object_id }]}
-end
-Garner::Cache::ObjectIdentity.cache_multi(bindings) do |binding|
-  # the object binding is passed into the block for every cache miss
-  Model.find(binding[:bind][1][:id])
+module Mongoid
+  module Document
+    include Garner::Mixins::Mongoid::Document
+  end
 end
 ```
+
+Please contribute invalidation mixins for other ORMs, like ActiveRecord!
+
 
 Configuration
 -------------
@@ -197,17 +164,6 @@ Garner.configure do |config|
 end
 ```
 
-Preventing Clients from Caching Dynamic Data
---------------------------------------------
-
-Generally, dynamic data cannot have a well-defined expiration time. Therefore, we must tell the client not to cache it. This can be accomplished using the `Garner::Middleware::Cache::Bust` middleware, executed after any API call. The middleware adds a `Cache-Control` and an `Expires` header.
-
-```
-Cache-Control: private, max-age=0, must-revalidate
-Expires: Fri, 01 Jan 1990 00:00:00 GMT
-```
-
-The `private` option of the `Cache-Control` header instructs the client that it is allowed to store data in a private cache (unnecessary, but is known to work around overzealous cache implementations), `max-age` that it must check with the server every time it needs this data and `must-revalidate` prevents gateways from returning a response if your API server is unreachable. An additional `Expires` header will make double-sure the entire request expires immediately.
 
 Contributing
 ------------
