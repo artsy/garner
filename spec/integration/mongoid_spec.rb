@@ -1,6 +1,53 @@
-require 'spec_helper'
+require "spec_helper"
 
-describe Garner::Mixins::Mongoid::Document do
+describe "Mongoid integration" do
+  before(:each) do
+    module Mongoid
+      module Document
+        include Garner::Mixins::Mongoid::Document
+      end
+    end
+
+    # Set up fixture classes
+    class Bar
+      include Mongoid::Document
+      include Garner::Mixins::Mongoid::Document
+      embedded_in :foo
+    end
+
+    class Baz
+      include Mongoid::Document
+      include Garner::Mixins::Mongoid::Document
+      embedded_in :foo
+    end
+
+    class Foo
+      include Mongoid::Document
+      include Garner::Mixins::Mongoid::Document
+      embeds_one :bar
+      embeds_many :bazs
+      embedded_in :bar
+    end
+
+    class TestModel
+      include Mongoid::Document
+      include Garner::Mixins::Mongoid::Document
+    end
+
+    class TestModelChild
+      include Mongoid::Document
+      include Garner::Mixins::Mongoid::Document
+      cache_as TestModel
+    end
+
+    class TestModelWithSlug
+      include Mongoid::Document
+      include Garner::Mixins::Mongoid::Document
+
+      field :slug, :type => String
+    end
+  end
+
   describe "all_embedding_documents" do
     before :each do
       @foo = Foo.new

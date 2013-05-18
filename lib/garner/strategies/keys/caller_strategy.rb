@@ -4,11 +4,11 @@ module Garner
       # Injects the caller's location into the key.
       module Caller
         class << self
-        
+
           def field
             :caller
           end
-          
+
           def apply(key, context = {})
             rc = key ? key.dup : {}
             if context.keys.include?(field)

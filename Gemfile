@@ -8,6 +8,7 @@ gem "activesupport"
 group :development, :test do
   gem "bundler",    ">= 1.3.0"
   gem "grape",      ">= 0.2.0"
+  gem "sinatra"
   gem "rack-test"
   gem "rspec",      ">= 2.10.0"
   gem "jeweler"

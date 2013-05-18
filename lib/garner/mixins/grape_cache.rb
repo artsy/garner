@@ -9,11 +9,11 @@ module Garner
       #   for explanation of how If-Modified-Since and If-None-Match request headers are handled.
       #
       module Cache
-      
+
         def cache_enabled?
           true
         end
-  
+
         # cache a record
         def cache(options = {}, &block)
           unless cache_enabled?
@@ -25,12 +25,12 @@ module Garner
             end
           end
         end
-        
+
         # invalidate a cache record
         def invalidate(*args)
           Garner::Cache::ObjectIdentity.invalidate(* args)
         end
-  
+
         def cache_or_304(options = {}, &block)
           unless cache_enabled?
             yield
@@ -49,9 +49,9 @@ module Garner
             rc
           end
         end
-  
+
         private
-          
+
           def cache_binding_and_context(options)
             cache_context = {}
             cache_context.merge!(options.dup)
@@ -75,7 +75,7 @@ module Garner
               false
             end
           end
-    
+
           def if_modified_since
             if since = env["HTTP_IF_MODIFIED_SINCE"]
               Time.rfc2822(since) rescue nil
@@ -93,17 +93,17 @@ module Garner
           def etag_matches?(etag)
             if_none_match && if_none_match == etag
           end
-        
+
           def last_modified=(utc_time)
             return unless utc_time
             header "Last-Modified", utc_time.httpdate
           end
-        
+
           def etag=(etag)
             return unless etag
             header "ETag", etag
           end
-          
+
       end
     end
   end

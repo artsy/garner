@@ -7,9 +7,3 @@ require 'rack/test'
 require 'mongoid'
 require 'garner'
 
-[ "support/*.rb" ].each do |path|
-  Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|
-    require file
-  end
-end
-
