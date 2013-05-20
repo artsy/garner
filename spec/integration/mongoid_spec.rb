@@ -66,12 +66,12 @@ describe "Mongoid integration" do
     end
   end
   describe "api_cache_class" do
-    it "is used by :invalidate_api_cache" do
+    it "is used by :invalidate_garner_cache" do
       t = TestModel.new
       t.stub(:metadata).and_return(nil)
       Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
       Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => t.id })
-      t.invalidate_api_cache
+      t.invalidate_garner_cache
     end
     it "allows for an override" do
       TestModelChild.api_cache_class.should == TestModel
@@ -79,7 +79,7 @@ describe "Mongoid integration" do
       t.stub(:metadata).and_return(nil)
       Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
       Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => t.id })
-      t.invalidate_api_cache
+      t.invalidate_garner_cache
     end
     context "with mutliple identity fields" do
       before :each do
@@ -97,7 +97,7 @@ describe "Mongoid integration" do
         t.stub(:metadata).and_return(nil)
         Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
         Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel, { :id => t.id })
-        t.invalidate_api_cache
+        t.invalidate_garner_cache
       end
       it "invalidates all identity fields" do
         t = TestModelWithSlug.new({ :slug => "forty-two" })
@@ -105,7 +105,7 @@ describe "Mongoid integration" do
         Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
         Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModelWithSlug, { :id => t.id })
         Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModelWithSlug, { :slug => "forty-two" })
-        t.invalidate_api_cache
+        t.invalidate_garner_cache
       end
     end
     context "callbacks" do

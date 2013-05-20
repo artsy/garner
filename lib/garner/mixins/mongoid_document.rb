@@ -5,15 +5,15 @@ module Garner
         extend ActiveSupport::Concern
 
         included do
-          after_create :invalidate_api_cache_for_class
-          after_update :invalidate_api_cache
-          after_destroy :invalidate_api_cache
+          after_create :invalidate_garner_cache_for_class
+          after_update :invalidate_garner_cache
+          after_destroy :invalidate_garner_cache
           cattr_accessor :api_cache_class
         end
 
         # invalidate API cache
-        def invalidate_api_cache
-          self.all_embedding_documents.each { |doc| doc.invalidate_api_cache }
+        def invalidate_garner_cache
+          self.all_embedding_documents.each { |doc| doc.invalidate_garner_cache }
           cache_class = self.class.api_cache_class || self.class
           Garner::Cache::ObjectIdentity::IDENTITY_FIELDS.each do |identity_field|
             next unless self.respond_to?(identity_field)
@@ -22,7 +22,7 @@ module Garner
           Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end
 
-        def invalidate_api_cache_for_class
+        def invalidate_garner_cache_for_class
           cache_class = self.class.api_cache_class || self.class
           Garner::Cache::ObjectIdentity.invalidate(cache_class)
         end

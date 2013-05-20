@@ -72,13 +72,12 @@ describe Garner::Cache::ObjectIdentity do
     it "keys all parameters" do
       binding = { :bind => { :klass => Module, :object => { :id => 42 } } }
       options = {
-        :version => "v1",
         :path => "method",
         :params => { "param1" => "arg1" }
       }
       key = subject.send(:key, binding, options)
       prefix = subject.send(:find_or_create_key_prefix_for, Module, { :id => 42 })
-      digest = Digest::MD5.hexdigest([ "v1", "method", { "param1" => "arg1" }].join("\n"))
+      digest = Digest::MD5.hexdigest([ "method", { "param1" => "arg1" }].join("\n"))
       key.should == "#{prefix}:#{digest}"
     end
     it "keys single klasses correctly" do
@@ -160,12 +159,6 @@ describe Garner::Cache::ObjectIdentity do
           request2 = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
           r1 = subject.cache(nil, { :version => "v1", :request => request1 }) { "one" }
           r2 = subject.cache(nil, { :version => "v1", :request => request2 }) { "two" }
-          [r1, r2].should == [ "one", "two" ]
-        end
-        it "caches different values for different versions" do
-          request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
-          r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
-          r2 = subject.cache(nil, { :version => "v2", :request => request }) { "two" }
           [r1, r2].should == [ "one", "two" ]
         end
         it "does not cache nil results" do

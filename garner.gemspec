@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "garner"
-  s.version = "0.3.2"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2013-05-16"
+  s.date = "2013-05-20"
   s.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
@@ -20,20 +20,14 @@ Gem::Specification.new do |s|
     "lib/garner.rb",
     "lib/garner/cache/object_identity.rb",
     "lib/garner/config.rb",
-    "lib/garner/middleware/base.rb",
-    "lib/garner/middleware/cache/bust.rb",
-    "lib/garner/mixins/grape_cache.rb",
     "lib/garner/mixins/mongoid_document.rb",
+    "lib/garner/mixins/rack.rb",
     "lib/garner/strategies/cache/expiration_strategy.rb",
-    "lib/garner/strategies/etags/grape_strategy.rb",
-    "lib/garner/strategies/etags/marshal_strategy.rb",
     "lib/garner/strategies/keys/caller_strategy.rb",
     "lib/garner/strategies/keys/jsonp_strategy.rb",
-    "lib/garner/strategies/keys/key_strategy.rb",
     "lib/garner/strategies/keys/request_get_strategy.rb",
     "lib/garner/strategies/keys/request_path_strategy.rb",
     "lib/garner/strategies/keys/request_post_strategy.rb",
-    "lib/garner/strategies/keys/version_strategy.rb",
     "lib/garner/version.rb"
   ]
   s.homepage = "http://github.com/artsy/garner"
@@ -52,6 +46,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<activesupport>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 1.3.0"])
       s.add_development_dependency(%q<grape>, [">= 0.2.0"])
+      s.add_development_dependency(%q<sinatra>, [">= 0"])
       s.add_development_dependency(%q<rack-test>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 2.10.0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
@@ -67,6 +62,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<activesupport>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 1.3.0"])
       s.add_dependency(%q<grape>, [">= 0.2.0"])
+      s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<rack-test>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 2.10.0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
@@ -83,6 +79,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<activesupport>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 1.3.0"])
     s.add_dependency(%q<grape>, [">= 0.2.0"])
+    s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<rack-test>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 2.10.0"])
     s.add_dependency(%q<jeweler>, [">= 0"])

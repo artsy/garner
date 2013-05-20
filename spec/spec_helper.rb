@@ -3,7 +3,14 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rspec'
 require 'grape'
+require 'sinatra'
 require 'rack/test'
 require 'mongoid'
 require 'garner'
 
+# Load shared examples
+[ "/shared/*.rb" ].each do |path|
+  Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|
+    require file
+  end
+end

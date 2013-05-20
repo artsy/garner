@@ -36,7 +36,6 @@ module Garner
 
       KEY_STRATEGIES = [
         Garner::Strategies::Keys::Caller,
-        Garner::Strategies::Keys::Version,
         Garner::Strategies::Keys::RequestPath,
         Garner::Strategies::Keys::RequestGet,
         Garner::Strategies::Keys::RequestPost
@@ -45,8 +44,6 @@ module Garner
       CACHE_STRATEGIES = [
         Garner::Strategies::Cache::Expiration
       ]
-
-      ETAG_STRATEGY = Garner::Strategies::ETags::Grape
 
       class << self
 
@@ -84,22 +81,12 @@ module Garner
           reset_key_prefix_for(options[:klass]) if options[:object]
         end
 
-        # metadata for cached objects:
-        #   :etag - Unique hash of object content
-        #   :last_modified - Timestamp of last modification event
-        def cache_metadata(binding, context = {})
-          key = key(binding, key_context(context))
-          Garner.config.cache.read(meta(key))
-        end
-
         private
 
           # fetch an object from cache, write if not present
           def fetch(key, binding, cache_options = {}, &block)
             result = Garner.config.cache.fetch(key, cache_options) do
-              object = binding ? yield(binding) : yield
-              reset_cache_metadata key, object
-              object
+              binding ? yield(binding) : yield
             end
             Garner.config.cache.delete(key) unless result
             result
@@ -110,7 +97,6 @@ module Garner
             object = binding ? yield(binding) : yield
             if object
               Garner.config.cache.write(key, object, cache_options)
-              reset_cache_metadata key, object
             end
             Garner.config.cache.delete(key) unless object
             object
@@ -137,16 +123,6 @@ module Garner
 
           def reset_key_prefix_for(klass, object = nil)
             Garner.config.cache.delete(index_string_for(klass, object))
-          end
-
-          def reset_cache_metadata(key, object)
-            return unless object
-            metadata = {
-              :etag => ETAG_STRATEGY.apply(object),
-              :last_modified => Time.now
-            }
-            meta_key = meta(key)
-            Garner.config.cache.write(meta_key, metadata)
           end
 
           def new_key_prefix_for(klass, object = nil)
@@ -211,11 +187,6 @@ module Garner
             when NilClass
               nil
             end
-          end
-
-          # Generate a metadata key.
-          def meta(key)
-            "#{key}:meta"
           end
 
           def bind_array(ary)

@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'sinatra'
-require File.join(File.dirname(__FILE__), 'shared/conditional_get')
 
 describe "Sinatra integration" do
 
@@ -8,7 +6,7 @@ describe "Sinatra integration" do
     class TestSinatraApp
       require "sinatra"
 
-      helpers Garner::Mixins::Grape::Cache
+      helpers Garner::Mixins::Rack
       use Rack::ConditionalGet
       use Rack::ETag
 
@@ -17,7 +15,7 @@ describe "Sinatra integration" do
       end
 
       get "/" do
-        cache do
+        garner do
           { meaning_of_life: 42 }.to_json
         end
       end
