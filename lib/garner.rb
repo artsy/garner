@@ -12,7 +12,7 @@ require 'garner/strategies/keys/jsonp_strategy'
 # cache option strategies
 require 'garner/strategies/cache/expiration_strategy'
 # caches
-require 'garner/cache/object_identity'
+require 'garner/cache'
 # mixins
 require 'garner/mixins/rack'
 require 'garner/mixins/mongoid_document' if defined?(Mongoid)

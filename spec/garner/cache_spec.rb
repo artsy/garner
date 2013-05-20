@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe Garner::Cache::ObjectIdentity do
+describe Garner::Cache do
   subject do
-    Garner::Cache::ObjectIdentity
+    Garner::Cache
   end
   before :each do
     silence_warnings do
-      Garner::Cache::ObjectIdentity::IDENTITY_FIELDS = [ :slug, :id ]
+      Garner::Cache::IDENTITY_FIELDS = [ :slug, :id ]
     end
   end
   after :each do
     silence_warnings do
-      Garner::Cache::ObjectIdentity::IDENTITY_FIELDS = [ :id ]
+      Garner::Cache::IDENTITY_FIELDS = [ :id ]
     end
   end
   context "standardize" do
@@ -123,17 +123,17 @@ describe Garner::Cache::ObjectIdentity do
     before :each do
       Garner.config.cache.clear
     end
-    context "cache" do
+    context "fetch" do
       it "caches values across calls from different loc" do
         request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
-        r1 = subject.cache(nil, { :version => "v1", :request => request }) { "one" }
-        r2 = subject.cache(nil, { :version => "v1", :request => request }) { "two" }
+        r1 = subject.fetch(nil, { :version => "v1", :request => request }) { "one" }
+        r2 = subject.fetch(nil, { :version => "v1", :request => request }) { "two" }
         [r1, r2].should == [ "one", "two" ]
       end
       it "caches values across calls from the same loc" do
         request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
         context = { :version => "v1", :request => request }
-        r1 = subject.cache(nil, context) { "one" }; r2 = subject.cache(nil, context) { "two" }
+        r1 = subject.fetch(nil, context) { "one" }; r2 = subject.fetch(nil, context) { "two" }
         [r1, r2].should == [ "one", "one" ]
       end
       context "noloc" do
@@ -145,27 +145,27 @@ describe Garner::Cache::ObjectIdentity do
         it "caches values across calls with params" do
           request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
           context = { :version => "v1", :request => request }
-          r1 = subject.cache(nil, context) { "one" }; r2 = subject.cache(nil, context) { "two" }
+          r1 = subject.fetch(nil, context) { "one" }; r2 = subject.fetch(nil, context) { "two" }
           [r1, r2].should == [ "one", "one" ]
         end
         it "makes a cache miss when force_miss=true" do
           request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
-          r1 = subject.cache(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "one" }
-          r2 = subject.cache(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "two" }
+          r1 = subject.fetch(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "one" }
+          r2 = subject.fetch(nil, { :version => "v1", :request => request, :cache_options => { :force => true } }) { "two" }
           [r1, r2].should == [ "one", "two" ]
         end
         it "makes a cache miss when params change" do
           request1 = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
           request2 = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method", "QUERY_STRING" => "name=value" })
-          r1 = subject.cache(nil, { :version => "v1", :request => request1 }) { "one" }
-          r2 = subject.cache(nil, { :version => "v1", :request => request2 }) { "two" }
+          r1 = subject.fetch(nil, { :version => "v1", :request => request1 }) { "one" }
+          r2 = subject.fetch(nil, { :version => "v1", :request => request2 }) { "two" }
           [r1, r2].should == [ "one", "two" ]
         end
         it "does not cache nil results" do
           var = Object.new
           request = Rack::Request.new({ "REQUEST_METHOD" => "GET", "PATH_INFO" => "method" })
-          r1 = subject.cache(nil, { :version => "v1", :request => request }) { nil }
-          r2 = subject.cache(nil, { :version => "v1", :request => request }) { var }
+          r1 = subject.fetch(nil, { :version => "v1", :request => request }) { nil }
+          r2 = subject.fetch(nil, { :version => "v1", :request => request }) { var }
           [r1, r2].should == [ nil, var ]
         end
       end
@@ -177,44 +177,44 @@ describe Garner::Cache::ObjectIdentity do
         end
       end
       it "does not write new records to cache" do
-        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
+        r1 = subject.fetch(:bind => { :klass => Class }) { "one" }
         Garner.config.cache.should_not_receive(:write)
         subject.invalidate(:klass => Class)
       end
       it "invalidates klass-bound results when a klass is invalidated" do
-        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
-        r2 = subject.cache(:bind => { :klass => Class }) { "one" }
+        r1 = subject.fetch(:bind => { :klass => Class }) { "one" }
+        r2 = subject.fetch(:bind => { :klass => Class }) { "one" }
         subject.invalidate(:klass => Class)
-        r3 = subject.cache(:bind => { :klass => Class }) { "two" }
+        r3 = subject.fetch(:bind => { :klass => Class }) { "two" }
         [r1, r2, r3].should == [ "one", "one", "two" ]
       end
       it "invalidates klass-bound results when any member of a klass is invalidated" do
-        r1 = subject.cache(:bind => { :klass => Class }) { "one" }
-        r2 = subject.cache(:bind => { :klass => Class }) { "one" }
+        r1 = subject.fetch(:bind => { :klass => Class }) { "one" }
+        r2 = subject.fetch(:bind => { :klass => Class }) { "one" }
         subject.invalidate(:klass => Class, :object => { :slug => "slug" })
-        r3 = subject.cache(:bind => { :klass => Class }) { "two" }
+        r3 = subject.fetch(:bind => { :klass => Class }) { "two" }
         [r1, r2, r3].should == [ "one", "one", "two" ]
       end
       it "invalidates object-bound results" do
-        r1 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
-        r2 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
+        r1 = subject.fetch(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
+        r2 = subject.fetch(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
         subject.invalidate(:klass => Class, :object => { :slug => "slug" })
-        r3 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "two" }
+        r3 = subject.fetch(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "two" }
         [r1, r2, r3].should == [ "one", "one", "two" ]
       end
       it "invalidates bound results with multiple bindings" do
         class OtherClass ; end
-        r1 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "one" }
+        r1 = subject.fetch(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "one" }
         subject.invalidate(:klass => Class)
-        r2 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "two" }
+        r2 = subject.fetch(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "two" }
         subject.invalidate(:klass => OtherClass)
-        r3 = subject.cache(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "three" }
+        r3 = subject.fetch(:bind => [{ :klass => Class }, { :klass => OtherClass }]) { "three" }
         [r1, r2, r3].should == [ "one", "two", "three" ]
       end
       it "does NOT invalidate object-bound results for different objects in the same klass" do
-        r1 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
+        r1 = subject.fetch(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "one" }
         subject.invalidate(:klass => Class, :object => { :slug => "otherslug" })
-        r2 = subject.cache(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "two" }
+        r2 = subject.fetch(:bind => { :klass => Class, :object => { :slug => "slug" } }) { "two" }
         [r1, r2].should == [ "one", "one" ]
       end
       it "updates the key prefix for the given object" do
@@ -232,74 +232,6 @@ describe Garner::Cache::ObjectIdentity do
         key3 = subject.send(:find_or_create_key_prefix_for, Class)
         key1.should == key2
         key2.should_not == key3
-      end
-    end
-  end
-  context "cache_multi" do
-    [ :dalli_store, :memory_store ].each do |cache_store|
-      context "#{cache_store}" do
-        before :each do
-          @cache = Garner.config.cache
-          Garner.config.cache = ActiveSupport::Cache.lookup_store(cache_store)
-          Garner.config.cache.clear
-          Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
-            key
-          end
-        end
-        after :each do
-          Garner.config.cache = @cache
-        end
-        context "cache multiple bindings" do
-          it "caches values across calls from different loc" do
-            data = { "one" => 1, "two" => 2 }
-            bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
-            2.times do
-              result = subject.cache_multi(bindings) do |binding|
-                data[binding[:bind][1][:id]]
-              end
-              result.should == [ 1, 2 ]
-            end
-          end
-        end
-      end
-    end
-    context "dalli_store" do
-      before :each do
-        @cache = Garner.config.cache
-        Garner.config.cache = ActiveSupport::Cache.lookup_store(:dalli_store)
-        Garner.config.cache.clear
-        Garner::Strategies::Keys::Caller.stub(:apply) do |key, context|
-          key
-        end
-      end
-      after :each do
-        Garner.config.cache = @cache
-      end
-      it "cache_multi" do
-        data = { "one" => 1, "two" => 2 }
-        bindings = [ { :bind => [ Object, :id => "one" ]}, { :bind => [ Object, :id => "two" ]} ]
-        # cache results
-        result = subject.cache_multi(bindings) do |binding|
-          data[binding[:bind][1][:id]]
-        end
-        result = subject.cache_multi(bindings) do |binding|
-          raise "this should not be called, data is cached"
-        end
-      end
-      it "writes objects not fetched from cache" do
-        binding1 = { :bind => [ Object, :id => "one" ]}
-        binding2 = { :bind => [ Object, :id => "two" ]}
-        # write an entry to cache
-        subject.cache(binding1) do
-          "one"
-        end
-        subject.should_not_receive(:fetch)
-        subject.should_receive(:write).once.and_return("two")
-        # cache results
-        result = subject.cache_multi([ binding1, binding2 ]) do |binding|
-          # stubbed
-        end
-        result.should == [ "one", "two" ]
       end
     end
   end

@@ -15,16 +15,16 @@ module Garner
         def invalidate_garner_cache
           self.all_embedding_documents.each { |doc| doc.invalidate_garner_cache }
           cache_class = self.class.api_cache_class || self.class
-          Garner::Cache::ObjectIdentity::IDENTITY_FIELDS.each do |identity_field|
+          Garner::Cache::IDENTITY_FIELDS.each do |identity_field|
             next unless self.respond_to?(identity_field)
-            Garner::Cache::ObjectIdentity.invalidate(cache_class, { identity_field => self.send(identity_field) })
+            Garner::Cache.invalidate(cache_class, { identity_field => self.send(identity_field) })
           end
-          Garner::Cache::ObjectIdentity.invalidate(cache_class)
+          Garner::Cache.invalidate(cache_class)
         end
 
         def invalidate_garner_cache_for_class
           cache_class = self.class.api_cache_class || self.class
-          Garner::Cache::ObjectIdentity.invalidate(cache_class)
+          Garner::Cache.invalidate(cache_class)
         end
 
         # navigate the parent embedding document hierarchy

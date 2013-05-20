@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "lib/garner.rb",
-    "lib/garner/cache/object_identity.rb",
+    "lib/garner/cache.rb",
     "lib/garner/config.rb",
     "lib/garner/mixins/mongoid_document.rb",
     "lib/garner/mixins/rack.rb",
