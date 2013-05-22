@@ -75,6 +75,12 @@ describe Garner::Mixins::Mongoid::Document do
         Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(TestModel)
         TestModel.create!
       end
+      it "creating an embedded document" do
+        superfoo = Superfoo.create!
+        Garner::Cache::ObjectIdentity.stub(:invalidate).as_null_object
+        Garner::Cache::ObjectIdentity.should_receive(:invalidate).with(Superfoo, { id: superfoo.id })
+        superfoo.foos.create!
+      end
       context "with an instance" do
         before do
           @t = TestModel.create!
