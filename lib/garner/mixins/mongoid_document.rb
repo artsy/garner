@@ -5,7 +5,7 @@ module Garner
         extend ActiveSupport::Concern
 
         included do
-          after_create :invalidate_api_cache_for_class
+          after_create :invalidate_api_cache
           after_update :invalidate_api_cache
           after_destroy :invalidate_api_cache
           cattr_accessor :api_cache_class
@@ -34,6 +34,7 @@ module Garner
           while obj.metadata && obj.embedded?
             # FIXME: This is not a robust check for cycles
             break if docs.detect { |doc| doc.class == obj.class }
+            break unless obj.metadata.inverse
             parent = obj.send(obj.metadata.inverse)
             break unless parent
             docs << parent
