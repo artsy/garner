@@ -1,7 +1,8 @@
 Next Release (TBD)
 ------------------
 
-* Fix: parent documents are properly invalidate on creation of an embedded document - [@macreery](https://github.com/macreery).
+* Your contribution here.
+* Fix: parent documents are properly invalidated on creation of an embedded document - [@macreery](https://github.com/macreery).
 
 0.3.2 (5/16/2013)
 -----------------
