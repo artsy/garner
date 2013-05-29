@@ -21,10 +21,10 @@ module Garner
 
     # Current configuration settings.
     attr_accessor :settings
-    
+
     # Default configuration settings.
     attr_accessor :defaults
-    
+
     @settings = {}
     @defaults = {}
 
@@ -54,18 +54,24 @@ module Garner
         end
       RUBY
     end
-    
-    # Returns the default cache store, either Rails.cache or an instance of ActiveSupport::Cache::MemoryStore.
+
+    # Returns the default cache store, either Rails.cache or an instance
+    # of ActiveSupport::Cache::MemoryStore.
     #
     # @example Get the default cache store
     #   config.default_cache
     #
     # @return [ Cache ] The default cache store instance.
     def default_cache
-      defined?(Rails) && Rails.respond_to?(:cache) ? Rails.cache : ::ActiveSupport::Cache::MemoryStore.new
+      if defined?(Rails) && Rails.respond_to?(:cache)
+        Rails.cache
+      else
+        ::ActiveSupport::Cache::MemoryStore.new
+      end
     end
 
-    # Returns the cache, or defaults to Rails cache when running in Rails or an instance of ActiveSupport::Cache::MemoryStore otherwise.
+    # Returns the cache, or defaults to Rails cache when running in Rails
+    # or an instance of ActiveSupport::Cache::MemoryStore otherwise.
     #
     # @example Get the cache.
     #   config.cache
@@ -93,7 +99,10 @@ module Garner
     def reset!
       settings.replace(defaults)
     end
-   
+
+    # Default cache options
+    option(:global_cache_options, :default => {})
+
     # Default cache expiration time.
     option(:expires_in, :default => nil)
   end

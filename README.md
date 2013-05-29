@@ -1,7 +1,7 @@
 Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://travis-ci.org/artsy/garner) [![Dependency Status](https://gemnasium.com/artsy/garner.png)](https://gemnasium.com/artsy/garner)
 ======
 
-Garner is an application cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
+Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
 
 Usage
 -----
@@ -168,7 +168,7 @@ end
 Contributing
 ------------
 
-Fork the project. Make your feature addition or bug fix with tests. Send a pull request. Bonus points for topic branches.
+Fork the project. Make your feature addition or bug fix with tests. Send a pull request.
 
 Copyright and License
 ---------------------

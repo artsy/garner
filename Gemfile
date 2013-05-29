@@ -17,6 +17,7 @@ group :development, :test do
 end
 
 group :development do
+  gem "pry"
   gem "yard"
   gem "redcarpet"
   gem "github-markup"

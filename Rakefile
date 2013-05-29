@@ -1,7 +1,7 @@
-require 'rubygems'
-require 'bundler'
+require "rubygems"
+require "bundler"
 
-require File.expand_path('../lib/garner/version', __FILE__)
+require File.expand_path("../lib/garner/version", __FILE__)
 
 begin
   Bundler.setup(:default, :development)
@@ -11,35 +11,35 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
-require 'rake'
+require "rake"
 
-require 'jeweler'
+require "jeweler"
 Jeweler::Tasks.new do |gem|
   gem.name = "garner"
   gem.homepage = "http://github.com/artsy/garner"
   gem.license = "MIT"
-  gem.summary = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
-  gem.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
+  gem.summary = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
+  gem.description = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
   gem.email = "dblock@dblock.org"
   gem.version = Garner::VERSION
   gem.authors = [ "Daniel Doubrovkine", "Frank Macreery" ]
-  gem.files = Dir.glob('lib/**/*')
+  gem.files = Dir.glob("lib/**/*")
 end
 
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rspec/core'
-require 'rspec/core/rake_task'
+require "rspec/core"
+require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.pattern = FileList["spec/**/*_spec.rb"]
 end
 
 task :default => :spec
 
-require 'yard'
-YARD_OPTS = ['-m', 'github-markup', '-M', 'redcarpet']
-DOC_FILES = ['lib/**/*.rb', '*.md']
+require "yard"
+YARD_OPTS = ["-m", "github-markup", "-M", "redcarpet"]
+DOC_FILES = ["lib/**/*.rb", "*.md"]
 
 YARD::Rake::YardocTask.new(:doc) do |t|
   t.files   = DOC_FILES

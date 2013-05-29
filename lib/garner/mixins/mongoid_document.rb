@@ -4,52 +4,55 @@ module Garner
       module Document
         extend ActiveSupport::Concern
 
+        # Set up Garner configuration parameters
+        Garner.config.option(:default_identity_field, { :default => :_id })
+        Garner.config.option(:mongoid_identity_fields, { :default => [:_id] })
+
         included do
-          after_create :invalidate_garner_cache_for_class
+          after_create :invalidate_garner_cache
           after_update :invalidate_garner_cache
           after_destroy :invalidate_garner_cache
-          cattr_accessor :api_cache_class
-        end
-
-        # invalidate API cache
-        def invalidate_garner_cache
-          self.all_embedding_documents.each { |doc| doc.invalidate_garner_cache }
-          cache_class = self.class.api_cache_class || self.class
-          Garner::Cache::IDENTITY_FIELDS.each do |identity_field|
-            next unless self.respond_to?(identity_field)
-            Garner::Cache.invalidate(cache_class, { identity_field => self.send(identity_field) })
-          end
-          Garner::Cache.invalidate(cache_class)
-        end
-
-        def invalidate_garner_cache_for_class
-          cache_class = self.class.api_cache_class || self.class
-          Garner::Cache.invalidate(cache_class)
-        end
-
-        # navigate the parent embedding document hierarchy
-        def all_embedding_documents
-          obj = self
-          docs = []
-          while obj.metadata && obj.embedded?
-            # FIXME: This is not a robust check for cycles
-            break if docs.detect { |doc| doc.class == obj.class }
-            parent = obj.send(obj.metadata.inverse)
-            break unless parent
-            docs << parent
-            obj = parent
-          end
-          docs
         end
 
         module ClassMethods
-          # Including classes can call `cache_as` to specify a different class
-          # on which to bind API cache objects.
-          # @example `Admin`, which extends `User` should call `cache_as User`
-          def cache_as(klass)
-            self.api_cache_class = klass
+          def garner_index_key
+            root_mongoid_class.name
+          end
+
+          def all_garner_index_keys
+            [ garner_index_key ]
+          end
+
+          def root_mongoid_class
+            if superclass == Object || superclass.nil? || !superclass.include?(Mongoid::Document)
+              self
+            else
+              superclass.root_mongoid_class
+            end
           end
         end
+
+        def garner_index_key
+          value = send(Garner.config.default_identity_field)
+          "#{self.class.root_mongoid_class}/#{value.to_s}"
+        end
+
+        def all_garner_index_keys
+          instance_keys = Garner.config.mongoid_identity_fields.map { |field|
+            if respond_to?(field)
+              if (value = send(field)).is_a?(Array)
+                value.map { |element| "#{self.class.root_mongoid_class}/#{element}" }
+              else
+                "#{self.class.root_mongoid_class}/#{value.to_s}"
+              end
+            else
+              nil
+            end
+          }.flatten.compact
+          class_keys = self.class.all_garner_index_keys
+          instance_keys + class_keys
+        end
+
       end
     end
   end

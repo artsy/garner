@@ -1,18 +1,27 @@
-require 'multi_json'
-require 'active_support'
-# garner
-require 'garner/version'
-require 'garner/config'
-# key strategies
-require 'garner/strategies/keys/caller_strategy'
-require 'garner/strategies/keys/request_path_strategy'
-require 'garner/strategies/keys/request_get_strategy'
-require 'garner/strategies/keys/request_post_strategy'
-require 'garner/strategies/keys/jsonp_strategy'
-# cache option strategies
-require 'garner/strategies/cache/expiration_strategy'
-# caches
-require 'garner/cache'
-# mixins
-require 'garner/mixins/rack'
-require 'garner/mixins/mongoid_document' if defined?(Mongoid)
+require "multi_json"
+require "active_support"
+
+# Garner core
+require "garner/version"
+require "garner/config"
+
+# Key strategies
+require "garner/strategies/keys/caller"
+require "garner/strategies/keys/request_path"
+require "garner/strategies/keys/request_get"
+require "garner/strategies/keys/request_post"
+require "garner/strategies/keys/jsonp"
+
+# Cache
+require "garner/cache"
+require "garner/cache/identity"
+require "garner/cache/context"
+
+# Binding strategies
+require "garner/strategies/bindings/single_identity"
+require "garner/strategies/bindings/indexed_identities"
+require "garner/strategies/bindings/declared_identities"
+
+# Third-party mixins
+require "garner/mixins/rack"
+require "garner/mixins/mongoid_document" if defined?(Mongoid)

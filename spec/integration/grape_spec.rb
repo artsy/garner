@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe "Grape integration" do
   class TestCachebuster < Grape::Middleware::Base
@@ -19,7 +19,7 @@ describe "Grape integration" do
 
       get "/" do
         garner do
-          { meaning_of_life: 42 }.to_json
+          { :meaning_of_life => 42 }.to_json
         end
       end
     end

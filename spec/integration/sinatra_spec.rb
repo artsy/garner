@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe "Sinatra integration" do
 
@@ -16,7 +16,7 @@ describe "Sinatra integration" do
 
       get "/" do
         garner do
-          { meaning_of_life: 42 }.to_json
+          { :meaning_of_life => 42 }.to_json
         end
       end
     end

@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2013-05-20"
-  s.description = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
+  s.date = "2013-05-29"
+  s.description = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
     "LICENSE.md",
@@ -19,22 +19,25 @@ Gem::Specification.new do |s|
   s.files = [
     "lib/garner.rb",
     "lib/garner/cache.rb",
+    "lib/garner/cache/context.rb",
+    "lib/garner/cache/identity.rb",
     "lib/garner/config.rb",
     "lib/garner/mixins/mongoid_document.rb",
     "lib/garner/mixins/rack.rb",
-    "lib/garner/strategies/cache/expiration_strategy.rb",
-    "lib/garner/strategies/keys/caller_strategy.rb",
-    "lib/garner/strategies/keys/jsonp_strategy.rb",
-    "lib/garner/strategies/keys/request_get_strategy.rb",
-    "lib/garner/strategies/keys/request_path_strategy.rb",
-    "lib/garner/strategies/keys/request_post_strategy.rb",
+    "lib/garner/strategies/bindings/multiple_identity.rb",
+    "lib/garner/strategies/bindings/single_identity.rb",
+    "lib/garner/strategies/keys/caller.rb",
+    "lib/garner/strategies/keys/jsonp.rb",
+    "lib/garner/strategies/keys/request_get.rb",
+    "lib/garner/strategies/keys/request_path.rb",
+    "lib/garner/strategies/keys/request_post.rb",
     "lib/garner/version.rb"
   ]
   s.homepage = "http://github.com/artsy/garner"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "Garner is a set of Rack middleware and cache helpers that implement various strategies."
+  s.summary = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
@@ -52,6 +55,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<mongoid>, [">= 3.0.0"])
       s.add_development_dependency(%q<dalli>, [">= 0"])
+      s.add_development_dependency(%q<pry>, [">= 0"])
       s.add_development_dependency(%q<yard>, [">= 0"])
       s.add_development_dependency(%q<redcarpet>, [">= 0"])
       s.add_development_dependency(%q<github-markup>, [">= 0"])
@@ -68,6 +72,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<mongoid>, [">= 3.0.0"])
       s.add_dependency(%q<dalli>, [">= 0"])
+      s.add_dependency(%q<pry>, [">= 0"])
       s.add_dependency(%q<yard>, [">= 0"])
       s.add_dependency(%q<redcarpet>, [">= 0"])
       s.add_dependency(%q<github-markup>, [">= 0"])
@@ -85,6 +90,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<mongoid>, [">= 3.0.0"])
     s.add_dependency(%q<dalli>, [">= 0"])
+    s.add_dependency(%q<pry>, [">= 0"])
     s.add_dependency(%q<yard>, [">= 0"])
     s.add_dependency(%q<redcarpet>, [">= 0"])
     s.add_dependency(%q<github-markup>, [">= 0"])
