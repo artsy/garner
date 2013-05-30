@@ -20,7 +20,3 @@ require "garner/cache"
 require "garner/cache/identity"
 require "garner/cache/context"
 require "garner/cache/binding"
-
-# Third-party mixins
-require "garner/mixins/rack"
-require "garner/mixins/mongoid_document" if defined?(Mongoid)

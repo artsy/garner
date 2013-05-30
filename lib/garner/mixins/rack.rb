@@ -1,3 +1,5 @@
+require "garner"
+
 # Set up Garner configuration parameters
 Garner.config.option(:rack_context_key_strategies, {
   :default => [

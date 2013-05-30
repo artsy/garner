@@ -1,3 +1,5 @@
+require "garner"
+
 # Set up Garner configuration parameters
 Garner.config.option(:default_identity_field, { :default => :_id })
 Garner.config.option(:mongoid_identity_fields, { :default => [:_id] })

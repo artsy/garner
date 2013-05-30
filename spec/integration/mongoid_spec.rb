@@ -1,4 +1,5 @@
 require "spec_helper"
+require "garner/mixins/mongoid_document"
 
 describe "Mongoid integration" do
   [

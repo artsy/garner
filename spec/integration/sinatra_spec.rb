@@ -1,4 +1,5 @@
 require "spec_helper"
+require "garner/mixins/rack"
 
 describe "Sinatra integration" do
 
