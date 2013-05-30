@@ -37,7 +37,7 @@ module Garner
       #
       # @param hash [Hash] Options to pass to Garner.config.cache.
       def options(hash, &block)
-        @options.merge!(hash)
+        @options_hash.merge!(hash)
         block_given? ? fetch(&block) : self
       end
     end

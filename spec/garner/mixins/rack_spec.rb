@@ -4,11 +4,46 @@ describe Garner::Mixins::Rack do
 
   describe "garner" do
 
-    it "bypasses cache if cache_enabled? returns false"
+    before(:each) do
+      class MockApp
+        include Garner::Mixins::Rack
 
-    it "returns a Garner::Cache::Identity"
+        def request
+          Rack::Request.new({
+            "REQUEST_METHOD" => "GET",
+            "QUERY_STRING" => "foo=bar"
+          })
+        end
+      end
 
-    it "applies each of Garner.config.rack_key_strategies"
+      @mock_app = MockApp.new
+    end
+
+    subject do
+      lambda { @mock_app.garner }
+    end
+
+    it "forces a cache miss if cache_enabled? returns false" do
+      @mock_app.stub(:cache_enabled?) { false }
+      subject.call.options_hash[:force_miss].should be_true
+    end
+
+    it "returns a Garner::Cache::Identity" do
+      subject.call.should be_a(Garner::Cache::Identity)
+    end
+
+    it "applies each of Garner.config.rack_key_strategies" do
+      # Default :key_strategies
+      subject.call.key_hash[:caller].should_not be_nil
+      subject.call.key_hash[:request_params].should == { "foo" => "bar" }
+
+      # Custom :key_strategies
+      Garner.configure do |config|
+        config.rack_key_strategies = [ Garner::Strategies::Keys::RequestGet ]
+      end
+      subject.call.key_hash[:caller].should be_nil
+      subject.call.key_hash[:request_params].should == { "foo" => "bar" }
+    end
 
   end
 end

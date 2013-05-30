@@ -12,7 +12,9 @@ module Garner
   module Mixins
     module Rack
 
-      # Retur
+      # Override this method to conditionally disable the cache.
+      #
+      # @return [Boolean]
       def cache_enabled?
         true
       end
@@ -27,7 +29,7 @@ module Garner
       def garner(&block)
         identity = Garner::Cache::Identity.new
         Garner.config.rack_key_strategies.each do |strategy|
-          identity = strategy.apply(identity, binding)
+          identity = strategy.apply(identity, self)
         end
 
         unless cache_enabled?

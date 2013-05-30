@@ -7,6 +7,8 @@ describe "Rack integration" do
   end
 
   context "with default configuration" do
+    it "bypasses cache if cache_enabled? returns false"
+
     it "caches different results for different paths"
 
     it "caches different results for different query strings"

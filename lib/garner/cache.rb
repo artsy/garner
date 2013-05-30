@@ -10,15 +10,33 @@ module Garner
       # @param key_hash [Hash] Hash to comprise the compound cache key.
       # @param options_hash [Hash] Options to be passed to Garner.config.cache.
       def fetch(bindings, key_hash, options_hash, &block)
-        compound_key = {
-          :bindings => bindings.map(&:garner_cache_key),
-          :keys => key_hash
-        }
-        result = Garner.config.cache.fetch(compound_key, options_hash) do
-          binding ? yield(binding) : yield
+        if (compound_key = compound_key(bindings, key_hash))
+          result = Garner.config.cache.fetch(compound_key, options_hash) do
+            yield
+          end
+          Garner.config.cache.delete(compound_key) unless result
+        else
+          result = yield
         end
-        Garner.config.cache.delete(compound_key) unless result
         result
+      end
+
+      private
+      def compound_key(bindings, key_hash)
+        binding_cache_keys = bindings.map(&:garner_cache_key).compact
+
+        if binding_cache_keys.size == bindings.size
+          # All bindings have non-nil cache keys, proceed.
+          {
+            :bindings => binding_cache_keys,
+            :keys => key_hash
+          }
+        else
+          # A nil cache key was generated. Skip caching.
+          # TODO: Replace this ill-documented "nil to skip" behavior
+          # with exceptions on inability to generate a cache key.
+          nil
+        end
       end
 
     end
