@@ -1,7 +1,7 @@
 module Garner
   module Strategies
-    module Bindings
-      module IndexedIdentities
+    module BindingKey
+      module CacheKey
 
         class << self
         end

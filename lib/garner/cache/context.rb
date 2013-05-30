@@ -1,6 +1,6 @@
 # Set up Garner configuration parameters
-Garner.config.option(:key_strategies, {
-  :default => [ Garner::Strategies::Keys::Caller ]
+Garner.config.option(:context_key_strategies, {
+  :default => [ Garner::Strategies::ContextKey::Caller ]
 })
 
 module Garner
@@ -16,7 +16,7 @@ module Garner
       # @return [Garner::Cache::Identity] The cache identity.
       def garner(&block)
         identity = Garner::Cache::Identity.new
-        Garner.config.key_strategies.each do |strategy|
+        Garner.config.context_key_strategies.each do |strategy|
           identity = strategy.apply(identity, self)
         end
 

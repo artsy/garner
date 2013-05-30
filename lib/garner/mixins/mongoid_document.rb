@@ -1,17 +1,20 @@
+# Set up Garner configuration parameters
+Garner.config.option(:default_identity_field, { :default => :_id })
+Garner.config.option(:mongoid_identity_fields, { :default => [:_id] })
+
 module Garner
   module Mixins
     module Mongoid
       module Document
         extend ActiveSupport::Concern
 
-        # Set up Garner configuration parameters
-        Garner.config.option(:default_identity_field, { :default => :_id })
-        Garner.config.option(:mongoid_identity_fields, { :default => [:_id] })
+        extend Garner::Cache::Binding
+        include Garner::Cache::Binding
 
         included do
-          after_create :invalidate_garner_cache
-          after_update :invalidate_garner_cache
-          after_destroy :invalidate_garner_cache
+          after_create :invalidate_garner_caches
+          after_update :invalidate_garner_caches
+          after_destroy :invalidate_garner_caches
         end
 
         module ClassMethods

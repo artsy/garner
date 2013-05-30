@@ -1,25 +1,25 @@
 module Garner
   module Strategies
-    module Keys
-      module RequestPost
+    module ContextKey
+      module Jsonp
         class << self
 
           def field
             :request_params
           end
 
-          # Injects the request POST parameters into the key hash.
+          # Strips JSONP parameters from the key.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
           # @param ruby_context [Binding] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def apply(identity, ruby_context = self)
-            return identity unless (ruby_context.respond_to?(:request))
+            key_hash = identity.key_hash
+            return identity unless key_hash[field]
 
-            request = ruby_context.request
-            if request.request_method == "POST"
-              identity = identity.key(field => request.POST.dup)
-            end
+
+            key_hash[field].delete("callback")
+            key_hash[field].delete("_")
             identity
           end
 

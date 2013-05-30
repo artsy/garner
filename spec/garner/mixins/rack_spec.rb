@@ -32,14 +32,16 @@ describe Garner::Mixins::Rack do
       subject.call.should be_a(Garner::Cache::Identity)
     end
 
-    it "applies each of Garner.config.rack_key_strategies" do
-      # Default :key_strategies
+    it "applies each of Garner.config.rack_context_key_strategies" do
+      # Default :context_key_strategies
       subject.call.key_hash[:caller].should_not be_nil
       subject.call.key_hash[:request_params].should == { "foo" => "bar" }
 
-      # Custom :key_strategies
+      # Custom :context_key_strategies
       Garner.configure do |config|
-        config.rack_key_strategies = [ Garner::Strategies::Keys::RequestGet ]
+        config.rack_context_key_strategies = [
+          Garner::Strategies::ContextKey::RequestGet
+        ]
       end
       subject.call.key_hash[:caller].should be_nil
       subject.call.key_hash[:request_params].should == { "foo" => "bar" }

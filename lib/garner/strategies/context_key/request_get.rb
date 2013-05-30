@@ -1,14 +1,14 @@
 module Garner
   module Strategies
-    module Keys
-      module RequestPath
+    module ContextKey
+      module RequestGet
         class << self
 
           def field
-            :request_path
+            :request_params
           end
 
-          # Injects the request path into the key hash.
+          # Injects the request GET parameters into the key hash.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
           # @param ruby_context [Binding] An optional Ruby context.
@@ -17,9 +17,12 @@ module Garner
             return identity unless (ruby_context.respond_to?(:request))
 
             request = ruby_context.request
-            identity.key(field => request.path) if request.respond_to?(:path)
+            if request && [ "GET", "HEAD" ].include?(request.request_method)
+              identity.key(field => request.GET.dup)
+            end
             identity
           end
+
         end
       end
     end

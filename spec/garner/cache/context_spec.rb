@@ -19,13 +19,13 @@ describe Garner::Cache::Context do
       subject.call.should be_a(Garner::Cache::Identity)
     end
 
-    it "applies each of Garner.config.key_strategies" do
-      # Default :key_strategies
+    it "applies each of Garner.config.context_key_strategies" do
+      # Default :context_key_strategies
       subject.call.key_hash[:caller].should_not be_nil
 
-      # Custom :key_strategies
+      # Custom :context_key_strategies
       Garner.configure do |config|
-        config.key_strategies = []
+        config.context_key_strategies = []
       end
       subject.call.key_hash[:caller].should be_nil
     end

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Garner::Strategies::Keys::RequestPost do
+describe Garner::Strategies::ContextKey::RequestPost do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
     @request = Rack::Request.new(
@@ -15,9 +15,9 @@ describe Garner::Strategies::Keys::RequestPost do
     @mock_context.stub(:request) { @request }
   end
 
-  subject { Garner::Strategies::Keys::RequestPost }
+  subject { Garner::Strategies::ContextKey::RequestPost }
 
-  it_should_behave_like "Garner::Strategies::Keys strategy"
+  it_should_behave_like "Garner::Strategies::ContextKey strategy"
 
   it "adds :request_params to the key" do
     subject.apply(@cache_identity, @mock_context)

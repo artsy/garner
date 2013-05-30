@@ -1,28 +1,25 @@
 module Garner
   module Strategies
-    module Keys
-      module Jsonp
+    module ContextKey
+      module RequestPath
         class << self
 
           def field
-            :request_params
+            :request_path
           end
 
-          # Strips JSONP parameters from the key.
+          # Injects the request path into the key hash.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
           # @param ruby_context [Binding] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def apply(identity, ruby_context = self)
-            key_hash = identity.key_hash
-            return identity unless key_hash[field]
+            return identity unless (ruby_context.respond_to?(:request))
 
-
-            key_hash[field].delete("callback")
-            key_hash[field].delete("_")
+            request = ruby_context.request
+            identity.key(field => request.path) if request.respond_to?(:path)
             identity
           end
-
         end
       end
     end

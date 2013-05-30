@@ -1,14 +1,14 @@
 require "spec_helper"
 
-describe Garner::Strategies::Keys::Caller do
+describe Garner::Strategies::ContextKey::Caller do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
     @mock_context = double "object"
   end
 
-  subject { Garner::Strategies::Keys::Caller }
+  subject { Garner::Strategies::ContextKey::Caller }
 
-  it_should_behave_like "Garner::Strategies::Keys strategy"
+  it_should_behave_like "Garner::Strategies::ContextKey strategy"
 
   it "adds a caller line" do
     subject.apply(@cache_identity, self)

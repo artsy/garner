@@ -6,21 +6,20 @@ require "garner/version"
 require "garner/config"
 
 # Key strategies
-require "garner/strategies/keys/caller"
-require "garner/strategies/keys/request_path"
-require "garner/strategies/keys/request_get"
-require "garner/strategies/keys/request_post"
-require "garner/strategies/keys/jsonp"
+require "garner/strategies/context_key/caller"
+require "garner/strategies/context_key/request_path"
+require "garner/strategies/context_key/request_get"
+require "garner/strategies/context_key/request_post"
+require "garner/strategies/context_key/jsonp"
+
+# Binding strategies
+require "garner/strategies/binding_key/cache_key"
 
 # Cache
 require "garner/cache"
 require "garner/cache/identity"
 require "garner/cache/context"
-
-# Binding strategies
-require "garner/strategies/bindings/single_identity"
-require "garner/strategies/bindings/indexed_identities"
-require "garner/strategies/bindings/declared_identities"
+require "garner/cache/binding"
 
 # Third-party mixins
 require "garner/mixins/rack"

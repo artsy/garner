@@ -112,10 +112,10 @@ Under The Hood: Cache Keys
 
 Explicit cache keys are usually unnecessary in Garner. Given a cache binding, Garner will compute an appropriately unique cache key. Moreover, in the context of `Garner::Mixins::Rack`, Garner will compose the following key factors by default:
 
-* `Garner::Strategies::Keys::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different results.
-* `Garner::Strategies::Keys::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
-* `Garner::Strategies::Keys::RequestPost` inserts the value of HTTP request's POST parameters into the cache key when `:request` is present in the context.
-* `Garner::Strategies::Keys::RequestPath` inserts the value of the HTTP request's path into the cache key when `:request` is present in the context.
+* `Garner::Strategies::ContextKey::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different results.
+* `Garner::Strategies::ContextKey::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
+* `Garner::Strategies::ContextKey::RequestPost` inserts the value of HTTP request's POST parameters into the cache key when `:request` is present in the context.
+* `Garner::Strategies::ContextKey::RequestPath` inserts the value of the HTTP request's path into the cache key when `:request` is present in the context.
 
 Additional key factors may be specified explicitly using the `key` method. To see a specific example of this in action, let's consider the case of role-based caching. For example, an order may have a different representation for an admin versus an ordinary user:
 

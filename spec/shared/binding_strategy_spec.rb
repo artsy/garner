@@ -8,6 +8,6 @@ require "spec_helper"
 #     def cache_key_for(object)
 #     end
 
-shared_examples_for "Garner::Strategies::Bindings strategy" do
+shared_examples_for "Garner::Strategies::BindingKey strategy" do
   it "returns a valid cache key for a Garner::Cache::Binding"
 end

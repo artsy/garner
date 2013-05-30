@@ -1,10 +1,10 @@
 # Set up Garner configuration parameters
-Garner.config.option(:rack_key_strategies, {
+Garner.config.option(:rack_context_key_strategies, {
   :default => [
-    Garner::Strategies::Keys::Caller,
-    Garner::Strategies::Keys::RequestGet,
-    Garner::Strategies::Keys::RequestPost,
-    Garner::Strategies::Keys::RequestPath
+    Garner::Strategies::ContextKey::Caller,
+    Garner::Strategies::ContextKey::RequestGet,
+    Garner::Strategies::ContextKey::RequestPost,
+    Garner::Strategies::ContextKey::RequestPath
   ]
 })
 
@@ -28,7 +28,7 @@ module Garner
       # @return [Garner::Cache::Identity] The cache identity.
       def garner(&block)
         identity = Garner::Cache::Identity.new
-        Garner.config.rack_key_strategies.each do |strategy|
+        Garner.config.rack_context_key_strategies.each do |strategy|
           identity = strategy.apply(identity, self)
         end
 

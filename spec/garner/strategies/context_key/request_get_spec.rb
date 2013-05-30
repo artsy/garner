@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Garner::Strategies::Keys::RequestGet do
+describe Garner::Strategies::ContextKey::RequestGet do
   [ "GET", "HEAD" ].each do |method|
     context method do
 
@@ -15,9 +15,9 @@ describe Garner::Strategies::Keys::RequestGet do
         @mock_context.stub(:request) { @request }
       end
 
-      subject { Garner::Strategies::Keys::RequestGet }
+      subject { Garner::Strategies::ContextKey::RequestGet }
 
-      it_should_behave_like "Garner::Strategies::Keys strategy"
+      it_should_behave_like "Garner::Strategies::ContextKey strategy"
 
       it "adds :request_params to the key" do
         subject.apply(@cache_identity, @mock_context)

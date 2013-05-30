@@ -1,6 +1,6 @@
 module Garner
   module Strategies
-    module Keys
+    module ContextKey
       module Caller
         class << self
 

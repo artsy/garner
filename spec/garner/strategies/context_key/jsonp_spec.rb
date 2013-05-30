@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Garner::Strategies::Keys::Jsonp do
+describe Garner::Strategies::ContextKey::Jsonp do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
     @request = Rack::Request.new({
@@ -13,13 +13,14 @@ describe Garner::Strategies::Keys::Jsonp do
   end
 
   subject do
-    Garner::Strategies::Keys::Jsonp
+    Garner::Strategies::ContextKey::Jsonp
   end
 
-  it_should_behave_like "Garner::Strategies::Keys strategy"
+  it_should_behave_like "Garner::Strategies::ContextKey strategy"
 
   it "removes JSONP params from the key hash" do
-    subject.apply(Garner::Strategies::Keys::RequestGet.apply(@cache_identity, @mock_context), @mock_context)
+    get_applied = Garner::Strategies::ContextKey::RequestGet.apply(@cache_identity, @mock_context)
+    subject.apply(get_applied, @mock_context)
     @cache_identity.key_hash[:request_params].should == {}
   end
 end

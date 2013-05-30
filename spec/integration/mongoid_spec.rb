@@ -2,9 +2,9 @@ require "spec_helper"
 
 describe "Mongoid integration" do
   [
-    Garner::Strategies::Bindings::SingleIdentity,
-    Garner::Strategies::Bindings::IndexedIdentities,
-    Garner::Strategies::Bindings::DeclaredIdentities
+    Garner::Strategies::BindingKey::CacheKey
+    # Garner::Strategies::BindingKey::IndexedIdentities,
+    # Garner::Strategies::BindingKey::DeclaredIdentities
   ].each do |strategy|
     context "using the #{strategy} strategy" do
       it "invalidates on create"

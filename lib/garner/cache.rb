@@ -23,13 +23,13 @@ module Garner
 
       private
       def compound_key(bindings, key_hash)
-        binding_cache_keys = bindings.map(&:garner_cache_key).compact
+        binding_keys = bindings.map(&:garner_cache_key).compact
 
-        if binding_cache_keys.size == bindings.size
+        if binding_keys.size == bindings.size
           # All bindings have non-nil cache keys, proceed.
           {
-            :bindings => binding_cache_keys,
-            :keys => key_hash
+            :binding_keys => binding_keys,
+            :context_keys => key_hash
           }
         else
           # A nil cache key was generated. Skip caching.
