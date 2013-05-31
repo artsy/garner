@@ -7,16 +7,21 @@ module Garner
   module Cache
     module Binding
 
+      # Override this method to use a custom key strategy for this class.
+      #
+      # @return [Object] The
       def key_strategy
-        Garner.config.binding_strategy
+        Garner.config.binding_key_strategy
       end
 
+      #
+      #
       def garner_cache_key
         key_strategy.apply(self)
       end
 
-      # Binding-extended classes should implement invalidate_garner_caches.
-      # If left unimplemented, invalidation will have no effect.
+      # Invalidate caches. Called by mixins whenever an object is known to
+      # have changed. Override for non-trivial behavior.
       def invalidate_garner_caches
       end
 

@@ -11,7 +11,7 @@ module Garner
           # Strips JSONP parameters from the key.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
-          # @param ruby_context [Binding] An optional Ruby context.
+          # @param ruby_context [Object] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def apply(identity, ruby_context = self)
             key_hash = identity.key_hash
