@@ -1,5 +1,3 @@
-require "spec_helper"
-
 # Shared examples for key strategies. A valid key strategy must implement:
 #     # Applies this key strategy to a cache identity, modifying its key_hash.
 #     #

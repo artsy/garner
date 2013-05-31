@@ -1,5 +1,3 @@
-require "spec_helper"
-
 # Shared examples for a proper Conditional GET server.
 #   To test a new Rack framework, define an app returned by app, with a
 #   single endpoint, "/".

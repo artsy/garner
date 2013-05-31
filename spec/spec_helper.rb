@@ -9,8 +9,6 @@ require "mongoid"
 require "garner"
 
 # Load shared examples
-[ "/shared/*.rb" ].each do |path|
-  Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|
-    require file
-  end
+Dir["#{File.dirname(__FILE__)}/shared/*.rb"].each do |file|
+  require file
 end
