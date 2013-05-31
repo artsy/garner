@@ -6,8 +6,9 @@ describe Garner::Strategies::BindingKey::CacheKey do
     end
   end
 
-  subject { Garner::Strategies::BindingKey::CacheKey }
+  it_behaves_like "Garner::Strategies::BindingKey strategy" do
+    let(:known_bindings) { [ TestModel.new ] }
+    let(:unknown_bindings) { [ TestModel ] }
+  end
 
-  let(:binding) { TestModel.new }
-  it_should_behave_like "Garner::Strategies::BindingKey strategy"
 end

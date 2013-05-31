@@ -16,7 +16,7 @@ describe Garner::Strategies::ContextKey::Jsonp do
     Garner::Strategies::ContextKey::Jsonp
   end
 
-  it_should_behave_like "Garner::Strategies::ContextKey strategy"
+  it_behaves_like "Garner::Strategies::ContextKey strategy"
 
   it "removes JSONP params from the key hash" do
     get_applied = Garner::Strategies::ContextKey::RequestGet.apply(@cache_identity, @mock_context)

@@ -15,9 +15,7 @@ describe Garner::Strategies::ContextKey::RequestGet do
         @mock_context.stub(:request) { @request }
       end
 
-      subject { Garner::Strategies::ContextKey::RequestGet }
-
-      it_should_behave_like "Garner::Strategies::ContextKey strategy"
+      it_behaves_like "Garner::Strategies::ContextKey strategy"
 
       it "adds :request_params to the key" do
         subject.apply(@cache_identity, @mock_context)

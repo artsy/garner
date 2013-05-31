@@ -6,9 +6,7 @@ describe Garner::Strategies::ContextKey::Caller do
     @mock_context = double "object"
   end
 
-  subject { Garner::Strategies::ContextKey::Caller }
-
-  it_should_behave_like "Garner::Strategies::ContextKey strategy"
+  it_behaves_like "Garner::Strategies::ContextKey strategy"
 
   it "adds a caller line" do
     subject.apply(@cache_identity, self)

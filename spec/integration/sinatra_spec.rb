@@ -25,6 +25,6 @@ describe "Sinatra integration" do
     Sinatra::Application
   end
 
-  it_should_behave_like "Rack::ConditionalGet server"
+  it_behaves_like "Rack::ConditionalGet server"
 
 end
