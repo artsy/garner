@@ -1,14 +1,16 @@
 describe Garner::Strategies::BindingKey::CacheKey do
 
   before(:each) do
-    class TestModel
-      include Mongoid::Document
-    end
+    @mock = double "model"
+    @mock.stub(:cache_key) { "mocks/4" }
   end
 
   it_behaves_like "Garner::Strategies::BindingKey strategy" do
-    let(:known_bindings) { [ TestModel.new ] }
-    let(:unknown_bindings) { [ TestModel ] }
+    let(:known_bindings) { [ @mock ] }
+    let(:unknown_bindings) { [ @mock.class ] }
   end
 
+  it "returns the object's cache key, or nil" do
+    subject.apply(@mock).should == "mocks/4"
+  end
 end

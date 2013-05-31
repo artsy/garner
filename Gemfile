@@ -14,6 +14,8 @@ group :development, :test do
   gem "jeweler"
   gem "mongoid",    ">= 3.0.0"
   gem "dalli"
+  gem "activerecord"
+  gem "sqlite3"
 end
 
 group :development do

@@ -7,8 +7,11 @@ require "sinatra"
 require "rack/test"
 require "mongoid"
 require "garner"
+require "active_record"
 
 # Load shared examples
-Dir["#{File.dirname(__FILE__)}/shared/*.rb"].each do |file|
-  require file
+[ "shared/*.rb", "support/*.rb" ].each do |path|
+  Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|
+    require file
+  end
 end

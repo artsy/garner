@@ -11,7 +11,7 @@ shared_examples_for "Garner::Strategies::BindingKey strategy" do
     expect { subject.apply }.to raise_error
   end
 
-  describe "given a serializable binding" do
+  describe "given a known binding" do
     it "returns a valid cache key" do
       known_bindings.each do |binding|
         subject.apply(binding).should be_a(String)
@@ -27,7 +27,7 @@ shared_examples_for "Garner::Strategies::BindingKey strategy" do
     end
   end
 
-  describe "given a non-serializable binding" do
+  describe "given an unknown binding" do
     it "returns a nil cache key" do
       unknown_bindings.each do |binding|
         subject.apply(binding).should be_nil
