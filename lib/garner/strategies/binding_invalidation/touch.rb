@@ -1,15 +1,14 @@
 module Garner
   module Strategies
-    module BindingKey
-      module CacheKey
+    module BindingInvalidation
+      module Touch
 
         class << self
-          # Compute a cache key from an object binding.
+          # Invalidate an object binding.
           #
           # @param binding [Object] The object from which to compute a key.
-          # @return [String] A cache key string.
           def apply(binding)
-            binding.cache_key if binding.respond_to?(:cache_key)
+            binding.touch if binding.respond_to?(:touch)
           end
         end
 

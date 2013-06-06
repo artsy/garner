@@ -15,6 +15,9 @@ require "garner/strategies/context_key/jsonp"
 # Binding strategies
 require "garner/strategies/binding_key/cache_key"
 
+# Invalidation strategies
+require "garner/strategies/binding_invalidation/touch"
+
 # Cache
 require "garner/cache"
 require "garner/cache/identity"

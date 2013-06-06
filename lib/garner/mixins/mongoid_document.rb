@@ -5,19 +5,23 @@ Garner.config.option(:mongoid_binding_key_strategy, {
   :default => Garner::Strategies::BindingKey::CacheKey
 })
 
+Garner.config.option(:mongoid_binding_invalidation_strategy, {
+  :default => Garner::Strategies::BindingInvalidation::Touch
+})
+
 module Garner
   module Mixins
     module Mongoid
       module Document
         extend ActiveSupport::Concern
-
-        extend Garner::Cache::Binding
         include Garner::Cache::Binding
 
         included do
-          after_create :invalidate_garner_caches
-          after_update :invalidate_garner_caches
-          after_destroy :invalidate_garner_caches
+          extend Garner::Cache::Binding
+
+          after_create    :invalidate_garner_caches
+          after_update    :invalidate_garner_caches
+          before_destroy  :invalidate_garner_caches
         end
 
       end

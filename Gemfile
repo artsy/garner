@@ -16,6 +16,7 @@ group :development, :test do
   gem "dalli"
   gem "activerecord"
   gem "sqlite3"
+  gem "timecop"
 end
 
 group :development do

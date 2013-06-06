@@ -1,10 +1,10 @@
-require "pry"
 # Shared examples for binding strategies. A valid binding strategy must implement:
-#     # Returns a cache key for this object.
+#     # Compute a cache key from an object binding.
 #     #
-#     # @param object [Object] The cache identity.
+#     # @param binding [Object] The object from which to compute a key.
 #     # @return [String] A cache key string.
-#     def cache_key_for(object)
+#     def apply(binding)
+#       binding.cache_key if binding.respond_to?(:cache_key)
 #     end
 shared_examples_for "Garner::Strategies::BindingKey strategy" do
   it "requires an argument" do
