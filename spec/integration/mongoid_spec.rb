@@ -8,12 +8,12 @@ describe "Mongoid integration" do
     end
   end
 
-  [ Garner::Strategies::BindingKey::CacheKey ].each do |key_strategy|
+  [ Garner::Strategies::Binding::Key::CacheKey ].each do |key_strategy|
     context "using #{key_strategy}" do
       describe "cache key generation" do
         subject { key_strategy }
 
-        it_behaves_like "Garner::Strategies::BindingKey strategy" do
+        it_behaves_like "Garner::Strategies::Binding::Key strategy" do
           let(:known_bindings) { [ Monger.create ] }
           let(:unknown_bindings) { [] }
         end
@@ -22,8 +22,8 @@ describe "Mongoid integration" do
   end
 
   {
-    Garner::Strategies::BindingKey::CacheKey =>
-      Garner::Strategies::BindingInvalidation::Touch
+    Garner::Strategies::Binding::Key::CacheKey =>
+      Garner::Strategies::Binding::Invalidation::Touch
   }.each do |key_strategy, invalidation_strategy|
     context "using #{key_strategy} with #{invalidation_strategy}" do
       describe "end-to-end caching and invalidation" do

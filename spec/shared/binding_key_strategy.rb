@@ -6,7 +6,7 @@
 #     def apply(binding)
 #       binding.cache_key if binding.respond_to?(:cache_key)
 #     end
-shared_examples_for "Garner::Strategies::BindingKey strategy" do
+shared_examples_for "Garner::Strategies::Binding::Key strategy" do
   it "requires an argument" do
     expect { subject.apply }.to raise_error
   end

@@ -6,17 +6,17 @@ require "garner/version"
 require "garner/config"
 
 # Key strategies
-require "garner/strategies/context_key/caller"
-require "garner/strategies/context_key/request_path"
-require "garner/strategies/context_key/request_get"
-require "garner/strategies/context_key/request_post"
-require "garner/strategies/context_key/jsonp"
+require "garner/strategies/context/key/caller"
+require "garner/strategies/context/key/request_path"
+require "garner/strategies/context/key/request_get"
+require "garner/strategies/context/key/request_post"
+require "garner/strategies/context/key/jsonp"
 
 # Binding strategies
-require "garner/strategies/binding_key/cache_key"
+require "garner/strategies/binding/key/cache_key"
 
 # Invalidation strategies
-require "garner/strategies/binding_invalidation/touch"
+require "garner/strategies/binding/invalidation/touch"
 
 # Cache
 require "garner/cache"

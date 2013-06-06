@@ -6,12 +6,12 @@ describe "ActiveRecord integration" do
     end
   end
 
-  context "using the Garner::Strategies::BindingKey::CacheKey strategy" do
+  context "using the Garner::Strategies::Binding::Key::CacheKey strategy" do
 
     describe "cache key generation" do
-      subject { Garner::Strategies::BindingKey::CacheKey }
+      subject { Garner::Strategies::Binding::Key::CacheKey }
 
-      it_behaves_like "Garner::Strategies::BindingKey strategy" do
+      it_behaves_like "Garner::Strategies::Binding::Key strategy" do
         let(:known_bindings) { [ Activist.create, Activist.new ] }
         let(:unknown_bindings) { [ Activist ] }
       end

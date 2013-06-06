@@ -3,10 +3,10 @@ require "garner"
 # Set up Garner configuration parameters
 Garner.config.option(:rack_context_key_strategies, {
   :default => [
-    Garner::Strategies::ContextKey::Caller,
-    Garner::Strategies::ContextKey::RequestGet,
-    Garner::Strategies::ContextKey::RequestPost,
-    Garner::Strategies::ContextKey::RequestPath
+    Garner::Strategies::Context::Key::Caller,
+    Garner::Strategies::Context::Key::RequestGet,
+    Garner::Strategies::Context::Key::RequestPost,
+    Garner::Strategies::Context::Key::RequestPath
   ]
 })
 

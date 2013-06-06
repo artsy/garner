@@ -41,7 +41,7 @@ describe Garner::Mixins::Rack do
       # Custom :context_key_strategies
       Garner.configure do |config|
         config.rack_context_key_strategies = [
-          Garner::Strategies::ContextKey::RequestGet
+          Garner::Strategies::Context::Key::RequestGet
         ]
       end
       subject.call.key_hash[:caller].should be_nil

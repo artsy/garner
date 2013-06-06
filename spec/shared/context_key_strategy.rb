@@ -7,7 +7,7 @@
 #     def apply(identity, ruby_context = self)
 #     end
 # which both modifies a Garner::CacheIdentity and returns the identity.
-shared_examples_for "Garner::Strategies::ContextKey strategy" do
+shared_examples_for "Garner::Strategies::Context::Key strategy" do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
   end

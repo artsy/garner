@@ -2,11 +2,11 @@ require "garner"
 
 # Set up Garner configuration parameters
 Garner.config.option(:mongoid_binding_key_strategy, {
-  :default => Garner::Strategies::BindingKey::CacheKey
+  :default => Garner::Strategies::Binding::Key::CacheKey
 })
 
 Garner.config.option(:mongoid_binding_invalidation_strategy, {
-  :default => Garner::Strategies::BindingInvalidation::Touch
+  :default => Garner::Strategies::Binding::Invalidation::Touch
 })
 
 module Garner
@@ -28,4 +28,3 @@ module Garner
     end
   end
 end
-

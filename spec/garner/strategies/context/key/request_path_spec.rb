@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Garner::Strategies::ContextKey::RequestPath do
+describe Garner::Strategies::Context::Key::RequestPath do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
     @request = Rack::Request.new({ "PATH_INFO" => "/foo" })
@@ -9,7 +9,7 @@ describe Garner::Strategies::ContextKey::RequestPath do
     @mock_context.stub(:request) { @request }
   end
 
-  it_behaves_like "Garner::Strategies::ContextKey strategy"
+  it_behaves_like "Garner::Strategies::Context::Key strategy"
 
   it "adds :request_params to the key" do
     subject.apply(@cache_identity, @mock_context)

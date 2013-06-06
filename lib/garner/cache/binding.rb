@@ -1,9 +1,9 @@
 # Set up Garner configuration parameters
 Garner.config.option(:binding_key_strategy, {
-  :default => Garner::Strategies::BindingKey::CacheKey
+  :default => Garner::Strategies::Binding::Key::CacheKey
 })
 Garner.config.option(:binding_invalidation_strategy, {
-  :default => Garner::Strategies::BindingInvalidation::Touch
+  :default => Garner::Strategies::Binding::Invalidation::Touch
 })
 
 module Garner
