@@ -159,4 +159,15 @@ describe "Mongoid integration" do
       end
     end
   end
+
+  context "multiple-identity-respecting strategy pairs" do
+    {
+    Garner::Strategies::Binding::Key::CacheKey =>
+      Garner::Strategies::Binding::Invalidation::Touch
+    }.each do |key_strategy, invalidation_strategy|
+      context "using #{key_strategy} with #{invalidation_strategy}" do
+        it "invalidates all identities"
+      end
+    end
+  end
 end
