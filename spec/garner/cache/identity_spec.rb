@@ -1,9 +1,6 @@
 require "spec_helper"
 
 describe Garner::Cache::Identity do
-  before(:each) do
-    Garner.config.reset!
-  end
 
   subject { Garner::Cache::Identity.new }
 
