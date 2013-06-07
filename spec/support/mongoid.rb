@@ -9,7 +9,7 @@ class Monger
   include Mongoid::Document
   include Mongoid::Timestamps
   include Garner::Mixins::Mongoid::Document
-  embeds_many :fish
+  embeds_one :fish
   has_many :cheeses
 
   field :name, :type => String
@@ -19,6 +19,8 @@ class Food
   include Mongoid::Document
   include Mongoid::Timestamps
   include Garner::Mixins::Mongoid::Document
+
+  field :name, :type => String
 end
 
 class Fish < Food
