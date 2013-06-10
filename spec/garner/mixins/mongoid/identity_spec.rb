@@ -49,9 +49,9 @@ describe Garner::Mixins::Mongoid::Identity do
       }.to raise_error
     end
 
-    it "sets klass and a conditions hash" do
+    it "sets collection_name and a conditions hash" do
       identity = subject.from_class_and_id(Monger, "id")
-      identity.klass.should == Monger
+      identity.collection_name.should == :mongers
       identity.conditions["$or"].should == [
         { :_id => "id" },
         { :_slugs => "id" }
@@ -59,14 +59,52 @@ describe Garner::Mixins::Mongoid::Identity do
     end
 
     context "on a Mongoid subclass" do
-      it "sets klass to parent and includes the _type field" do
+      it "sets collection_name to parent and includes the _type field" do
         identity = subject.from_class_and_id(Cheese, "id")
-        identity.klass.should == Food
+        identity.collection_name.should == :foods
         identity.conditions[:_type].should == { "$in" => ["Cheese"] }
         identity.conditions["$or"].should == [
           { :_id => "id" },
           { :_slugs => "id" }
         ]
+      end
+    end
+  end
+
+  describe "cache_key" do
+    before(:each) do
+      Garner.configure do |config|
+        config.mongoid_identity_fields = [:_id, :_slugs]
+      end
+
+      @monger = Monger.create({ :name => "M1" })
+      @cheese = Cheese.create({ :name => "Havarti" })
+    end
+
+    it "generates a cache key equivalent to Mongoid::Document's" do
+      Monger.identify("m1").cache_key.should == @monger.cache_key
+
+      # Also test for Mongoid subclasses
+      Cheese.identify("havarti").cache_key.should == @cheese.cache_key
+      Food.identify("havarti").cache_key.should == @cheese.cache_key
+    end
+
+    it "generates a nil cache key if the document is not found" do
+      Monger.identify("m2").cache_key.should be_nil
+    end
+
+    context "without Mongoid::Timestamps" do
+      before(:each) do
+        @monger.unset(:updated_at)
+        @cheese.unset(:updated_at)
+      end
+
+      it "generates a cache key equivalent to Mongoid::Document's" do
+        Monger.identify("m1").cache_key.should == @monger.cache_key
+
+        # Also test for Mongoid subclasses
+        Cheese.identify("havarti").cache_key.should == @cheese.cache_key
+        Food.identify("havarti").cache_key.should == @cheese.cache_key
       end
     end
   end

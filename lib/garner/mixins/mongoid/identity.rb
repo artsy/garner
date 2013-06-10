@@ -9,7 +9,7 @@ module Garner
       class Identity
         include Garner::Cache::Binding
 
-        attr_accessor :klass, :conditions
+        attr_accessor :collection_name, :conditions
 
         def initialize
           @conditions = {}
@@ -23,46 +23,63 @@ module Garner
           Garner.config.mongoid_binding_invalidation_strategy
         end
 
+        def cache_key
+          coll = ::Mongoid.default_session[@collection_name]
+          query = coll.where(@conditions).select({
+            :_id => 1,
+            :_type => 1,
+            :updated_at => 1
+          }).limit(1)
+          doc = query.first
+          return nil unless doc
+
+          # See https://github.com/mongoid/mongoid/blob/f5ba1295/lib/mongoid/document.rb#L242
+          if doc["updated_at"]
+            "#{model_cache_key_by_doc(doc)}/#{doc["_id"]}-#{doc["updated_at"].utc.to_s(:number)}"
+          else
+            "#{model_cache_key_by_doc(doc)}/#{doc["_id"]}"
+          end
+        end
+
         def self.from_class_and_id(klass, id)
           validate_class!(klass)
 
           self.new.tap do |identity|
-            identity.klass = top_level_class_for(klass)
+            identity.collection_name = klass.collection_name
             identity.conditions = conditions_for(klass, id)
           end
         end
 
         private
         def self.validate_class!(klass)
-          if !klass.include?(Mongoid::Document)
+          if !klass.include?(::Mongoid::Document)
             raise "Must instantiate from a Mongoid class"
           elsif klass.embedded?
             raise "Cannot instantiate from an embedded document class"
           end
         end
 
-        def self.top_level_class_for(klass)
-          seen = []
-          parent = klass
-          until !parent.superclass.include?(Mongoid::Document)
-            raise "Cycle detected in Mongoid inheritance chain" if seen.include?(parent)
-            seen << [parent]
-            parent = parent.superclass
-          end
-          parent
-        end
-
         def self.conditions_for(klass, id)
-          # _type conditions
-          conditions = klass.where({}).send(:type_selection)
-
           # multiple-ID conditions
-          id_conditions = {
+          conditions = {
             "$or" => Garner.config.mongoid_identity_fields.map { |field|
               { field => id }
             }
           }
-          conditions.merge(id_conditions)
+
+          # _type conditions
+          selector = klass.where({})
+          conditions.merge!(selector.send(:type_selection)) if selector.send(:type_selectable?)
+
+          conditions
+        end
+
+        def model_cache_key_by_doc(doc)
+          if doc["_type"]
+            ActiveModel::Name.new(doc["_type"].constantize).cache_key
+          else
+            @collection_name.to_s
+          end
         end
       end
     end

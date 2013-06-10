@@ -31,7 +31,10 @@ class Fish < Food
 end
 
 class Cheese < Food
+  include Mongoid::Slug
   belongs_to :monger
+
+  slug :name, :history => true
 end
 
 # Purge MongoDB database before each test example
