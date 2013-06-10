@@ -1,3 +1,8 @@
+0.4.0 (TBD)
+-----------
+
+* Complete rewrite of Garner. See [UPGRADING](UPGRADING.md) for details on how to upgrade from Garner 0.3.3 and earlier versions - [@macreery](https://github.com/macreery).
+
 0.3.3 (6/10/2013)
 -----------------
 
