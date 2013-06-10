@@ -31,7 +31,7 @@ module Garner
 
       # Apply the invalidation strategy to this binding.
       def invalidate_garner_caches
-        Garner.config.binding_invalidation_strategy.apply(self)
+        invalidation_strategy.apply(self)
       end
 
     end

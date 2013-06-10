@@ -6,9 +6,16 @@ Garner.config.option(:mongoid_identity_fields, {
 module Garner
   module Mixins
     module Mongoid
-      module Identity
-        extend ActiveSupport::Concern
+      class Identity
         include Garner::Cache::Binding
+
+        def key_strategy
+          Garner.config.mongoid_binding_key_strategy
+        end
+
+        def invalidation_strategy
+          Garner.config.mongoid_binding_invalidation_strategy
+        end
 
       end
     end
