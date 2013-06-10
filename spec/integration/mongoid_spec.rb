@@ -26,16 +26,49 @@ describe "Mongoid integration" do
       Garner::Strategies::Binding::Invalidation::Touch
   }.each do |key_strategy, invalidation_strategy|
     context "using #{key_strategy} with #{invalidation_strategy}" do
+      before(:each) do
+        Garner.configure do |config|
+          config.mongoid_binding_key_strategy = key_strategy
+          config.mongoid_binding_invalidation_strategy = invalidation_strategy
+        end
+      end
+
       describe "end-to-end caching and invalidation" do
         context "binding at the instance level" do
           before(:each) do
-            Garner.configure do |config|
-              config.mongoid_binding_key_strategy = key_strategy
-              config.mongoid_binding_invalidation_strategy = invalidation_strategy
-            end
-
+            # Ensure cacheability even with 1-second timestamp resolution
             Timecop.freeze(1.second.ago) do
               @object = Monger.create!({ :name => "M1" })
+            end
+          end
+
+          describe "garnered_find" do
+            before(:each) do
+              Garner.configure do |config|
+                config.mongoid_identity_fields = [:_id, :_slugs]
+              end
+            end
+
+            it "caches one copy across all callers" do
+              Monger.stub(:find) { @object }
+              Monger.should_receive(:find).once
+              2.times { Monger.garnered_find("m1") }
+            end
+
+            it "returns the instance requested" do
+              Monger.garnered_find("m1").should == @object
+            end
+
+            it "is invalidated on changing identity field" do
+              Monger.garnered_find("m1").name.should == "M1"
+              @object.update_attributes!({ :name => "M2" })
+              Monger.garnered_find("m1").name.should == "M2"
+            end
+
+            it "is invalidated on destruction" do
+              Monger.garnered_find("m1").name.should == "M1"
+              @object.destroy
+              Monger.garnered_find("m1").should be_nil
             end
           end
 

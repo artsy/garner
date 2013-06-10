@@ -37,6 +37,12 @@ module Garner
             Garner::Mixins::Mongoid::Identity.from_class_and_id(self, id)
           end
 
+          def self.garnered_find(id)
+            return nil unless (binding = identify(id))
+            identity = Garner::Cache::Identity.new
+            identity.bind(binding).key({ :source => :garnered_find }) { find(id) }
+          end
+
           after_create    :invalidate_garner_caches
           after_update    :invalidate_garner_caches
           before_destroy  :invalidate_garner_caches
