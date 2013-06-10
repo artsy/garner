@@ -8,13 +8,10 @@ Usage
 
 ### Application Logic Caching
 
-Add Garner to your Gemfile with `gem "garner"` and run `bundle install`. Include the Rack mixin in your application. For Grape, this could be done like so:
+Add Garner to your Gemfile with `gem "garner"` and run `bundle install`. Next, include the appropriate mixin in your app:
 
-```ruby
-class API < Grape::API
-  helpers Garner::Mixins::Rack
-end
-```
+* For plain-old Ruby apps, `include Garner::Cache::Context`.
+* For Rack apps, `include Garner::Mixins::Rack`. (This provides saner defaults for injecting request parameters into the cache context key. More on cache context keys later.)
 
 Now, to use Garner's cache, invoke `garner` with a logic block from within your application. The result of the block will be computed once, and then stored in the cache.
 
@@ -41,22 +38,13 @@ get "/me/address" do
 end
 ```
 
-But what if you want to bind a cache result to a persisted object that hasn't been retrieved yet? Consider the example of caching a particular order without a database query:
 
-```ruby
-get "/order/:id" do
-  # Invalidate when Order.find(params[:id]) is modified
-  garner.bind(Order.identify(params[:id])) do
-    Order.find(params[:id])
-  end
-end
-```
+Third-Party Integrations
+------------------------
 
-In the above example, the `Order.identify` call will not result in a database query. Instead, it just communicates to Garner's cache sweeper that whenever the order with identity `params[:id]` is updated, this cache result should be invalidated.
+### Mongoid
 
-### Caching Persisted Objects
-
-Garner provides helper methods for cached `find` operations in Mongoid. To use, just include the Mongoid mixin with the following code snippet, which can go in an initializer:
+To use Mongoid documents and classes for Garner bindings, use `Garner::Mixins::Mongoid::Document`. You can set it up in an initializer:
 
 ``` ruby
 module Mongoid
@@ -66,17 +54,7 @@ module Mongoid
 end
 ```
 
-Now, we can use the following code to fetch an order by ID once from the database, and then from the cache on subsequent requests. The cache will be invalidated whenever the underlying persisted object changes in the database.
-
-```ruby
-order = Order.garnered_find(3)
-```
-
-
-Under The Hood: Bindings
-------------------------
-
-As we've seen, a cache result can be bound to a model instance (e.g., `current_user`) or a virtual instance reference (`Order.identify(params[:id])`). It can also be bound to an entire model class. In this case, whenever any order is created, updated or deleted, the cache result will be invalidated:
+This enables binding to Mongoid classes as well as instances. For example:
 
 ```ruby
 get "/system/counts/orders" do
@@ -89,12 +67,53 @@ get "/system/counts/orders" do
 end
 ```
 
-We can compose bindings, too:
+What if you want to bind a cache result to a persisted object that hasn't been retrieved yet? Consider the example of caching a particular order without a database query:
+
+```ruby
+get "/order/:id" do
+  # Invalidate when Order.find(params[:id]) is modified
+  garner.bind(Order.identify(params[:id])) do
+    Order.find(params[:id])
+  end
+end
+```
+
+In the above example, the `Order.identify` call will not result in a database query. Instead, it just communicates to Garner's cache sweeper that whenever the order with identity `params[:id]` is updated, this cache result should be invalidated. The `identify` method is provided by the Mongoid mixin. To use it, you should configure `Garner.config.mongoid_identity_fields`, e.g.:
+
+```ruby
+Garner.configure.do |config|
+  config.mongoid_identity_fields = [:_id, :_slugs]
+end
+```
+
+These may be scalar or array fields. Only uniquely-constrained fields should be used here; otherwise you risk caching the same result for two different blocks.
+
+The Mongoid mixin also provides helper methods for cached `find` operations. The following code will fetch an order once (via `find`) from the database, and then fetch it from the cache on subsequent requests. The cache will be invalidated whenever the underlying `Order` changes in the database.
+
+```ruby
+order = Order.garnered_find(3)
+```
+
+Explicit invalidation should be unnecessary, since callbacks are declared to invalidate the cache whenever a Mongoid object is created, updated or destroyed, but for special cases, `invalidate_garner_caches` may be called on a Mongoid object or class:
+
+```ruby
+Order.invalidate_garner_caches
+Order.find(3).invalidate_garner_caches
+```
+
+### ActiveRecord
+
+Garner provides rudimentary support for `ActiveRecord`. No mixins are required to bind to `ActiveRecord` objects. Just call `garner.bind(model)`, where `model` is an `ActiveRecord` object.
+
+
+Under The Hood: Bindings
+------------------------
+
+As we've seen, a cache result can be bound to a model instance (e.g., `current_user`) or a virtual instance reference (`Order.identify(params[:id])`). In some cases, we may want to compose bindings:
 
 ```ruby
 get "/system/counts/all" do
   # Invalidate when any order or user is modified
-  # (Equivalent to `garner.bind(Order, User)`)
   garner.bind(Order).bind(User) do
     {
       "orders_count" => Order.count,
@@ -104,13 +123,15 @@ get "/system/counts/all" do
 end
 ```
 
-In the first route above, the cache result will be invalidated whenever the order with identity `params[:order_id]` and belonging to a user with identity `params[:user_id]` is updated. In the second route, the cache result will be invalidated whenever *any order* belonging to that user is updated.
+Binding keys are computed via pluggable strategies, as are the rules for invalidating caches when a binding changes. By default, Garner uses `Garner::Strategies::Binding::Key::CacheKey` to compute binding keys: this uses `cache_key` if defined on an object; otherwise it always bypasses cache. Similarly, Garner uses `Garner::Strategies::Binding::Invalidation::Touch` as its default invalidation strategy. This will call `:touch` on a document if it is defined; otherwise it will take no action.
+
+Additional binding and invalidation strategies can be written. To use them, set `Garner.config.binding_key_strategy` and `Garner.config.binding_invalidation_strategy`. Alternatively, for Mongoid-specific strategies, set `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_binding_invalidation_strategy`.
 
 
-Under The Hood: Cache Keys
---------------------------
+Under The Hood: Cache Context Keys
+----------------------------------
 
-Explicit cache keys are usually unnecessary in Garner. Given a cache binding, Garner will compute an appropriately unique cache key. Moreover, in the context of `Garner::Mixins::Rack`, Garner will compose the following key factors by default:
+Explicit cache context keys are usually unnecessary in Garner. Given a cache binding, Garner will compute an appropriately unique cache key. Moreover, in the context of `Garner::Mixins::Rack`, Garner will compose the following key factors by default:
 
 * `Garner::Strategies::Context::Key::Caller` inserts the calling file and line number, allowing multiple calls from the same function to generate different results.
 * `Garner::Strategies::Context::Key::RequestGet` inserts the value of HTTP request's GET parameters into the cache key when `:request` is present in the context.
@@ -127,33 +148,7 @@ get "/order/:id" do
 end
 ```
 
-As with cache bindings, key factors may be composed by calling `key()` multiple times on a `garner` invocation. The keys will be applied in the order in which they are called.
-
-
-Under The Hood: Invalidation
-----------------------------
-
-Invalidation can be triggered programmatically by calling `invalidate_garner_caches` on a model class or instance. Both of the following invocations will work:
-
-```ruby
-Order.invalidate_garner_caches
-Order.find(3).invalidate_garner_caches
-```
-
-The application is responsible for ensuring invalidation on create, update and save actions. Garner currently provides a [Mongoid](https://github.com/mongoid/mongoid) mixin, which does exactly this. Extend `Mongoid::Document` as follows (e.g., in `config/initializers/mongoid_document.rb`).
-
-``` ruby
-require "garner"
-require "garner/mixins/mongoid"
-
-module Mongoid
-  module Document
-    include Garner::Mixins::Mongoid::Document
-  end
-end
-```
-
-Please contribute invalidation mixins for other ORMs, like ActiveRecord!
+As with bindings, context key factors may be composed by calling `key()` multiple times on a `garner` invocation. The keys will be applied in the order in which they are called.
 
 
 Configuration
@@ -167,6 +162,24 @@ Garner.configure do |config|
 end
 ```
 
+The full list of  `Garner.config` attributes is:
+
+* `:global_cache_options`: A hash of options to be passed on every call to `Garner.config.cache`, like `{ :expires_in => 10.minutes }`. Defaults to `{}`
+* `:context_key_strategies`: An array of context key strategies, to be applied in order. Defaults to `[Garner::Strategies::Context::Key::Caller]`
+* `:rack_context_key_strategies`: Rack-specific context key strategies. Defaults to:
+```ruby
+[
+  Garner::Strategies::Context::Key::Caller,
+  Garner::Strategies::Context::Key::RequestGet,
+  Garner::Strategies::Context::Key::RequestPost,
+  Garner::Strategies::Context::Key::RequestPath
+]
+```
+* `:binding_key_strategy`: Binding key strategy. Defaults to `Garner::Strategies::Binding::Key::CacheKey`.
+* `:binding_invalidation_strategy`: Binding invalidation strategy. Defaults to `Garner::Strategies::Binding::Invalidation::Touch`.
+* `:mongoid_binding_key_strategy`: Mongoid-specific binding key strategy. Defaults to `Garner::Strategies::Binding::Key::CacheKey`.
+* `:mongoid_binding_invalidation_strategy`: Mongoid-specific binding invalidation strategy. Defaults to `Garner::Strategies::Binding::Invalidation::Touch`.
+* `:mongoid_identity_fields`: Identity fields considered legal for the `identity` method. Defaults to `[:_id]`.
 
 Contributing
 ------------
