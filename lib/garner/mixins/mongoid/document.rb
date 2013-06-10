@@ -1,5 +1,3 @@
-require "garner"
-
 # Set up Garner configuration parameters
 Garner.config.option(:mongoid_binding_key_strategy, {
   :default => Garner.config.binding_key_strategy

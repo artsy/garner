@@ -1,5 +1,5 @@
 require "spec_helper"
-require "garner/mixins/mongoid_document"
+require "garner/mixins/mongoid"
 
 describe Garner::Mixins::Mongoid::Document do
   before(:each) do

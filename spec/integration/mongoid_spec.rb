@@ -1,5 +1,5 @@
 require "spec_helper"
-require "garner/mixins/mongoid_document"
+require "garner/mixins/mongoid"
 
 describe "Mongoid integration" do
   before(:each) do
@@ -41,10 +41,10 @@ describe "Mongoid integration" do
 
           context "to a real Mongoid object" do
             let(:cached_object_namer) do
-              lambda {
+              lambda do
                 found = Monger.find(@object.id)
                 @app.garner.bind(found) { found.name }
-              }
+              end
             end
 
             it "invalidates on update" do
@@ -86,10 +86,10 @@ describe "Mongoid integration" do
               end
 
               let(:cached_object_namer) do
-                lambda {
-                found = Food.find(@object.id)
-                @app.garner.bind(found) { found.name }
-                }
+                lambda do
+                  found = Food.find(@object.id)
+                  @app.garner.bind(found) { found.name }
+                end
               end
 
               it "binds to the correct object" do
@@ -107,10 +107,10 @@ describe "Mongoid integration" do
               end
 
               let(:cached_object_namer) do
-                lambda {
+                lambda do
                   found = Monger.where({ "fish._id" => @fish.id }).first.fish
                   @app.garner.bind(found) { found.name }
-                }
+                end
               end
 
               it "binds to the correct object" do
@@ -119,14 +119,38 @@ describe "Mongoid integration" do
                 cached_object_namer.call.should == "Sockeye"
               end
             end
+
+            context "with multiple identities" do
+              before(:each) do
+                Garner.configure do |config|
+                  config.mongoid_identity_fields = [:_id, :_slugs]
+                end
+              end
+
+              let(:cached_object_namer_by_slug) do
+                lambda do |slug|
+                  found = Monger.find(slug)
+                  binding.pry if found.nil?
+                  @app.garner.bind(found) { found.name }
+                end
+              end
+
+              it "invalidates all identities" do
+                cached_object_namer.call.should == "M1"
+                cached_object_namer_by_slug.call("m1").should == "M1"
+                @object.update_attributes!({ :name => "M2" })
+                cached_object_namer.call.should == "M2"
+                cached_object_namer_by_slug.call("m1").should == "M2"
+              end
+            end
           end
         end
 
         context "binding at the class level" do
           let(:cached_object_name_concatenator) do
-            lambda {
+            lambda do
               @app.garner.bind(Monger) { Monger.all.map(&:name).join(", ") }
-            }
+            end
           end
           it "invalidates on create" do
             cached_object_name_concatenator.call.should == ""
@@ -156,17 +180,6 @@ describe "Mongoid integration" do
             cached_object_name_concatenator.call.should == "M2"
           end
         end
-      end
-    end
-  end
-
-  context "multiple-identity-respecting strategy pairs" do
-    {
-    Garner::Strategies::Binding::Key::CacheKey =>
-      Garner::Strategies::Binding::Invalidation::Touch
-    }.each do |key_strategy, invalidation_strategy|
-      context "using #{key_strategy} with #{invalidation_strategy}" do
-        it "invalidates all identities"
       end
     end
   end

@@ -1,4 +1,5 @@
-require "garner/mixins/mongoid_document"
+require "garner/mixins/mongoid"
+require "mongoid_slug"
 
 # Use garner_test database for integration tests
 yaml = File.join(File.dirname(__FILE__), "mongoid.yml")
@@ -8,11 +9,13 @@ Mongoid.load!(yaml, :test)
 class Monger
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Slug
   include Garner::Mixins::Mongoid::Document
   embeds_one :fish
   has_many :cheeses
 
   field :name, :type => String
+  slug :name, :history => true
 end
 
 class Food

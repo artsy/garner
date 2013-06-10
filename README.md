@@ -143,6 +143,9 @@ Order.find(3).invalidate_garner_cache
 The application is responsible for ensuring invalidation on create, update and save actions. Garner currently provides a [Mongoid](https://github.com/mongoid/mongoid) mixin, which does exactly this. Extend `Mongoid::Document` as follows (e.g., in `config/initializers/mongoid_document.rb`).
 
 ``` ruby
+require "garner"
+require "garner/mixins/mongoid"
+
 module Mongoid
   module Document
     include Garner::Mixins::Mongoid::Document

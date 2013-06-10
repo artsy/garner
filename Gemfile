@@ -13,6 +13,7 @@ group :development, :test do
   gem "rspec",      ">= 2.10.0"
   gem "jeweler"
   gem "mongoid",    ">= 3.0.0"
+  gem "mongoid_slug", ">= 1.0.0"
   gem "dalli"
   gem "activerecord"
   gem "sqlite3"
