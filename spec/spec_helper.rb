@@ -14,6 +14,9 @@ require "active_record"
 # Require pry so that binding.pry will work out of the box for debugging
 require "pry"
 
+require "coveralls"
+Coveralls.wear!
+
 # Load shared examples
 ["shared/*.rb", "support/*.rb"].each do |path|
   Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|

@@ -18,6 +18,7 @@ group :development, :test do
   gem "activerecord"
   gem "sqlite3"
   gem "timecop"
+  gem "coveralls"
 end
 
 group :development do
