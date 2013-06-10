@@ -39,8 +39,8 @@ end
 ```
 
 
-Third-Party Integrations
-------------------------
+ORM Integrations
+----------------
 
 ### Mongoid
 
