@@ -1,6 +1,6 @@
 # Set up Garner configuration parameters
 Garner.config.option(:context_key_strategies, {
-  :default => [ Garner::Strategies::Context::Key::Caller ]
+  :default => [Garner::Strategies::Context::Key::Caller]
 })
 
 module Garner

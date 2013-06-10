@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Garner::Strategies::Context::Key::RequestGet do
-  [ "GET", "HEAD" ].each do |method|
+  ["GET", "HEAD"].each do |method|
     context method do
 
       before(:each) do

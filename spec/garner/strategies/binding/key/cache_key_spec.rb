@@ -6,8 +6,8 @@ describe Garner::Strategies::Binding::Key::CacheKey do
   end
 
   it_behaves_like "Garner::Strategies::Binding::Key strategy" do
-    let(:known_bindings) { [ @mock ] }
-    let(:unknown_bindings) { [ @mock.class ] }
+    let(:known_bindings) { [@mock] }
+    let(:unknown_bindings) { [@mock.class] }
   end
 
   it "returns the object's cache key, or nil" do

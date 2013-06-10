@@ -18,7 +18,7 @@ module Garner
 
       # Bind this cache identity to a (bindable) object.
       #
-      # @param bind [Object] An object; should support configured binding strategy.
+      # @param object [Object] An object; should support configured binding strategy.
       def bind(object, &block)
         @bindings << object
         block_given? ? fetch(&block) : self

@@ -22,7 +22,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
   gem.email = "dblock@dblock.org"
   gem.version = Garner::VERSION
-  gem.authors = [ "Daniel Doubrovkine", "Frank Macreery" ]
+  gem.authors = ["Daniel Doubrovkine", "Frank Macreery"]
   gem.files = Dir.glob("lib/**/*")
 end
 
@@ -38,11 +38,4 @@ end
 task :default => :spec
 
 require "yard"
-YARD_OPTS = ["-m", "github-markup", "-M", "redcarpet"]
-DOC_FILES = ["lib/**/*.rb", "*.md"]
-
-YARD::Rake::YardocTask.new(:doc) do |t|
-  t.files   = DOC_FILES
-  t.options = YARD_OPTS
-end
-
+YARD::Rake::YardocTask.new(:doc)

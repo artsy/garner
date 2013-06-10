@@ -15,7 +15,7 @@ require "active_record"
 require "pry"
 
 # Load shared examples
-[ "shared/*.rb", "support/*.rb" ].each do |path|
+["shared/*.rb", "support/*.rb"].each do |path|
   Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|
     require file
   end

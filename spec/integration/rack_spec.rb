@@ -18,7 +18,7 @@ describe "Rack integration" do
         [
           200,
           { "Content-Type" => "application/json" },
-          [ random1, random2 ].to_json
+          [random1, random2].to_json
         ]
       end
     end

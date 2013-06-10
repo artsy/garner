@@ -20,13 +20,13 @@ describe Garner::Strategies::Context::Key::Caller do
   end
 
   it "ignores nil caller location" do
-    @mock_context.stub(:caller) { [ nil ] }
+    @mock_context.stub(:caller) { [nil] }
     subject.apply(@cache_identity, @mock_context)
     @cache_identity.key_hash[:caller].should be_nil
   end
 
   it "ignores blank caller location" do
-    @mock_context.stub(:caller) { [ "" ] }
+    @mock_context.stub(:caller) { [""] }
     subject.apply(@cache_identity, @mock_context)
     @cache_identity.key_hash[:caller].should be_nil
   end

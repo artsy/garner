@@ -2,7 +2,7 @@ require "spec_helper"
 require "garner/mixins/mongoid"
 
 describe Garner::Mixins::Mongoid::Document do
-  [ Monger, Monger.create ].each do |binding|
+  [Monger, Monger.create].each do |binding|
     context "at the #{binding.is_a?(Class) ? "class" : "instance" } level" do
       before(:each) do
         @mock_strategy = double "strategy"

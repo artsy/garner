@@ -133,11 +133,11 @@ As with cache bindings, key factors may be composed by calling `key()` multiple 
 Under The Hood: Invalidation
 ----------------------------
 
-Invalidation can be triggered programmatically by calling `invalidate_garner_cache` on a model class or instance. Both of the following invocations will work:
+Invalidation can be triggered programmatically by calling `invalidate_garner_caches` on a model class or instance. Both of the following invocations will work:
 
 ```ruby
-Order.invalidate_garner_cache
-Order.find(3).invalidate_garner_cache
+Order.invalidate_garner_caches
+Order.find(3).invalidate_garner_caches
 ```
 
 The application is responsible for ensuring invalidation on create, update and save actions. Garner currently provides a [Mongoid](https://github.com/mongoid/mongoid) mixin, which does exactly this. Extend `Mongoid::Document` as follows (e.g., in `config/initializers/mongoid_document.rb`).

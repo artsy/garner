@@ -18,7 +18,7 @@ describe Garner::Cache::Identity do
     it "adds to the object identity's bindings" do
       subject.bind("foo")
       subject.bind("bar")
-      subject.bindings.should == [ "foo", "bar" ]
+      subject.bindings.should == ["foo", "bar"]
     end
 
     it "raises an error for <> 1 arguments" do

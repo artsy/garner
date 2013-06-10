@@ -18,7 +18,7 @@ module Garner
               return identity unless (ruby_context.respond_to?(:request))
 
               request = ruby_context.request
-              if request && [ "GET", "HEAD" ].include?(request.request_method)
+              if request && ["GET", "HEAD"].include?(request.request_method)
                 identity.key(field => request.GET.dup)
               end
               identity

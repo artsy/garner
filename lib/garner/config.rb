@@ -9,7 +9,7 @@ module Garner
     #     config.cache = Rails.cache
     #   end
     #
-    # @return [ Config ] The configuration object.
+    # @return [Config] The configuration object.
     def configure
       block_given? ? yield(Garner::Config) : Garner::Config
     end
@@ -33,10 +33,10 @@ module Garner
     # @example Define the option.
     #   Config.option(:cache, :default => nil)
     #
-    # @param [ Symbol ] name The name of the configuration option.
-    # @param [ Hash ] options Extras for the option.
+    # @param [Symbol] name The name of the configuration option.
+    # @param [Hash] options Extras for the option.
     #
-    # @option options [ Object ] :default The default value.
+    # @option options [Object] :default The default value.
     def option(name, options = {})
       defaults[name] = settings[name] = options[:default]
 
@@ -61,7 +61,7 @@ module Garner
     # @example Get the default cache store
     #   config.default_cache
     #
-    # @return [ Cache ] The default cache store instance.
+    # @return [Cache] The default cache store instance.
     def default_cache
       if defined?(Rails) && Rails.respond_to?(:cache)
         Rails.cache
@@ -76,7 +76,7 @@ module Garner
     # @example Get the cache.
     #   config.cache
     #
-    # @return [ Cache ] The configured cache or a default cache instance.
+    # @return [Cache] The configured cache or a default cache instance.
     def cache
       settings[:cache] = default_cache unless settings.has_key?(:cache)
       settings[:cache]
@@ -87,7 +87,7 @@ module Garner
     # @example Set the cache.
     #   config.cache = Rails.cache
     #
-    # @return [ Cache ] The newly set cache.
+    # @return [Cache] The newly set cache.
     def cache=(cache)
       settings[:cache] = cache
     end

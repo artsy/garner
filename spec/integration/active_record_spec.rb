@@ -12,8 +12,8 @@ describe "ActiveRecord integration" do
       subject { Garner::Strategies::Binding::Key::CacheKey }
 
       it_behaves_like "Garner::Strategies::Binding::Key strategy" do
-        let(:known_bindings) { [ Activist.create, Activist.new ] }
-        let(:unknown_bindings) { [ Activist ] }
+        let(:known_bindings) { [Activist.create, Activist.new] }
+        let(:unknown_bindings) { [Activist] }
       end
 
       it "returns the object's cache key, or nil" do
