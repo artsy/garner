@@ -33,6 +33,10 @@ module Garner
             Garner.config.mongoid_binding_invalidation_strategy
           end
 
+          def self.identify(id)
+            Garner::Mixins::Mongoid::Identity.from_class_and_id(self, id)
+          end
+
           after_create    :invalidate_garner_caches
           after_update    :invalidate_garner_caches
           before_destroy  :invalidate_garner_caches

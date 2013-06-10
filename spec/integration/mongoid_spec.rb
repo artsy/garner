@@ -39,108 +39,112 @@ describe "Mongoid integration" do
             end
           end
 
-          context "to a real Mongoid object" do
-            let(:cached_object_namer) do
-              lambda do
-                found = Monger.find(@object.id)
-                @app.garner.bind(found) { found.name }
-              end
-            end
-
-            it "invalidates on update" do
-              cached_object_namer.call.should == "M1"
-              @object.update_attributes!({ :name => "M2" })
-              cached_object_namer.call.should == "M2"
-            end
-
-            it "invalidates on destroy" do
-              cached_object_namer.call.should == "M1"
-              @object.destroy
-              cached_object_namer.should raise_error
-            end
-
-            it "invalidates by explicit call to invalidate_garner_caches" do
-              cached_object_namer.call.should == "M1"
-              @object.set(:name, "M2")
-              @object.invalidate_garner_caches
-              cached_object_namer.call.should == "M2"
-            end
-
-            it "does not invalidate results for other like-classed objects" do
-              cached_object_namer.call.should == "M1"
-              @object.set({ :name => "M2" })
-
-              new_monger = Monger.create!({ :name => "M3" })
-              new_monger.update_attributes!({ :name => "M4" })
-              new_monger.destroy
-
-              cached_object_namer.call.should == "M1"
-            end
-
-            context "with inheritance" do
-              before(:each) do
-                Timecop.freeze(1.second.ago) do
-                  @monger = Monger.create!({ :name => "M1" })
-                  @object = Cheese.create!({ :name => "Swiss", :monger => @monger })
-                end
-              end
-
+          [:find, :identify].each do |selection_method|
+            context "binding via #{selection_method}" do
               let(:cached_object_namer) do
                 lambda do
-                  found = Food.find(@object.id)
-                  @app.garner.bind(found) { found.name }
+                  binding = Monger.send(selection_method, @object.id)
+                  object = Monger.find(@object.id)
+                  @app.garner.bind(binding) { object.name }
                 end
               end
 
-              it "binds to the correct object" do
-                cached_object_namer.call.should == "Swiss"
-                @object.update_attributes!({ :name => "Havarti" })
-                cached_object_namer.call.should == "Havarti"
-              end
-            end
-
-            context "with an embedded document" do
-              before(:each) do
-                Timecop.freeze(1.second.ago) do
-                  @fish = Monger.create!({ :name => "M1" }).create_fish({ :name => "Trout" })
-                end
-              end
-
-              let(:cached_object_namer) do
-                lambda do
-                  found = Monger.where({ "fish._id" => @fish.id }).first.fish
-                  @app.garner.bind(found) { found.name }
-                end
-              end
-
-              it "binds to the correct object" do
-                cached_object_namer.call.should == "Trout"
-                @fish.update_attributes!({ :name => "Sockeye" })
-                cached_object_namer.call.should == "Sockeye"
-              end
-            end
-
-            context "with multiple identities" do
-              before(:each) do
-                Garner.configure do |config|
-                  config.mongoid_identity_fields = [:_id, :_slugs]
-                end
-              end
-
-              let(:cached_object_namer_by_slug) do
-                lambda do |slug|
-                  found = Monger.find(slug)
-                  binding.pry if found.nil?
-                  @app.garner.bind(found) { found.name }
-                end
-              end
-
-              it "invalidates all identities" do
+              it "invalidates on update" do
                 cached_object_namer.call.should == "M1"
-                cached_object_namer_by_slug.call("m1").should == "M1"
                 @object.update_attributes!({ :name => "M2" })
                 cached_object_namer.call.should == "M2"
-                cached_object_namer_by_slug.call("m1").should == "M2"
+              end
+
+              it "invalidates on destroy" do
+                cached_object_namer.call.should == "M1"
+                @object.destroy
+                cached_object_namer.should raise_error
+              end
+
+              it "invalidates by explicit call to invalidate_garner_caches" do
+                cached_object_namer.call.should == "M1"
+                @object.set(:name, "M2")
+                @object.invalidate_garner_caches
+                cached_object_namer.call.should == "M2"
+              end
+
+              it "does not invalidate results for other like-classed objects" do
+                cached_object_namer.call.should == "M1"
+                @object.set({ :name => "M2" })
+
+                new_monger = Monger.create!({ :name => "M3" })
+                new_monger.update_attributes!({ :name => "M4" })
+                new_monger.destroy
+
+                cached_object_namer.call.should == "M1"
+              end
+
+              context "with inheritance" do
+                before(:each) do
+                  Timecop.freeze(1.second.ago) do
+                    @monger = Monger.create!({ :name => "M1" })
+                    @object = Cheese.create!({ :name => "Swiss", :monger => @monger })
+                  end
+                end
+
+                let(:cached_object_namer) do
+                  lambda do
+                    binding = Food.send(selection_method, @object.id)
+                    object = Food.find(@object.id)
+                    @app.garner.bind(binding) { object.name }
+                  end
+                end
+
+                it "binds to the correct object" do
+                  cached_object_namer.call.should == "Swiss"
+                  @object.update_attributes!({ :name => "Havarti" })
+                  cached_object_namer.call.should == "Havarti"
+                end
+              end
+
+              context "with an embedded document" do
+                before(:each) do
+                  Timecop.freeze(1.second.ago) do
+                    @fish = Monger.create!({ :name => "M1" }).create_fish({ :name => "Trout" })
+                  end
+                end
+
+                let(:cached_object_namer) do
+                  lambda do
+                    found = Monger.where({ "fish._id" => @fish.id }).first.fish
+                    @app.garner.bind(found) { found.name }
+                  end
+                end
+
+                it "binds to the correct object" do
+                  cached_object_namer.call.should == "Trout"
+                  @fish.update_attributes!({ :name => "Sockeye" })
+                  cached_object_namer.call.should == "Sockeye"
+                end
+              end
+
+              context "with multiple identities" do
+                before(:each) do
+                  Garner.configure do |config|
+                    config.mongoid_identity_fields = [:_id, :_slugs]
+                  end
+                end
+
+                let(:cached_object_namer_by_slug) do
+                  lambda do |slug|
+                    binding = Monger.send(selection_method, slug)
+                    object = Monger.find(slug)
+                    @app.garner.bind(binding) { object.name }
+                  end
+                end
+
+                it "invalidates all identities" do
+                  cached_object_namer.call.should == "M1"
+                  cached_object_namer_by_slug.call("m1").should == "M1"
+                  @object.update_attributes!({ :name => "M2" })
+                  cached_object_namer.call.should == "M2"
+                  cached_object_namer_by_slug.call("m1").should == "M2"
+                end
               end
             end
           end
