@@ -4,9 +4,7 @@ require "garner/mixins/rack"
 describe "Sinatra integration" do
 
   let(:app) do
-    class TestSinatraApp
-      require "sinatra"
-
+    class TestSinatraApp < Sinatra::Base
       helpers Garner::Mixins::Rack
       use Rack::ConditionalGet
       use Rack::ETag
@@ -22,7 +20,7 @@ describe "Sinatra integration" do
       end
     end
 
-    Sinatra::Application
+    TestSinatraApp.new
   end
 
   it_behaves_like "Rack::ConditionalGet server"
