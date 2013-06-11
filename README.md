@@ -3,6 +3,12 @@ Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://t
 
 Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
 
+Stable Release
+--------------
+
+You're reading the documentation for the next release of Garner, which should be 0.4.0. See [UPGRADING](UPGRADING.md).
+The current stable release is [0.3.3](https://github.com/artsy/garner/blob/v0.3.3/README.md).
+
 Usage
 -----
 
