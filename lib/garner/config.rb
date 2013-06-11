@@ -9,7 +9,7 @@ module Garner
     #     config.cache = Rails.cache
     #   end
     #
-    # @return [ Config ] The configuration object.
+    # @return [Config] The configuration object.
     def configure
       block_given? ? yield(Garner::Config) : Garner::Config
     end
@@ -21,10 +21,10 @@ module Garner
 
     # Current configuration settings.
     attr_accessor :settings
-    
+
     # Default configuration settings.
     attr_accessor :defaults
-    
+
     @settings = {}
     @defaults = {}
 
@@ -33,10 +33,10 @@ module Garner
     # @example Define the option.
     #   Config.option(:cache, :default => nil)
     #
-    # @param [ Symbol ] name The name of the configuration option.
-    # @param [ Hash ] options Extras for the option.
+    # @param [Symbol] name The name of the configuration option.
+    # @param [Hash] options Extras for the option.
     #
-    # @option options [ Object ] :default The default value.
+    # @option options [Object] :default The default value.
     def option(name, options = {})
       defaults[name] = settings[name] = options[:default]
 
@@ -54,23 +54,29 @@ module Garner
         end
       RUBY
     end
-    
-    # Returns the default cache store, either Rails.cache or an instance of ActiveSupport::Cache::MemoryStore.
+
+    # Returns the default cache store, either Rails.cache or an instance
+    # of ActiveSupport::Cache::MemoryStore.
     #
     # @example Get the default cache store
     #   config.default_cache
     #
-    # @return [ Cache ] The default cache store instance.
+    # @return [Cache] The default cache store instance.
     def default_cache
-      defined?(Rails) && Rails.respond_to?(:cache) ? Rails.cache : ::ActiveSupport::Cache::MemoryStore.new
+      if defined?(Rails) && Rails.respond_to?(:cache)
+        Rails.cache
+      else
+        ::ActiveSupport::Cache::MemoryStore.new
+      end
     end
 
-    # Returns the cache, or defaults to Rails cache when running in Rails or an instance of ActiveSupport::Cache::MemoryStore otherwise.
+    # Returns the cache, or defaults to Rails cache when running in Rails
+    # or an instance of ActiveSupport::Cache::MemoryStore otherwise.
     #
     # @example Get the cache.
     #   config.cache
     #
-    # @return [ Cache ] The configured cache or a default cache instance.
+    # @return [Cache] The configured cache or a default cache instance.
     def cache
       settings[:cache] = default_cache unless settings.has_key?(:cache)
       settings[:cache]
@@ -81,7 +87,7 @@ module Garner
     # @example Set the cache.
     #   config.cache = Rails.cache
     #
-    # @return [ Cache ] The newly set cache.
+    # @return [Cache] The newly set cache.
     def cache=(cache)
       settings[:cache] = cache
     end
@@ -93,7 +99,10 @@ module Garner
     def reset!
       settings.replace(defaults)
     end
-   
+
+    # Default cache options
+    option(:global_cache_options, :default => {})
+
     # Default cache expiration time.
     option(:expires_in, :default => nil)
   end

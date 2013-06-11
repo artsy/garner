@@ -8,14 +8,21 @@ gem "activesupport"
 group :development, :test do
   gem "bundler",    ">= 1.3.0"
   gem "grape",      ">= 0.2.0"
+  gem "sinatra"
   gem "rack-test"
   gem "rspec",      ">= 2.10.0"
   gem "jeweler"
   gem "mongoid",    ">= 3.0.0"
+  gem "mongoid_slug", ">= 1.0.0"
   gem "dalli"
+  gem "activerecord"
+  gem "sqlite3"
+  gem "timecop"
+  gem "coveralls"
 end
 
 group :development do
+  gem "pry"
   gem "yard"
   gem "redcarpet"
   gem "github-markup"

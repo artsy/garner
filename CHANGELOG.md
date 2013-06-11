@@ -1,3 +1,18 @@
+0.4.0 (TBD)
+-----------
+
+* Complete rewrite of Garner. See [UPGRADING](UPGRADING.md) for details on how to upgrade from Garner 0.3.3 and earlier versions - [@macreery](https://github.com/macreery).
+* Fixed #6: Garner fails if Mongoid not loaded yet - [@macreery](https://github.com/macreery).
+* Closed #12: Support arrays in `Garner.config.mongoid_identity_fields`- [@macreery](https://github.com/macreery).
+* Closed #13: Replace faulty multiple-identity logic- [@macreery](https://github.com/macreery).
+* Fixed #14: Disambiguate binding models by `:id` and `:slug`- [@macreery](https://github.com/macreery).
+* Fixed #15: Remove need for `cache_as` from subclassed Mongoid models - [@macreery](https://github.com/macreery).
+* Closed #23: Abstract all Grape mixins to be more generically Rack mixins - [@macreery](https://github.com/macreery).
+* Closed #24: Implement `garnered_find` method for `Mongoid::Document` classes - [@macreery](https://github.com/macreery).
+* Extracted `Binding`, `Context` and `Identity` as explicit classes from `ObjectIdentity`.
+* Added support for all ActiveModel-compliant ORMs.
+* Removed HTTP caching responsibilities from the library entirely.
+
 0.3.3 (6/10/2013)
 -----------------
 
