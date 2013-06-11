@@ -3,6 +3,8 @@ Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://t
 
 Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
 
+If you're not familiar with HTTP caching, ETags and If-Modified-Since, watch us introduce Garner in [From Zero to API Cache in 10 Minutes](http://www.confreaks.com/videos/986-goruco2012-from-zero-to-api-cache-w-grape-mongodb-in-10-minutes) at GoRuCo 2012.
+
 Stable Release
 --------------
 
