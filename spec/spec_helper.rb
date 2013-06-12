@@ -1,6 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
+require "coveralls"
+Coveralls.wear! if ENV["CI"]
+
 require "rspec"
 require "timecop"
 
@@ -13,9 +16,6 @@ require "active_record"
 
 # Require pry so that binding.pry will work out of the box for debugging
 require "pry"
-
-require "coveralls"
-Coveralls.wear!
 
 # Load shared examples
 ["shared/*.rb", "support/*.rb"].each do |path|
