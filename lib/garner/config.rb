@@ -1,7 +1,6 @@
 module Garner
 
   class << self
-
     # Set the configuration options. Best used by passing a block.
     #
     # @example Set up configuration options.
