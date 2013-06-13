@@ -7,6 +7,8 @@ describe Garner::Strategies::Binding::Invalidation::Touch do
     @mock.stub(:touch) {  }
   end
 
+  subject { Garner::Strategies::Binding::Invalidation::Touch }
+
   it_behaves_like "Garner::Strategies::Binding::Invalidation strategy"
 
   it "calls :touch on the object" do

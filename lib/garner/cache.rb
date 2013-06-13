@@ -2,7 +2,6 @@ module Garner
   module Cache
 
     class << self
-
       # Fetch a result from cache.
       #
       # @param bindings [Array] Objects to which the the cache result should be

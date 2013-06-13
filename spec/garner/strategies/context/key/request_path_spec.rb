@@ -9,6 +9,8 @@ describe Garner::Strategies::Context::Key::RequestPath do
     @mock_context.stub(:request) { @request }
   end
 
+  subject { Garner::Strategies::Context::Key::RequestPath }
+
   it_behaves_like "Garner::Strategies::Context::Key strategy"
 
   it "adds :request_params to the key" do

@@ -8,7 +8,7 @@ module Garner
           #
           # @param binding [Object] The object from which to compute a key.
           # @return [String] A cache key string.
-          def apply(binding)
+          def self.apply(binding)
             if binding.respond_to?(:safe_cache_key)
               binding.safe_cache_key
             elsif binding.respond_to?(:cache_key)

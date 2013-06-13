@@ -14,7 +14,7 @@ module Garner
       #
       # @return [Object] The strategy to be used for instances of this class.
       def key_strategy
-        Garner.config.binding_key_strategy.new
+        Garner.config.binding_key_strategy
       end
 
       # Apply the cache key strategy to this binding.
@@ -26,7 +26,7 @@ module Garner
       #
       # @return [Object] The strategy to be used for instances of this class.
       def invalidation_strategy
-        Garner.config.binding_invalidation_strategy.new
+        Garner.config.binding_invalidation_strategy
       end
 
       # Apply the invalidation strategy to this binding.

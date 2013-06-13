@@ -6,6 +6,8 @@ describe Garner::Strategies::Context::Key::Caller do
     @mock_context = double "object"
   end
 
+  subject { Garner::Strategies::Context::Key::Caller }
+
   it_behaves_like "Garner::Strategies::Context::Key strategy"
 
   it "adds a caller line" do

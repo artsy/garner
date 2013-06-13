@@ -16,11 +16,11 @@ module Garner
         end
 
         def key_strategy
-          Garner.config.mongoid_binding_key_strategy.new
+          Garner.config.mongoid_binding_key_strategy
         end
 
         def invalidation_strategy
-          Garner.config.mongoid_binding_invalidation_strategy.new
+          Garner.config.mongoid_binding_invalidation_strategy
         end
 
         def safe_cache_key

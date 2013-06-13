@@ -6,7 +6,7 @@ shared_examples_for "Garner::Strategies::Context::Key strategy" do
   end
 
   it "inherits from Garner::Strategies::Context::Key::Base" do
-    subject.should be_a(Garner::Strategies::Context::Key::Base)
+    subject.new.should be_a(Garner::Strategies::Context::Key::Base)
   end
 
   it "requires a Garner::Cache::Identity" do

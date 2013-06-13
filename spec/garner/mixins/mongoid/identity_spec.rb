@@ -2,20 +2,19 @@ require "spec_helper"
 require "garner/mixins/mongoid"
 
 describe Garner::Mixins::Mongoid::Identity do
+  before(:each) do
+    @mock_strategy = double "strategy"
+    @mock_strategy.stub(:apply)
+    @mock_mongoid_strategy = double "mongoid_strategy"
+    @mock_mongoid_strategy.stub(:apply)
+  end
+
   subject { Garner::Mixins::Mongoid::Identity.new }
-    before(:each) do
-      @mock_strategy = double "strategy"
-      @mock_strategy.stub(:apply)
-      @mock_strategy_class.stub(:new) { @mock_strategy }
-      @mock_mongoid_strategy = double "mongoid_strategy"
-      @mock_mongoid_strategy.stub(:apply)
-      @mock_mongoid_strategy_class.stub(:new) { @mock_mongoid_strategy }
-    end
 
   it "accepts a different key strategy than the global default" do
     Garner.configure do |config|
-      config.binding_key_strategy = @mock_strategy_class
-      config.mongoid_binding_key_strategy = @mock_mongoid_strategy_class
+      config.binding_key_strategy = @mock_strategy
+      config.mongoid_binding_key_strategy = @mock_mongoid_strategy
     end
 
     @mock_mongoid_strategy.should_receive(:apply).with(subject)
@@ -24,8 +23,8 @@ describe Garner::Mixins::Mongoid::Identity do
 
   it "accepts a different invalidation strategy than the global default" do
     Garner.configure do |config|
-      config.binding_invalidation_strategy = @mock_strategy_class
-      config.mongoid_binding_invalidation_strategy = @mock_mongoid_strategy_class
+      config.binding_invalidation_strategy = @mock_strategy
+      config.mongoid_binding_invalidation_strategy = @mock_mongoid_strategy
     end
 
     @mock_mongoid_strategy.should_receive(:apply).with(subject)

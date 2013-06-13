@@ -7,6 +7,8 @@ describe Garner::Strategies::Binding::Key::CacheKey do
     @mock.stub(:cache_key) { "mocks/4" }
   end
 
+  subject { Garner::Strategies::Binding::Key::CacheKey }
+
   it_behaves_like "Garner::Strategies::Binding::Key strategy" do
     let(:known_bindings) { [@mock] }
     let(:unknown_bindings) { [@mock.class] }

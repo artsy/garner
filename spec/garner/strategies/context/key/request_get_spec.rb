@@ -15,6 +15,8 @@ describe Garner::Strategies::Context::Key::RequestGet do
         @mock_context.stub(:request) { @request }
       end
 
+      subject { Garner::Strategies::Context::Key::RequestGet }
+
       it_behaves_like "Garner::Strategies::Context::Key strategy"
 
       it "adds :request_params to the key" do

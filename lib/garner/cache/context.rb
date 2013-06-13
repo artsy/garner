@@ -17,7 +17,7 @@ module Garner
       def garner(&block)
         identity = Garner::Cache::Identity.new
         Garner.config.context_key_strategies.each do |strategy|
-          identity = strategy.new.apply(identity, self)
+          identity = strategy.apply(identity, self)
         end
 
         block_given? ? identity.fetch(&block) : identity

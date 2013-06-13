@@ -6,7 +6,7 @@ shared_examples_for "Garner::Strategies::Binding::Key strategy" do
   end
 
   it "inherits from Garner::Strategies::Binding::Key::Base" do
-    subject.should be_a(Garner::Strategies::Binding::Key::Base)
+    subject.new.should be_a(Garner::Strategies::Binding::Key::Base)
   end
 
   describe "given a known binding" do

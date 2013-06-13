@@ -7,7 +7,7 @@ module Garner
           # Specifies whether invalidation should happen on callbacks.
           #
           # @param kind [Symbol] One of :create, :update, :destroy
-          def apply_on_callback?(kind = nil)
+          def self.apply_on_callback?(kind = nil)
             false
           end
 
@@ -16,12 +16,12 @@ module Garner
           #
           # @param binding [Object] The binding whose caches are to be
           #   invalidated.
-          def apply(binding)
+          def self.apply(binding)
             binding.touch if binding.respond_to?(:touch)
           end
         end
-
       end
+
     end
   end
 end
