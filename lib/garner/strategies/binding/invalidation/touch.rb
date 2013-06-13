@@ -5,9 +5,19 @@ module Garner
         module Touch
 
           class << self
-            # Invalidate an object binding.
+
+            # Specifies whether invalidation should happen on callbacks.
             #
-            # @param binding [Object] The object from which to compute a key.
+            # @param kind [Symbol] One of :create, :update, :destroy
+            def apply_on_callback?(kind = nil)
+              false
+            end
+
+            # Force-invalidate an object binding. Used when bindings are
+            # explicitly invalidated, via binding.invalidate_garner_caches.
+            #
+            # @param binding [Object] The binding whose caches are to be
+            #   invalidated.
             def apply(binding)
               binding.touch if binding.respond_to?(:touch)
             end

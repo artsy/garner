@@ -34,6 +34,25 @@ module Garner
         invalidation_strategy.apply(self)
       end
 
+      protected
+      def _garner_after_create
+        if invalidation_strategy.apply_on_callback?(:create)
+          invalidation_strategy.apply(self)
+        end
+      end
+
+      def _garner_after_update
+        if invalidation_strategy.apply_on_callback?(:update)
+          invalidation_strategy.apply(self)
+        end
+      end
+
+      def _garner_after_destroy
+        if invalidation_strategy.apply_on_callback?(:destroy)
+          invalidation_strategy.apply(self)
+        end
+      end
+
     end
   end
 end

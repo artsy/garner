@@ -43,9 +43,9 @@ module Garner
             identity.bind(binding).key({ :source => :garnered_find }) { find(id) }
           end
 
-          after_create    :invalidate_garner_caches
-          after_update    :invalidate_garner_caches
-          before_destroy  :invalidate_garner_caches
+          after_create    :_garner_after_create
+          after_update    :_garner_after_update
+          after_destroy   :_garner_after_destroy
         end
 
       end
