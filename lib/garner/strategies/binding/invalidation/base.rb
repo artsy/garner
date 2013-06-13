@@ -2,13 +2,13 @@ module Garner
   module Strategies
     module Binding
       module Invalidation
-        class Touch < Base
+        class Base
 
           # Specifies whether invalidation should happen on callbacks.
           #
           # @param kind [Symbol] One of :create, :update, :destroy
           def apply_on_callback?(kind = nil)
-            false
+            true
           end
 
           # Force-invalidate an object binding. Used when bindings are
@@ -17,7 +17,6 @@ module Garner
           # @param binding [Object] The binding whose caches are to be
           #   invalidated.
           def apply(binding)
-            binding.touch if binding.respond_to?(:touch)
           end
         end
 

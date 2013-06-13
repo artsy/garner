@@ -1,6 +1,10 @@
 # Shared examples for binding invalidation strategies. A valid strategy must
 # implement apply(binding) and force_apply(binding)
 shared_examples_for "Garner::Strategies::Binding::Invalidation strategy" do
+  it "inherits from Garner::Strategies::Binding::Invalidation::Base" do
+    subject.should be_a(Garner::Strategies::Binding::Invalidation::Base)
+  end
+
   describe "apply" do
     it "requires an argument" do
       expect { subject.apply }.to raise_error

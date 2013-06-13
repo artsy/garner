@@ -15,22 +15,22 @@ module Garner
         include Garner::Cache::Binding
 
         def key_strategy
-          Garner.config.mongoid_binding_key_strategy
+          Garner.config.mongoid_binding_key_strategy.new
         end
 
         def invalidation_strategy
-          Garner.config.mongoid_binding_invalidation_strategy
+          Garner.config.mongoid_binding_invalidation_strategy.new
         end
 
         included do
           extend Garner::Cache::Binding
 
           def self.key_strategy
-            Garner.config.mongoid_binding_key_strategy
+            Garner.config.mongoid_binding_key_strategy.new
           end
 
           def self.invalidation_strategy
-            Garner.config.mongoid_binding_invalidation_strategy
+            Garner.config.mongoid_binding_invalidation_strategy.new
           end
 
           def self.identify(id)

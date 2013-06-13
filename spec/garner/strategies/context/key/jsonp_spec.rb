@@ -12,15 +12,12 @@ describe Garner::Strategies::Context::Key::Jsonp do
     @mock_context.stub(:request) { @request }
   end
 
-  subject do
-    Garner::Strategies::Context::Key::Jsonp
-  end
-
   it_behaves_like "Garner::Strategies::Context::Key strategy"
 
   it "removes JSONP params from the key hash" do
-    get_applied = Garner::Strategies::Context::Key::RequestGet.apply(@cache_identity, @mock_context)
-    subject.apply(get_applied, @mock_context)
+    request_get = Garner::Strategies::Context::Key::RequestGet.new
+    applied_identity = request_get.apply(@cache_identity, @mock_context)
+    subject.apply(applied_identity, @mock_context)
     @cache_identity.key_hash[:request_params].should == {}
   end
 end

@@ -31,7 +31,7 @@ module Garner
       def garner(&block)
         identity = Garner::Cache::Identity.new
         Garner.config.rack_context_key_strategies.each do |strategy|
-          identity = strategy.apply(identity, self)
+          identity = strategy.new.apply(identity, self)
         end
 
         unless cache_enabled?

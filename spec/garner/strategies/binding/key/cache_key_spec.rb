@@ -1,3 +1,5 @@
+require "spec_helper"
+
 describe Garner::Strategies::Binding::Key::CacheKey do
 
   before(:each) do

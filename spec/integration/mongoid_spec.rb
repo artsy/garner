@@ -11,7 +11,7 @@ describe "Mongoid integration" do
   [Garner::Strategies::Binding::Key::CacheKey].each do |key_strategy|
     context "using #{key_strategy}" do
       describe "cache key generation" do
-        subject { key_strategy }
+        subject { key_strategy.new }
 
         it_behaves_like "Garner::Strategies::Binding::Key strategy" do
           let(:known_bindings) { [Monger.create] }

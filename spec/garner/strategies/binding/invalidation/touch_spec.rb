@@ -1,3 +1,5 @@
+require "spec_helper"
+
 describe Garner::Strategies::Binding::Invalidation::Touch do
 
   before(:each) do

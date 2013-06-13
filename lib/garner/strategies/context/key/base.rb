@@ -2,24 +2,15 @@ module Garner
   module Strategies
     module Context
       module Key
-        class Jsonp < Base
+        class Base
 
-          def field
-            :request_params
-          end
-
-          # Strips JSONP parameters from the key.
+          # Compute a hash of key-value pairs from a given ruby context,
+          # and apply it to a cache identity.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
           # @param ruby_context [Object] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def apply(identity, ruby_context = self)
-            key_hash = identity.key_hash
-            return identity unless key_hash[field]
-
-
-            key_hash[field].delete("callback")
-            key_hash[field].delete("_")
             identity
           end
 
