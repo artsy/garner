@@ -9,8 +9,6 @@ describe Garner::Mixins::Mongoid::Identity do
     @mock_mongoid_strategy.stub(:apply)
   end
 
-  subject { Garner::Mixins::Mongoid::Identity.new }
-
   it "accepts a different key strategy than the global default" do
     Garner.configure do |config|
       config.binding_key_strategy = @mock_strategy
