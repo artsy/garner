@@ -16,6 +16,7 @@ require "garner/strategies/context/key/jsonp"
 # Binding strategies
 require "garner/strategies/binding/key/base"
 require "garner/strategies/binding/key/cache_key"
+require "garner/strategies/binding/key/safe_cache_key"
 
 # Invalidation strategies
 require "garner/strategies/binding/invalidation/base"

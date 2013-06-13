@@ -36,4 +36,12 @@ describe Garner::Mixins::Mongoid::Document do
       end
     end
   end
+
+  context "at the instance level" do
+    describe "safe_cache_key" do
+      it "includes the sub-second portion of the timestamp" do
+        Monger.create.safe_cache_key.should =~ /mongers\/[0-9a-f]{24}-[0-9]{14}\.[0-9]{10}/
+      end
+    end
+  end
 end

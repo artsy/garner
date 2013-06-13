@@ -79,7 +79,7 @@ describe Garner::Mixins::Mongoid::Identity do
     end
   end
 
-  describe "cache_key" do
+  context "with default configuration and real documents" do
     before(:each) do
       Garner.configure do |config|
         config.mongoid_identity_fields = [:_id, :_slugs]
@@ -89,30 +89,58 @@ describe Garner::Mixins::Mongoid::Identity do
       @cheese = Cheese.create({ :name => "Havarti" })
     end
 
-    it "generates a cache key equivalent to Mongoid::Document's" do
-      Monger.identify("m1").cache_key.should == @monger.cache_key
-
-      # Also test for Mongoid subclasses
-      Cheese.identify("havarti").cache_key.should == @cheese.cache_key
-      Food.identify("havarti").cache_key.should == @cheese.cache_key
-    end
-
-    it "generates a nil cache key if the document is not found" do
-      Monger.identify("m2").cache_key.should be_nil
-    end
-
-    context "without Mongoid::Timestamps" do
-      before(:each) do
-        @monger.unset(:updated_at)
-        @cheese.unset(:updated_at)
-      end
-
+    describe "cache_key" do
       it "generates a cache key equivalent to Mongoid::Document's" do
         Monger.identify("m1").cache_key.should == @monger.cache_key
 
         # Also test for Mongoid subclasses
         Cheese.identify("havarti").cache_key.should == @cheese.cache_key
         Food.identify("havarti").cache_key.should == @cheese.cache_key
+        Monger.identify("m2").cache_key.should == Monger.new({ :name => "M2" }).cache_key
+      end
+
+      context "without Mongoid::Timestamps" do
+        before(:each) do
+          @monger.unset(:updated_at)
+          @cheese.unset(:updated_at)
+        end
+
+        it "generates a cache key equivalent to Mongoid::Document's" do
+          Monger.identify("m1").cache_key.should == @monger.cache_key
+
+          # Also test for Mongoid subclasses
+          Cheese.identify("havarti").cache_key.should == @cheese.cache_key
+          Food.identify("havarti").cache_key.should == @cheese.cache_key
+        end
+      end
+    end
+    describe "safe_cache_key" do
+      it "generates a cache key equivalent to Mongoid::Document's" do
+        Monger.identify("m1").safe_cache_key.should == @monger.reload.safe_cache_key
+
+        # Also test for Mongoid subclasses
+        Cheese.identify("havarti").safe_cache_key.should == @cheese.reload.safe_cache_key
+        Food.identify("havarti").safe_cache_key.should == @cheese.reload.safe_cache_key
+        Monger.identify("m2").safe_cache_key.should == Monger.new({ :name => "M2" }).safe_cache_key
+      end
+
+      it "includes the sub-second portion of the timestamp" do
+        Monger.create.safe_cache_key.should =~ /mongers\/[0-9a-f]{24}-[0-9]{14}\.[0-9]{10}/
+      end
+
+      context "without Mongoid::Timestamps" do
+        before(:each) do
+          @monger.unset(:updated_at)
+          @cheese.unset(:updated_at)
+        end
+
+        it "generates a cache key equivalent to Mongoid::Document's" do
+          Monger.identify("m1").safe_cache_key.should == @monger.safe_cache_key
+
+          # Also test for Mongoid subclasses
+          Cheese.identify("havarti").safe_cache_key.should == @cheese.safe_cache_key
+          Food.identify("havarti").safe_cache_key.should == @cheese.safe_cache_key
+        end
       end
     end
   end

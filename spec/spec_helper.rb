@@ -4,14 +4,14 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "coveralls"
 Coveralls.wear! if ENV["CI"]
 
+require "garner"
+
 require "rspec"
-require "timecop"
+require "rack/test"
 
 require "grape"
 require "sinatra"
-require "rack/test"
 require "mongoid"
-require "garner"
 require "active_record"
 
 # Require pry so that binding.pry will work out of the box for debugging

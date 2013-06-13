@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2013-06-10"
+  s.date = "2013-06-13"
   s.description = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
@@ -27,8 +27,12 @@ Gem::Specification.new do |s|
     "lib/garner/mixins/mongoid/document.rb",
     "lib/garner/mixins/mongoid/identity.rb",
     "lib/garner/mixins/rack.rb",
+    "lib/garner/strategies/binding/invalidation/base.rb",
     "lib/garner/strategies/binding/invalidation/touch.rb",
+    "lib/garner/strategies/binding/key/base.rb",
     "lib/garner/strategies/binding/key/cache_key.rb",
+    "lib/garner/strategies/binding/key/safe_cache_key.rb",
+    "lib/garner/strategies/context/key/base.rb",
     "lib/garner/strategies/context/key/caller.rb",
     "lib/garner/strategies/context/key/jsonp.rb",
     "lib/garner/strategies/context/key/request_get.rb",
@@ -61,7 +65,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<dalli>, [">= 0"])
       s.add_development_dependency(%q<activerecord>, [">= 0"])
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
-      s.add_development_dependency(%q<timecop>, [">= 0"])
+      s.add_development_dependency(%q<coveralls>, [">= 0"])
       s.add_development_dependency(%q<pry>, [">= 0"])
       s.add_development_dependency(%q<yard>, [">= 0"])
       s.add_development_dependency(%q<redcarpet>, [">= 0"])
@@ -82,7 +86,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<dalli>, [">= 0"])
       s.add_dependency(%q<activerecord>, [">= 0"])
       s.add_dependency(%q<sqlite3>, [">= 0"])
-      s.add_dependency(%q<timecop>, [">= 0"])
+      s.add_dependency(%q<coveralls>, [">= 0"])
       s.add_dependency(%q<pry>, [">= 0"])
       s.add_dependency(%q<yard>, [">= 0"])
       s.add_dependency(%q<redcarpet>, [">= 0"])
@@ -104,7 +108,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<dalli>, [">= 0"])
     s.add_dependency(%q<activerecord>, [">= 0"])
     s.add_dependency(%q<sqlite3>, [">= 0"])
-    s.add_dependency(%q<timecop>, [">= 0"])
+    s.add_dependency(%q<coveralls>, [">= 0"])
     s.add_dependency(%q<pry>, [">= 0"])
     s.add_dependency(%q<yard>, [">= 0"])
     s.add_dependency(%q<redcarpet>, [">= 0"])

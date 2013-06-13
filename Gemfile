@@ -17,7 +17,6 @@ group :development, :test do
   gem "dalli"
   gem "activerecord"
   gem "sqlite3"
-  gem "timecop"
   gem "coveralls"
 end
 
