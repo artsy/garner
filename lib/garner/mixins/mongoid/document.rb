@@ -26,23 +26,15 @@ module Garner
           extend Garner::Cache::Binding
 
           def self.cache_key
-            latest.try(:cache_key)
+            _latest_by_updated_at.try(:cache_key)
           end
 
           def self.touch
-            latest.try(:touch)
+            _latest_by_updated_at.try(:touch)
           end
 
           def self.updated_at
-            latest.try(:updated_at)
-          end
-
-          def self.latest
-            # Only find the latest if we can order by :updated_at
-            return nil unless fields["updated_at"]
-            only(:_id, :_type, :updated_at).order_by({
-              :updated_at => :desc
-            }).first
+            _latest_by_updated_at.try(:updated_at)
           end
 
           def self.key_strategy
@@ -66,6 +58,15 @@ module Garner
           after_create    :_garner_after_create
           after_update    :_garner_after_update
           after_destroy   :_garner_after_destroy
+
+          protected
+          def self._latest_by_updated_at
+            # Only find the latest if we can order by :updated_at
+            return nil unless fields["updated_at"]
+            only(:_id, :_type, :updated_at).order_by({
+              :updated_at => :desc
+            }).first
+          end
         end
 
       end

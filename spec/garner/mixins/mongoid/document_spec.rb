@@ -38,33 +38,33 @@ describe Garner::Mixins::Mongoid::Document do
   context "at the class level" do
     subject { Monger }
 
-    describe "latest" do
+    describe "_latest_by_updated_at" do
       it "returns a Mongoid::Document instance" do
         subject.create
-        subject.latest.should be_a(subject)
+        subject.send(:_latest_by_updated_at).should be_a(subject)
       end
 
-      it "returns the latest document by :updated_at" do
+      it "returns the _latest_by_updated_at document by :updated_at" do
         mongers = 3.times.map { subject.create }
         mongers[1].touch
 
-        subject.latest._id.should == mongers[1]._id
-        subject.latest.updated_at.should == mongers[1].reload.updated_at
+        subject.send(:_latest_by_updated_at)._id.should == mongers[1]._id
+        subject.send(:_latest_by_updated_at).updated_at.should == mongers[1].reload.updated_at
       end
 
       it "returns nil if there are no documents" do
-        subject.latest.should be_nil
+        subject.send(:_latest_by_updated_at).should be_nil
       end
 
       it "returns nil if updated_at does not exist" do
         monger = subject.create
         subject.stub(:fields) { {} }
-        subject.latest.should be_nil
+        subject.send(:_latest_by_updated_at).should be_nil
       end
     end
 
     describe "touch" do
-      it "touches the latest document" do
+      it "touches the _latest_by_updated_at document" do
         monger = subject.create
         subject.any_instance.should_receive(:touch)
         subject.touch
@@ -72,7 +72,7 @@ describe Garner::Mixins::Mongoid::Document do
     end
 
     describe "cache_key" do
-      it "return's the latest document's cache key" do
+      it "return's the _latest_by_updated_at document's cache key" do
         monger = subject.create
         subject.any_instance.should_receive(:cache_key)
         subject.cache_key
