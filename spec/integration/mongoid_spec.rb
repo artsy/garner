@@ -17,7 +17,7 @@ describe "Mongoid integration" do
         subject { key_strategy }
 
         it_behaves_like "Garner::Strategies::Binding::Key strategy" do
-          let(:known_bindings) { [Monger.create] }
+          let(:known_bindings) { [Monger.create, Monger] }
           let(:unknown_bindings) { [] }
         end
       end

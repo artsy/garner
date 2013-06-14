@@ -34,4 +34,63 @@ describe Garner::Mixins::Mongoid::Document do
       end
     end
   end
+
+  context "at the class level" do
+    subject { Monger }
+
+    describe "latest" do
+      it "returns a Mongoid::Document instance" do
+        subject.create
+        subject.latest.should be_a(subject)
+      end
+
+      it "returns the latest document by :updated_at" do
+        mongers = 3.times.map { subject.create }
+        mongers[1].touch
+
+        subject.latest._id.should == mongers[1]._id
+        subject.latest.updated_at.should == mongers[1].reload.updated_at
+      end
+
+      it "returns nil if there are no documents" do
+        subject.latest.should be_nil
+      end
+
+      it "returns nil if updated_at does not exist" do
+        monger = subject.create
+        subject.stub(:fields) { {} }
+        subject.latest.should be_nil
+      end
+    end
+
+    describe "touch" do
+      it "touches the latest document" do
+        monger = subject.create
+        subject.any_instance.should_receive(:touch)
+        subject.touch
+      end
+    end
+
+    describe "cache_key" do
+      it "return's the latest document's cache key" do
+        monger = subject.create
+        subject.any_instance.should_receive(:cache_key)
+        subject.cache_key
+      end
+
+      it "matches what would be returned from the full object" do
+        monger = subject.create
+        subject.cache_key.should == monger.reload.cache_key
+      end
+
+      context "with Mongoid subclasses" do
+        subject { Cheese }
+
+        it "matches what would be returned from the full object" do
+          cheese = subject.create
+          subject.cache_key.should == cheese.reload.cache_key
+        end
+      end
+    end
+  end
 end

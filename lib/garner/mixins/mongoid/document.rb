@@ -25,6 +25,26 @@ module Garner
         included do
           extend Garner::Cache::Binding
 
+          def self.cache_key
+            latest.try(:cache_key)
+          end
+
+          def self.touch
+            latest.try(:touch)
+          end
+
+          def self.updated_at
+            latest.try(:updated_at)
+          end
+
+          def self.latest
+            # Only find the latest if we can order by :updated_at
+            return nil unless fields["updated_at"]
+            only(:_id, :_type, :updated_at).order_by({
+              :updated_at => :desc
+            }).first
+          end
+
           def self.key_strategy
             Garner.config.mongoid_binding_key_strategy
           end
