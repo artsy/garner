@@ -2,24 +2,15 @@ module Garner
   module Strategies
     module Context
       module Key
-        class RequestPost < Base
+        class Base
 
-          def self.field
-            :request_params
-          end
-
-          # Injects the request POST parameters into the key hash.
+          # Compute a hash of key-value pairs from a given ruby context,
+          # and apply it to a cache identity.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
           # @param ruby_context [Object] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def self.apply(identity, ruby_context = self)
-            return identity unless (ruby_context.respond_to?(:request))
-
-            request = ruby_context.request
-            if request.request_method == "POST"
-              identity = identity.key(field => request.POST.dup)
-            end
             identity
           end
 

@@ -5,9 +5,9 @@ describe Garner::Mixins::Mongoid::Document do
   [Monger, Monger.create].each do |binding|
     context "at the #{binding.is_a?(Class) ? "class" : "instance" } level" do
       before(:each) do
-        @mock_strategy = double "strategy"
+        @mock_strategy = double("strategy")
         @mock_strategy.stub(:apply)
-        @mock_mongoid_strategy = double "mongoid_strategy"
+        @mock_mongoid_strategy = double("mongoid_strategy")
         @mock_mongoid_strategy.stub(:apply)
       end
 
@@ -31,6 +31,65 @@ describe Garner::Mixins::Mongoid::Document do
 
         @mock_mongoid_strategy.should_receive(:apply).with(subject)
         subject.invalidate_garner_caches
+      end
+    end
+  end
+
+  context "at the class level" do
+    subject { Monger }
+
+    describe "latest" do
+      it "returns a Mongoid::Document instance" do
+        subject.create
+        subject.latest.should be_a(subject)
+      end
+
+      it "returns the latest document by :updated_at" do
+        mongers = 3.times.map { subject.create }
+        mongers[1].touch
+
+        subject.latest._id.should == mongers[1]._id
+        subject.latest.updated_at.should == mongers[1].reload.updated_at
+      end
+
+      it "returns nil if there are no documents" do
+        subject.latest.should be_nil
+      end
+
+      it "returns nil if updated_at does not exist" do
+        monger = subject.create
+        subject.stub(:fields) { {} }
+        subject.latest.should be_nil
+      end
+    end
+
+    describe "touch" do
+      it "touches the latest document" do
+        monger = subject.create
+        subject.any_instance.should_receive(:touch)
+        subject.touch
+      end
+    end
+
+    describe "cache_key" do
+      it "return's the latest document's cache key" do
+        monger = subject.create
+        subject.any_instance.should_receive(:cache_key)
+        subject.cache_key
+      end
+
+      it "matches what would be returned from the full object" do
+        monger = subject.create
+        subject.cache_key.should == monger.reload.cache_key
+      end
+
+      context "with Mongoid subclasses" do
+        subject { Cheese }
+
+        it "matches what would be returned from the full object" do
+          cheese = subject.create
+          subject.cache_key.should == cheese.reload.cache_key
+        end
       end
     end
   end

@@ -11,9 +11,11 @@ describe Garner::Strategies::Context::Key::RequestPost do
       )
     )
 
-    @mock_context = double "object"
+    @mock_context = double("object")
     @mock_context.stub(:request) { @request }
   end
+
+  subject { Garner::Strategies::Context::Key::RequestPost }
 
   it_behaves_like "Garner::Strategies::Context::Key strategy"
 

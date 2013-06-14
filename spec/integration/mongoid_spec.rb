@@ -8,13 +8,16 @@ describe "Mongoid integration" do
     end
   end
 
-  [Garner::Strategies::Binding::Key::CacheKey].each do |key_strategy|
+  [
+    Garner::Strategies::Binding::Key::CacheKey,
+    Garner::Strategies::Binding::Key::SafeCacheKey
+  ].each do |key_strategy|
     context "using #{key_strategy}" do
       describe "cache key generation" do
         subject { key_strategy }
 
         it_behaves_like "Garner::Strategies::Binding::Key strategy" do
-          let(:known_bindings) { [Monger.create] }
+          let(:known_bindings) { [Monger.create, Monger] }
           let(:unknown_bindings) { [] }
         end
       end
@@ -22,7 +25,7 @@ describe "Mongoid integration" do
   end
 
   {
-    Garner::Strategies::Binding::Key::CacheKey =>
+    Garner::Strategies::Binding::Key::SafeCacheKey =>
       Garner::Strategies::Binding::Invalidation::Touch
   }.each do |key_strategy, invalidation_strategy|
     context "using #{key_strategy} with #{invalidation_strategy}" do
@@ -36,10 +39,7 @@ describe "Mongoid integration" do
       describe "end-to-end caching and invalidation" do
         context "binding at the instance level" do
           before(:each) do
-            # Ensure cacheability even with 1-second timestamp resolution
-            Timecop.freeze(1.second.ago) do
-              @object = Monger.create!({ :name => "M1" })
-            end
+            @object = Monger.create!({ :name => "M1" })
           end
 
           describe "garnered_find" do
@@ -112,12 +112,35 @@ describe "Mongoid integration" do
                 cached_object_namer.call.should == "M1"
               end
 
+              context "with racing destruction" do
+                before(:each) do
+                  # Define two Mongoid objects for the race
+                  @monger1, @monger2 = 2.times.map { Monger.find(@object.id) }
+                end
+
+                it "invalidates caches properly (Type I)" do
+                  cached_object_namer.call
+                  @monger1.remove
+                  @monger2.set(:name, "M2")
+                  @monger1.destroy
+                  @monger2.save
+                  cached_object_namer.should raise_error
+                end
+
+                it "invalidates caches properly (Type II)" do
+                  cached_object_namer.call
+                  @monger2.set(:name, "M2")
+                  @monger1.remove
+                  @monger2.save
+                  @monger1.destroy
+                  cached_object_namer.should raise_error
+                end
+              end
+
               context "with inheritance" do
                 before(:each) do
-                  Timecop.freeze(1.second.ago) do
-                    @monger = Monger.create!({ :name => "M1" })
-                    @object = Cheese.create!({ :name => "Swiss", :monger => @monger })
-                  end
+                  @monger = Monger.create!({ :name => "M1" })
+                  @object = Cheese.create!({ :name => "Swiss", :monger => @monger })
                 end
 
                 let(:cached_object_namer) do
@@ -137,9 +160,7 @@ describe "Mongoid integration" do
 
               context "with an embedded document" do
                 before(:each) do
-                  Timecop.freeze(1.second.ago) do
-                    @fish = Monger.create!({ :name => "M1" }).create_fish({ :name => "Trout" })
-                  end
+                  @fish = Monger.create!({ :name => "M1" }).create_fish({ :name => "Trout" })
                 end
 
                 let(:cached_object_namer) do
