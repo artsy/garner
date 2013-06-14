@@ -197,7 +197,7 @@ Fork the project. Make your feature addition or bug fix with tests. Send a pull 
 Copyright and License
 ---------------------
 
-MIT License, see [LICENSE](https://github.com/dblock/garner/blob/master/LICENSE.md) for details.
+MIT License, see [LICENSE](LICENSE.md) for details.
 
-(c) 2012 [Art.sy Inc.](http://artsy.github.com), [Frank Macreery](https://github.com/macreery), [Daniel Doubrovkine](https://github.com/dblock) and [Contributors](CHANGELOG.md)
+(c) 2012 [Art.sy Inc.](http://artsy.github.com), [Frank Macreery](https://github.com/macreery), [Daniel Doubrovkine](https://github.com/dblock) and [contributors](CHANGELOG.md)
 
