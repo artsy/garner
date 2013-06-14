@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2012 Art.sy, Frank Macreery, Daniel Doubrovkine & Contributors
+Copyright (c) 2012-2013 Artsy, Frank Macreery, Daniel Doubrovkine & contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
