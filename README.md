@@ -199,5 +199,5 @@ Copyright and License
 
 MIT License, see [LICENSE](LICENSE.md) for details.
 
-(c) 2012 [Art.sy Inc.](http://artsy.github.com), [Frank Macreery](https://github.com/macreery), [Daniel Doubrovkine](https://github.com/dblock) and [contributors](CHANGELOG.md)
+(c) 2012-2013 [Artsy](http://artsy.github.com), [Frank Macreery](https://github.com/fancyremarker), [Daniel Doubrovkine](https://github.com/dblock) and [contributors](CHANGELOG.md).
 
