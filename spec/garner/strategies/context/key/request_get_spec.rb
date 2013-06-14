@@ -11,7 +11,7 @@ describe Garner::Strategies::Context::Key::RequestGet do
           "QUERY_STRING" => "foo=bar"
         })
 
-        @mock_context = double "object"
+        @mock_context = double("object")
         @mock_context.stub(:request) { @request }
       end
 

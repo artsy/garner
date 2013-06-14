@@ -3,7 +3,7 @@ require "spec_helper"
 describe Garner::Strategies::Context::Key::Caller do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
-    @mock_context = double "object"
+    @mock_context = double("object")
   end
 
   subject { Garner::Strategies::Context::Key::Caller }

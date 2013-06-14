@@ -3,9 +3,9 @@ require "garner/mixins/mongoid"
 
 describe Garner::Mixins::Mongoid::Identity do
   before(:each) do
-    @mock_strategy = double "strategy"
+    @mock_strategy = double("strategy")
     @mock_strategy.stub(:apply)
-    @mock_mongoid_strategy = double "mongoid_strategy"
+    @mock_mongoid_strategy = double("mongoid_strategy")
     @mock_mongoid_strategy.stub(:apply)
   end
 
@@ -87,7 +87,7 @@ describe Garner::Mixins::Mongoid::Identity do
     end
 
     describe "cache_key" do
-      it "generates a cache key equivalent to Mongoid::Document's" do
+      it "generates a cache key equal to Mongoid::Document's" do
         Monger.identify("m1").cache_key.should == @monger.cache_key
 
         # Also test for Mongoid subclasses
@@ -102,7 +102,7 @@ describe Garner::Mixins::Mongoid::Identity do
           @cheese.unset(:updated_at)
         end
 
-        it "generates a cache key equivalent to Mongoid::Document's" do
+        it "generates a cache key equal to Mongoid::Document's" do
           Monger.identify("m1").cache_key.should == @monger.cache_key
 
           # Also test for Mongoid subclasses
@@ -111,33 +111,14 @@ describe Garner::Mixins::Mongoid::Identity do
         end
       end
     end
-    describe "safe_cache_key" do
-      it "generates a cache key equivalent to Mongoid::Document's" do
-        Monger.identify("m1").safe_cache_key.should == @monger.reload.safe_cache_key
+    describe "updated_at" do
+      it "returns :updated_at equal to Mongoid::Document's" do
+        Monger.identify("m1").updated_at.should == Monger.find("m1").updated_at
 
         # Also test for Mongoid subclasses
-        Cheese.identify("havarti").safe_cache_key.should == @cheese.reload.safe_cache_key
-        Food.identify("havarti").safe_cache_key.should == @cheese.reload.safe_cache_key
-        Monger.identify("m2").safe_cache_key.should == Monger.new({ :name => "M2" }).safe_cache_key
-      end
-
-      it "includes the sub-second portion of the timestamp" do
-        Monger.create.safe_cache_key.should =~ /mongers\/[0-9a-f]{24}-[0-9]{14}\.[0-9]{10}/
-      end
-
-      context "without Mongoid::Timestamps" do
-        before(:each) do
-          @monger.unset(:updated_at)
-          @cheese.unset(:updated_at)
-        end
-
-        it "generates a cache key equivalent to Mongoid::Document's" do
-          Monger.identify("m1").safe_cache_key.should == @monger.safe_cache_key
-
-          # Also test for Mongoid subclasses
-          Cheese.identify("havarti").safe_cache_key.should == @cheese.safe_cache_key
-          Food.identify("havarti").safe_cache_key.should == @cheese.safe_cache_key
-        end
+        Cheese.identify("havarti").updated_at.should == Cheese.identify("havarti").updated_at
+        Food.identify("havarti").updated_at.should == Food.identify("havarti").updated_at
+        Monger.identify("m2").updated_at.should == Monger.new({ :name => "M2" }).updated_at
       end
     end
   end

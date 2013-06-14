@@ -5,9 +5,9 @@ describe Garner::Mixins::Mongoid::Document do
   [Monger, Monger.create].each do |binding|
     context "at the #{binding.is_a?(Class) ? "class" : "instance" } level" do
       before(:each) do
-        @mock_strategy = double "strategy"
+        @mock_strategy = double("strategy")
         @mock_strategy.stub(:apply)
-        @mock_mongoid_strategy = double "mongoid_strategy"
+        @mock_mongoid_strategy = double("mongoid_strategy")
         @mock_mongoid_strategy.stub(:apply)
       end
 
@@ -31,14 +31,6 @@ describe Garner::Mixins::Mongoid::Document do
 
         @mock_mongoid_strategy.should_receive(:apply).with(subject)
         subject.invalidate_garner_caches
-      end
-    end
-  end
-
-  context "at the instance level" do
-    describe "safe_cache_key" do
-      it "includes the sub-second portion of the timestamp" do
-        Monger.create.safe_cache_key.should =~ /mongers\/[0-9a-f]{24}-[0-9]{14}\.[0-9]{10}/
       end
     end
   end

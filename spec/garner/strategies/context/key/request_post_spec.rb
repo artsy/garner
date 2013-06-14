@@ -11,7 +11,7 @@ describe Garner::Strategies::Context::Key::RequestPost do
       )
     )
 
-    @mock_context = double "object"
+    @mock_context = double("object")
     @mock_context.stub(:request) { @request }
   end
 

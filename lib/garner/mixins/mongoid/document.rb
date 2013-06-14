@@ -22,16 +22,6 @@ module Garner
           Garner.config.mongoid_binding_invalidation_strategy
         end
 
-        def safe_cache_key
-          # Only return a cache key if :updated_at is defined. If it is,
-          # append the fractional portion of the timestamp.
-          if updated_at
-            decimal_portion = updated_at.utc.to_f % 1
-            decimal_string = sprintf("%.10f", decimal_portion).gsub(/^0/, "")
-            "#{cache_key}#{decimal_string}"
-          end
-        end
-
         included do
           extend Garner::Cache::Binding
 

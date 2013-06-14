@@ -3,7 +3,7 @@ require "spec_helper"
 describe Garner::Strategies::Binding::Key::CacheKey do
 
   before(:each) do
-    @mock = double "model"
+    @mock = double("model")
     @mock.stub(:cache_key) { "mocks/4" }
   end
 

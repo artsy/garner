@@ -5,7 +5,7 @@ describe Garner::Strategies::Context::Key::RequestPath do
     @cache_identity = Garner::Cache::Identity.new
     @request = Rack::Request.new({ "PATH_INFO" => "/foo" })
 
-    @mock_context = double "object"
+    @mock_context = double("object")
     @mock_context.stub(:request) { @request }
   end
 

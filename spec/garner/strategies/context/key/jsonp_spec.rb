@@ -8,7 +8,7 @@ describe Garner::Strategies::Context::Key::Jsonp do
       "QUERY_STRING" => "callback=jQuery21435&_=34234"
     })
 
-    @mock_context = double "object"
+    @mock_context = double("object")
     @mock_context.stub(:request) { @request }
   end
 

@@ -11,6 +11,15 @@ module Garner
 
         attr_accessor :document, :collection_name, :conditions
 
+        def self.from_class_and_id(klass, id)
+          validate_class!(klass)
+
+          self.new.tap do |identity|
+            identity.collection_name = klass.collection_name
+            identity.conditions = conditions_for(klass, id)
+          end
+        end
+
         def initialize
           @conditions = {}
         end
@@ -21,16 +30,6 @@ module Garner
 
         def invalidation_strategy
           Garner.config.mongoid_binding_invalidation_strategy
-        end
-
-        def safe_cache_key
-          # Only return a cache key if :updated_at is defined. If it is,
-          # append the fractional portion of the timestamp.
-          if updated_at
-            decimal_portion = updated_at.utc.to_f % 1
-            decimal_string = sprintf("%.10f", decimal_portion).gsub(/^0/, "")
-            "#{cache_key}#{decimal_string}"
-          end
         end
 
         def cache_key
@@ -52,16 +51,8 @@ module Garner
           end
         end
 
-        def _id
-          document["_id"] if document
-        end
-
-        def updated_at
-          document["updated_at"] if document
-        end
-
-        def _type
-          document["_type"] if document
+        def collection
+          ::Mongoid.default_session[@collection_name]
         end
 
         def document
@@ -74,17 +65,16 @@ module Garner
           }).limit(1).first
         end
 
-        def collection
-          ::Mongoid.default_session[@collection_name]
+        def _id
+          document["_id"] if document
         end
 
-        def self.from_class_and_id(klass, id)
-          validate_class!(klass)
+        def updated_at
+          document["updated_at"] if document
+        end
 
-          self.new.tap do |identity|
-            identity.collection_name = klass.collection_name
-            identity.conditions = conditions_for(klass, id)
-          end
+        def _type
+          document["_type"] if document
         end
 
         private
