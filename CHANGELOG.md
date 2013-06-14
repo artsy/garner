@@ -12,6 +12,8 @@
 * Extracted `Binding`, `Context` and `Identity` as explicit classes from `ObjectIdentity`.
 * Added support for all ActiveModel-compliant ORMs.
 * Removed HTTP caching responsibilities from the library entirely.
+* Introduced a `SafeCacheKey` binding key strategy, which appends subsecond precision to cache keys, to make them usable.
+* Added a `cache_key` implementation at the class level in Mongoid, which returns the `cache_key` of the most recently updated document in the collection (by `:updated_at`).
 
 0.3.3 (6/10/2013)
 -----------------
