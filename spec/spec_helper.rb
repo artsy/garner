@@ -2,7 +2,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require "coveralls"
-Coveralls.wear! if ENV["CI"]
+Coveralls.wear!("test_frameworks") if ENV["CI"]
 
 require "garner"
 
