@@ -131,7 +131,7 @@ get "/system/counts/all" do
 end
 ```
 
-Binding keys are computed via pluggable strategies, as are the rules for invalidating caches when a binding changes. By default, Garner uses `Garner::Strategies::Binding::Key::CacheKey` to compute binding keys: this uses `cache_key` if defined on an object; otherwise it always bypasses cache. Similarly, Garner uses `Garner::Strategies::Binding::Invalidation::Touch` as its default invalidation strategy. This will call `:touch` on a document if it is defined; otherwise it will take no action.
+Binding keys are computed via pluggable strategies, as are the rules for invalidating caches when a binding changes. By default, Garner uses `Garner::Strategies::Binding::Key::SafeCacheKey` to compute binding keys: this uses `cache_key` if defined on an object; otherwise it always bypasses cache. Similarly, Garner uses `Garner::Strategies::Binding::Invalidation::Touch` as its default invalidation strategy. This will call `:touch` on a document if it is defined; otherwise it will take no action.
 
 Additional binding and invalidation strategies can be written. To use them, set `Garner.config.binding_key_strategy` and `Garner.config.binding_invalidation_strategy`. Alternatively, for Mongoid-specific strategies, set `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_binding_invalidation_strategy`.
 
@@ -183,9 +183,9 @@ The full list of  `Garner.config` attributes is:
   Garner::Strategies::Context::Key::RequestPath
 ]
 ```
-* `:binding_key_strategy`: Binding key strategy. Defaults to `Garner::Strategies::Binding::Key::CacheKey`.
+* `:binding_key_strategy`: Binding key strategy. Defaults to `Garner::Strategies::Binding::Key::SafeCacheKey`.
 * `:binding_invalidation_strategy`: Binding invalidation strategy. Defaults to `Garner::Strategies::Binding::Invalidation::Touch`.
-* `:mongoid_binding_key_strategy`: Mongoid-specific binding key strategy. Defaults to `Garner::Strategies::Binding::Key::CacheKey`.
+* `:mongoid_binding_key_strategy`: Mongoid-specific binding key strategy. Defaults to `Garner::Strategies::Binding::Key::SafeCacheKey`.
 * `:mongoid_binding_invalidation_strategy`: Mongoid-specific binding invalidation strategy. Defaults to `Garner::Strategies::Binding::Invalidation::Touch`.
 * `:mongoid_identity_fields`: Identity fields considered legal for the `identity` method. Defaults to `[:_id]`.
 

@@ -1,14 +1,12 @@
-# Shared examples for binding strategies. A valid binding strategy must implement:
-#     # Compute a cache key from an object binding.
-#     #
-#     # @param binding [Object] The object from which to compute a key.
-#     # @return [String] A cache key string.
-#     def apply(binding)
-#       binding.cache_key if binding.respond_to?(:cache_key)
-#     end
+# Shared examples for binding strategies. A valid binding strategy must implement
+# apply(binding).
 shared_examples_for "Garner::Strategies::Binding::Key strategy" do
   it "requires an argument" do
     expect { subject.apply }.to raise_error
+  end
+
+  it "inherits from Garner::Strategies::Binding::Key::Base" do
+    subject.new.should be_a(Garner::Strategies::Binding::Key::Base)
   end
 
   describe "given a known binding" do

@@ -27,7 +27,7 @@ describe Garner::Cache do
     end
 
     it "does not cache results with un-bindable bindings" do
-      unbindable = double "object"
+      unbindable = double("object")
       unbindable.stub(:garner_cache_key) { nil }
       result1 = subject.fetch([unbindable], {}, {}) { "foo" }
       result2 = subject.fetch([unbindable], {}, {}) { "bar" }

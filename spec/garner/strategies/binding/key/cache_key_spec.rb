@@ -1,9 +1,13 @@
+require "spec_helper"
+
 describe Garner::Strategies::Binding::Key::CacheKey do
 
   before(:each) do
-    @mock = double "model"
+    @mock = double("model")
     @mock.stub(:cache_key) { "mocks/4" }
   end
+
+  subject { Garner::Strategies::Binding::Key::CacheKey }
 
   it_behaves_like "Garner::Strategies::Binding::Key strategy" do
     let(:known_bindings) { [@mock] }

@@ -1,15 +1,12 @@
-# Shared examples for key strategies. A valid key strategy must implement:
-#     # Applies this key strategy to a cache identity, modifying its key_hash.
-#     #
-#     # @param identity [Garner::Cache::Identity] The cache identity.
-#     # @param ruby_context [Object] An optional Ruby context.
-#     # @return [Garner::Cache::Identity] The modified identity.
-#     def apply(identity, ruby_context = self)
-#     end
-# which both modifies a Garner::CacheIdentity and returns the identity.
+# Shared examples for key strategies. A valid key strategy must implement
+# apply(identity, ruby_context = self).
 shared_examples_for "Garner::Strategies::Context::Key strategy" do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
+  end
+
+  it "inherits from Garner::Strategies::Context::Key::Base" do
+    subject.new.should be_a(Garner::Strategies::Context::Key::Base)
   end
 
   it "requires a Garner::Cache::Identity" do

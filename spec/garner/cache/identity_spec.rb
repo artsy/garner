@@ -2,8 +2,6 @@ require "spec_helper"
 
 describe Garner::Cache::Identity do
 
-  subject { Garner::Cache::Identity.new }
-
   it "includes Garner.config.global_cache_options" do
     Garner.configure { |config| config.global_cache_options = { :foo => "bar" } }
     subject.options_hash[:foo].should == "bar"
