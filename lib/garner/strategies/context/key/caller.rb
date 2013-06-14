@@ -43,11 +43,17 @@ module Garner
               ruby_context.send(:caller).compact.each do |line|
                 parts = line.match(/(?<filename>[^:]+)\:(?<lineno>[^:]+)/)
                 file = (Pathname.new(parts[:filename]).realpath.to_s rescue nil)
-                next if file.nil? || file == "" || file.include?(File.join("lib", "garner"))
+                next if file.nil? || file == ""
+                next if file.include?(File.join("lib", "garner"))
 
-                root = Garner.config.caller_root
-                next if root && !(file =~ /^#{root}/)
-                value = "#{file.gsub(root || "", "")}:#{parts[:lineno]}"
+                if (root = Garner.config.caller_root)
+                  root += File::SEPARATOR unless root[-1] == File::SEPARATOR
+                  next unless file =~ /^#{root}/
+                  value = "#{file.gsub(root || "", "")}:#{parts[:lineno]}"
+                else
+                  value = "#{file}:#{parts[:lineno]}"
+                end
+
                 break
               end
             end

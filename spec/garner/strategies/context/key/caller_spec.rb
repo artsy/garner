@@ -43,9 +43,9 @@ describe Garner::Strategies::Context::Key::Caller do
     end
 
     it "sets an appropriate value for :caller" do
-      truncated = __FILE__.gsub(@gemfile_root, "")
+      truncated = __FILE__.gsub(@gemfile_root + File::SEPARATOR, "")
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should match "#{truncated}:#{__LINE__-1}"
+      @cache_identity.key_hash[:caller].should == "#{truncated}:#{__LINE__-1}"
     end
   end
 
@@ -66,7 +66,7 @@ describe Garner::Strategies::Context::Key::Caller do
     it "sets an appropriate value for :caller" do
       truncated = File.basename(__FILE__)
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should match "#{truncated}:#{__LINE__-1}"
+      @cache_identity.key_hash[:caller].should == "#{truncated}:#{__LINE__-1}"
     end
   end
 
@@ -80,7 +80,7 @@ describe Garner::Strategies::Context::Key::Caller do
     it "sets an appropriate value for :caller" do
       truncated = File.basename(__FILE__)
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should match "#{truncated}:#{__LINE__-1}"
+      @cache_identity.key_hash[:caller].should == "#{truncated}:#{__LINE__-1}"
     end
   end
 
@@ -93,13 +93,13 @@ describe Garner::Strategies::Context::Key::Caller do
 
     it "sets an appropriate value for :caller" do
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should match "#{__FILE__}:#{__LINE__-1}"
+      @cache_identity.key_hash[:caller].should == "#{__FILE__}:#{__LINE__-1}"
     end
 
     it "doesn't require ActiveSupport" do
       String.any_instance.stub(:blank?) { raise NoMethodError.new }
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should match "#{__FILE__}:#{__LINE__-1}"
+      @cache_identity.key_hash[:caller].should == "#{__FILE__}:#{__LINE__-1}"
     end
   end
 end
