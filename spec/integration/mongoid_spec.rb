@@ -112,6 +112,31 @@ describe "Mongoid integration" do
                 cached_object_namer.call.should == "M1"
               end
 
+              context "with racing destruction" do
+                before(:each) do
+                  # Define two Mongoid objects for the race
+                  @monger1, @monger2 = 2.times.map { Monger.find(@object.id) }
+                end
+
+                it "invalidates caches properly (Type I)" do
+                  cached_object_namer.call
+                  @monger1.remove
+                  @monger2.set(:name, "M2")
+                  @monger1.destroy
+                  @monger2.save
+                  cached_object_namer.should raise_error
+                end
+
+                it "invalidates caches properly (Type II)" do
+                  cached_object_namer.call
+                  @monger2.set(:name, "M2")
+                  @monger1.remove
+                  @monger2.save
+                  @monger1.destroy
+                  cached_object_namer.should raise_error
+                end
+              end
+
               context "with inheritance" do
                 before(:each) do
                   @monger = Monger.create!({ :name => "M1" })
