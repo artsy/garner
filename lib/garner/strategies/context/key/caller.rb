@@ -8,6 +8,29 @@ module Garner
             :caller
           end
 
+          # Determine the most likely root path for the current Garner client
+          # application. If in a Rails application, Rails.root is used.
+          # Otherwise, the nearest ancestor directory containing a Gemfile is
+          # used.
+          #
+          # @see Garner::Config#caller_root=
+          # @see Garner::Config#default_caller_root
+          # @return [String] The default root path.
+          def self.default_root
+            if defined?(::Rails) && ::Rails.respond_to?(:root)
+              ::Rails.root
+            else
+              # Try to use the nearest ancestor directory containing a Gemfile.
+              requiring_caller = send(:caller).detect do |line|
+                !line.include?(File.join("lib", "garner"))
+              end
+              return nil unless requiring_caller
+
+              requiring_file = requiring_caller.split(":")[0]
+              gemfile_root(File.dirname(requiring_file))
+            end
+          end
+
           # Injects the caller's location into the key hash.
           #
           # @param identity [Garner::Cache::Identity] The cache identity.
@@ -17,22 +40,34 @@ module Garner
             value = nil
 
             if ruby_context.send(:caller)
-              ruby_context.send(:caller).each do |line|
-                next unless line
-                split = line.split(":")
-                next unless split && split.length >= 2
-                path = (Pathname.new(split[0]).realpath.to_s rescue nil)
-                next if (! path) || path.empty? || path.include?("lib/garner")
-                # FIXME: Arbitrary normalization; not all apps will have /app.
-                # The root application path should be determined in Garner.config,
-                # and thereby further configurable.
-                next unless path.include?("/app/") || path.include?("/spec/")
-                value = "#{path}:#{split[1]}"
+              ruby_context.send(:caller).compact.each do |line|
+                parts = line.match(/(?<filename>[^:]+)\:(?<lineno>[^:]+)/)
+                file = (Pathname.new(parts[:filename]).realpath.to_s rescue nil)
+                next if file.nil? || file == "" || file.include?(File.join("lib", "garner"))
+
+                root = Garner.config.caller_root
+                next if root && !(file =~ /^#{root}/)
+                value = "#{file.gsub(root || "", "")}:#{parts[:lineno]}"
                 break
               end
             end
 
             value ? identity.key(field => value) : identity
+          end
+
+          private
+          def self.gemfile_root(path)
+            path = Pathname.new(path).realpath.to_s
+            newpath = Pathname.new(File.join(path, "..")).realpath.to_s
+            if newpath == path
+              # We've reached the filesystem root; return
+              return nil
+            elsif File.exist?(File.join(newpath, "Gemfile"))
+              # We've struck Gemfile gold; return current path
+              return newpath
+            else
+              return gemfile_root(newpath)
+            end
           end
 
         end
