@@ -91,6 +91,29 @@ module Garner
       settings[:cache] = cache
     end
 
+    # Returns the default caller root, as determined by
+    # Garner::Strategies::Context::Key::Caller.
+    #
+    # @return [String] The default caller_root path.
+    def default_caller_root
+      Garner::Strategies::Context::Key::Caller.default_root
+    end
+
+    # Returns the manually configured caller_root, or a default.
+    #
+    # @return [String] The configured caller_root or a default.
+    def caller_root
+      settings[:caller_root] = default_caller_root unless settings.has_key?(:caller_root)
+      settings[:caller_root]
+    end
+
+    # Sets the caller_root to use.
+    #
+    # @return [String] The newly set caller_root.
+    def caller_root=(caller_root)
+      settings[:caller_root] = caller_root
+    end
+
     # Reset the configuration options to the defaults.
     #
     # @example Reset the configuration options.
