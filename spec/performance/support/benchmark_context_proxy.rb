@@ -9,7 +9,7 @@ class BenchmarkContextProxy
   end
 
   def setup!(options)
-    Mongoid.purge!
+    Monger.destroy_all
     Garner.config.cache.clear
     @binding = Monger.create!({ :name => "M1" })
     @binding.update_attributes!({

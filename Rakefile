@@ -44,6 +44,6 @@ require "performance/strategy_benchmark"
 task :benchmark do
   StrategyBenchmark.new({
     :n => ENV["N"].try(&:to_i),
-    :d => ENV["D"].try(&:to_i),
+    :d => ENV["D"].try(&:to_i)
   }).run!
 end
