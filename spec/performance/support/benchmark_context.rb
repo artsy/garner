@@ -1,14 +1,20 @@
 class BenchmarkContext
   include Garner::Cache::Context
 
-  def virtual_fetch(klass, handle)
-    garner.bind(klass.identify(handle)) { klass.find(handle).to_json }
+  def virtual_fetch(klass, handle, r)
+    garner.bind(klass.identify(handle)).key({ :caller => nil }) do
+      (r-1).times { klass.find(handle).to_json }
+      klass.find(handle).to_json
+    end
   end
   alias :a_warm_virtual_fetch :virtual_fetch
   alias :b_cold_virtual_fetch :virtual_fetch
 
-  def class_fetch(klass, handle)
-    garner.bind(klass) { klass.find(handle).to_json }
+  def class_fetch(klass, handle, r)
+    garner.bind(klass).key({ :caller => nil }) do
+      (r-1).times { klass.find(handle).to_json }
+      klass.find(handle).to_json
+    end
   end
   alias :c_warm_class_fetch :class_fetch
   alias :d_cold_class_fetch :class_fetch

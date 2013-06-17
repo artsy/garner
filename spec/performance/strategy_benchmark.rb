@@ -3,14 +3,15 @@ require "method_profiler"
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "support/benchmark_context"
-require "support/benchmark_context_proxy"
+require "support/benchmark_context_wrapper"
 
 class StrategyBenchmark
-  attr_accessor :n, :d
+  attr_accessor :n, :d, :r
 
   def initialize(options = {})
     @n = options[:n] || 1000   # Number of iterations
     @d = options[:d] || 1024   # Document payload size
+    @r = options[:r] || 4      # Recursive database calls per garner block
   end
 
   def run!
@@ -22,7 +23,7 @@ class StrategyBenchmark
         config.binding_invalidation_strategy = invalidation_strategy
       end
 
-      proxy = BenchmarkContextProxy.new({ :d => d })
+      proxy = BenchmarkContextWrapper.new({ :d => d, :r => r })
 
       # Workaround for MethodProfiler bug
       profiler.instance_variable_set(:@data, Hash.new { |h, k| h[k] = [] })
