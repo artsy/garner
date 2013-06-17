@@ -5,6 +5,7 @@ ActiveRecord::Base.establish_connection({
 })
 
 # Stub classes
+ActiveRecord::Migration.verbose = false
 ActiveRecord::Migration.create_table :activists do |t|
   t.string :name
   t.timestamps

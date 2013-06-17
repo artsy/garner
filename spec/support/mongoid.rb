@@ -2,8 +2,22 @@ require "garner/mixins/mongoid"
 require "mongoid_slug"
 
 # Use garner_test database for integration tests
-yaml = File.join(File.dirname(__FILE__), "mongoid.yml")
-Mongoid.load!(yaml, :test)
+Mongoid.load_configuration({
+  :sessions => {
+    :default => {
+      :uri => ENV["GARNER_MONGO_URL"] || "mongodb://localhost/garner_test"
+    }
+  },
+  :options => {
+    :raise_not_found_error => false,
+    :identity_map_enabled => false
+  }
+})
+
+if ENV["GARNER_MONGOID_LOG"]
+  Mongoid.logger = Logger.new(ENV["GARNER_MONGOID_LOG"])
+  Moped.logger = Mongoid.logger
+end
 
 # Stub classes
 class Monger
@@ -16,6 +30,8 @@ class Monger
 
   field :name, :type => String
   slug :name, :history => true
+
+  field :subdocument, :type => String
 end
 
 class Food
