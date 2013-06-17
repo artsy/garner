@@ -1,4 +1,6 @@
 require "spec_helper"
+require "garner/mixins/rack"
+require "grape"
 
 describe "Grape integration" do
   class TestCachebuster < Grape::Middleware::Base

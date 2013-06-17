@@ -18,6 +18,7 @@ group :development, :test do
   gem "activerecord"
   gem "sqlite3"
   gem "coveralls"
+  gem "method_profiler"
 end
 
 group :development do

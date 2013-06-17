@@ -17,6 +17,7 @@ module Garner
           # @param binding [Object] The binding whose caches are to be
           #   invalidated.
           def self.apply(binding)
+            binding = binding.proxy_binding if binding.respond_to?(:proxy_binding)
             binding.touch if binding.respond_to?(:touch)
           end
         end

@@ -25,11 +25,11 @@ module Garner
         end
 
         def key_strategy
-          Garner.config.mongoid_binding_key_strategy
+          Garner.config.binding_key_strategy
         end
 
         def invalidation_strategy
-          Garner.config.mongoid_binding_invalidation_strategy
+          Garner.config.binding_invalidation_strategy
         end
 
         def cache_key
@@ -56,9 +56,7 @@ module Garner
         end
 
         def document
-          return @document if @document
-
-          collection.where(@conditions).select({
+          @document ||= collection.where(@conditions).select({
             :_id => 1,
             :_type => 1,
             :updated_at => 1

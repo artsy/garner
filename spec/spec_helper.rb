@@ -4,18 +4,11 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "coveralls"
 Coveralls.wear!("test_frameworks") if ENV["CI"]
 
-require "garner"
-
+require "pry"
 require "rspec"
 require "rack/test"
 
-require "grape"
-require "sinatra"
-require "mongoid"
-require "active_record"
-
-# Require pry so that binding.pry will work out of the box for debugging
-require "pry"
+require "garner"
 
 # Load shared examples
 ["shared/*.rb", "support/*.rb"].each do |path|

@@ -31,8 +31,8 @@ describe "Mongoid integration" do
     context "using #{key_strategy} with #{invalidation_strategy}" do
       before(:each) do
         Garner.configure do |config|
-          config.mongoid_binding_key_strategy = key_strategy
-          config.mongoid_binding_invalidation_strategy = invalidation_strategy
+          config.binding_key_strategy = key_strategy
+          config.binding_invalidation_strategy = invalidation_strategy
         end
       end
 
