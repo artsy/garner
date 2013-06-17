@@ -12,12 +12,8 @@ module Garner
             _latest_by_updated_at.try(:cache_key)
           end
 
-          def self.touch
-            _latest_by_updated_at.try(:touch)
-          end
-
-          def self.updated_at
-            _latest_by_updated_at.try(:updated_at)
+          def self.proxy_binding
+            _latest_by_updated_at
           end
 
           def self.identify(id)

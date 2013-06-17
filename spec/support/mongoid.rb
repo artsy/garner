@@ -57,5 +57,6 @@ end
 RSpec.configure do |config|
   config.before(:each) do
     Mongoid.purge!
+    Mongoid.models.each(&:create_indexes)
   end
 end

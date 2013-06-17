@@ -15,6 +15,8 @@ module Garner
           # @param binding [Object] The object from which to compute a key.
           # @return [String] A cache key string.
           def self.apply(binding)
+            binding = binding.proxy_binding if binding.respond_to?(:proxy_binding)
+
             return unless binding.respond_to?(:cache_key) && binding.cache_key
             return unless binding.respond_to?(:updated_at) && binding.updated_at
 

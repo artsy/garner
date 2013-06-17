@@ -12,7 +12,7 @@ describe Garner::Mixins::Mongoid::Document do
       end
 
       it "returns the _latest_by_updated_at document by :updated_at" do
-        mongers = 3.times.map { subject.create }
+        mongers = 3.times.map { |i| subject.create({ :name => "M#{i}" }) }
         mongers[1].touch
 
         subject.send(:_latest_by_updated_at)._id.should == mongers[1]._id
@@ -30,11 +30,16 @@ describe Garner::Mixins::Mongoid::Document do
       end
     end
 
-    describe "touch" do
-      it "touches the _latest_by_updated_at document" do
+    describe "proxy_binding" do
+      it "returns the _latest_by_updated_at document" do
+        monger = subject.create
+        subject.proxy_binding.should be_a(Monger)
+      end
+
+      it "responds to :touch" do
         monger = subject.create
         subject.any_instance.should_receive(:touch)
-        subject.touch
+        subject.proxy_binding.touch
       end
     end
 
