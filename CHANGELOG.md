@@ -1,5 +1,9 @@
-0.4.0 (6/14/2013)
+0.4.1 (TBD)
 -----------
+* Fixed #29: Restrict the filename string used for the `Caller` context key strategy to just the portion of the path relevant to the current app. In a Rails app, this defaults to Rails.root; otherwise we search for the nearest ancestor directory containing a Gemfile.
+
+0.4.0 (6/14/2013)
+-----------------
 
 * Complete rewrite of Garner. See [UPGRADING](UPGRADING.md) for details on how to upgrade from Garner 0.3.3 and earlier versions - [@fancyremarker](https://github.com/fancyremarker).
 * Fixed #6: Garner fails if Mongoid not loaded yet - [@fancyremarker](https://github.com/fancyremarker).
