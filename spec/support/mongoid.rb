@@ -5,7 +5,8 @@ require "mongoid_slug"
 Mongoid.load_configuration({
   :sessions => {
     :default => {
-      :uri => ENV["GARNER_MONGO_URL"] || "mongodb://localhost/garner_test"
+      :uri => ENV["GARNER_MONGO_URL"] || "mongodb://localhost/garner_test",
+      :safe => true
     }
   },
   :options => {
