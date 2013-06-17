@@ -1,6 +1,9 @@
 0.4.1 (TBD)
 -----------
-* Fixed #29: Restrict the filename string used for the `Caller` context key strategy to just the portion of the path relevant to the current app. In a Rails app, this defaults to Rails.root; otherwise we search for the nearest ancestor directory containing a Gemfile.
+* Added a `rake benchmark` task to compare different binding key/invalidation strategy pairs.
+* Improved the performance of the `SafeCacheKey` strategy on virtual `Garner::Mixins::Mongoid::Identity` bindings by properly memoizing the corresponding document.
+* Improved the performance of the `SafeCacheKey` strategy on class bindings by making 1 database call per key application, instead of 3.
+* Removed the `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_invalidation_key_strategy`. Garner now uses just one default key/invalidation strategy pair for all binding types.
 
 0.4.0 (6/14/2013)
 -----------------
@@ -18,6 +21,7 @@
 * Removed HTTP caching responsibilities from the library entirely.
 * Introduced a `SafeCacheKey` binding key strategy, which appends subsecond precision to cache keys, to make them usable.
 * Added a `cache_key` implementation at the class level in Mongoid, which returns the `cache_key` of the most recently updated document in the collection (by `:updated_at`).
+* Fixed #29: Restrict the filename string used for the `Caller` context key strategy to just the portion of the path relevant to the current app. In a Rails app, this defaults to Rails.root; otherwise we search for the nearest ancestor directory containing a Gemfile.
 
 0.3.3 (6/10/2013)
 -----------------

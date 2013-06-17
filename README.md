@@ -5,11 +5,10 @@ Garner is a cache layer for Ruby and Rack applications, supporting model and ins
 
 If you're not familiar with HTTP caching, ETags and If-Modified-Since, watch us introduce Garner in [From Zero to API Cache in 10 Minutes](http://www.confreaks.com/videos/986-goruco2012-from-zero-to-api-cache-w-grape-mongodb-in-10-minutes) at GoRuCo 2012.
 
-Stable Release
---------------
+Upgrading
+---------
 
-You're reading the documentation for the next release of Garner, which should be 0.4.0. See [UPGRADING](UPGRADING.md).
-The current stable release is [0.3.3](https://github.com/artsy/garner/blob/v0.3.3/README.md).
+The current stable release of Garner is 0.4.0, and contains many breaking changes from the previous stable release, 0.3.3. For a summary of important changes, see [UPGRADING](UPGRADING.md).
 
 Usage
 -----
