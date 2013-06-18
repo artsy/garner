@@ -1,3 +1,5 @@
+require "active_record"
+
 # Set up in-memory SQLite connection for ActiveRecord
 ActiveRecord::Base.establish_connection({
   :adapter => "sqlite3",
@@ -5,6 +7,7 @@ ActiveRecord::Base.establish_connection({
 })
 
 # Stub classes
+ActiveRecord::Migration.verbose = false
 ActiveRecord::Migration.create_table :activists do |t|
   t.string :name
   t.timestamps
