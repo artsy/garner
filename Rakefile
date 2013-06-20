@@ -40,8 +40,8 @@ task :default => :spec
 require "yard"
 YARD::Rake::YardocTask.new(:doc)
 
-require "performance/strategy_benchmark"
 task :benchmark do
+  require "performance/strategy_benchmark"
   StrategyBenchmark.new({
     :n => ENV["N"].try(&:to_i),
     :d => ENV["D"].try(&:to_i),

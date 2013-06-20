@@ -10,9 +10,10 @@ require "rack/test"
 
 require "garner"
 
+# Load support files
+require "spec_support"
+
 # Load shared examples
-["shared/*.rb", "support/*.rb"].each do |path|
-  Dir["#{File.dirname(__FILE__)}/#{path}"].each do |file|
-    require file
-  end
+Dir["#{File.dirname(__FILE__)}/shared/*.rb"].each do |file|
+  require file
 end

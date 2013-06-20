@@ -1,4 +1,4 @@
-require "spec_helper"
+require "spec_support"
 require "method_profiler"
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
