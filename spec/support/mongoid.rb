@@ -20,12 +20,18 @@ if ENV["GARNER_MONGOID_LOG"]
   Moped.logger = Mongoid.logger
 end
 
+# Include mixin
+module Mongoid
+  module Document
+    include Garner::Mixins::Mongoid::Document
+  end
+end
+
 # Stub classes
 class Monger
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Slug
-  include Garner::Mixins::Mongoid::Document
   embeds_one :fish
   has_many :cheeses
 
@@ -38,7 +44,6 @@ end
 class Food
   include Mongoid::Document
   include Mongoid::Timestamps
-  include Garner::Mixins::Mongoid::Document
 
   field :name, :type => String
 end

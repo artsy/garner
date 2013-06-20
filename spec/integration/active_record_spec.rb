@@ -26,5 +26,23 @@ describe "ActiveRecord integration" do
         subject.apply(persisted_activist).should == expected_key
       end
     end
+
+    describe "garner_cache_key" do
+      context "instance" do
+        subject { Activist.create }
+
+        it "returns a non-nil cache_key" do
+          subject.garner_cache_key.should_not be_nil
+        end
+      end
+
+      context "class" do
+        subject { Activist }
+
+        it "should not " do
+          expect { subject.garner_cache_key }.not_to raise_error
+        end
+      end
+    end
   end
 end
