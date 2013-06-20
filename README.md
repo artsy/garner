@@ -110,7 +110,15 @@ Order.find(3).invalidate_garner_caches
 
 ### ActiveRecord
 
-Garner provides rudimentary support for `ActiveRecord`. No mixins are required to bind to `ActiveRecord` objects. Just call `garner.bind(model)`, where `model` is an `ActiveRecord` object.
+Garner provides rudimentary support for `ActiveRecord`. To use ActiveRecord models for Garner bindings, use `Garner::Mixins::ActiveRecord::Base`. You can set it up in an initializer:
+
+``` ruby
+module ActiveRecord
+  module Base
+    include Garner::Mixins::ActiveRecord::Base
+  end
+end
+```
 
 
 Under The Hood: Bindings

@@ -1,4 +1,5 @@
 require "active_record"
+require "garner/mixins/active_record"
 
 # Set up in-memory SQLite connection for ActiveRecord
 ActiveRecord::Base.establish_connection({
@@ -11,6 +12,13 @@ ActiveRecord::Migration.verbose = false
 ActiveRecord::Migration.create_table :activists do |t|
   t.string :name
   t.timestamps
+end
+
+# Include mixin
+module ActiveRecord
+  class ActiveRecord::Base
+    include Garner::Mixins::ActiveRecord::Base
+  end
 end
 
 # Wrap each test example in a failing transaction to ensure a clean
