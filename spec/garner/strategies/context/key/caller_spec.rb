@@ -51,7 +51,8 @@ describe Garner::Strategies::Context::Key::Caller do
 
   context "with Rails.root defined" do
     before(:each) do
-      ::Rails = double("class")
+      class ::Rails
+      end
       ::Rails.stub(:root) { File.dirname(__FILE__) }
     end
 
