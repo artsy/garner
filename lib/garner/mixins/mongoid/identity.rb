@@ -1,8 +1,3 @@
-# Set up Garner configuration parameters
-Garner.config.option(:mongoid_identity_fields, {
-  :default => [:_id]
-})
-
 module Garner
   module Mixins
     module Mongoid

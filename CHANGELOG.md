@@ -5,6 +5,7 @@
 * Improved the performance of the `SafeCacheKey` strategy on class bindings by making 1 database call per key application, instead of 3.
 * Removed the `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_invalidation_key_strategy`. Garner now uses just one default key/invalidation strategy pair for all binding types.
 * Added an ActiveRecord mixin, `Garner::Mixins::ActiveRecord::Base`, per #35.
+* Eliminated the need to `require "garner/mixins/rack"` before declaring `Garner.config.rack_context_key_strategies`, per #35.
 
 0.4.0 (6/14/2013)
 -----------------
