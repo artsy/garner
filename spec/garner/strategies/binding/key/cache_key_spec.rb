@@ -14,7 +14,9 @@ describe Garner::Strategies::Binding::Key::CacheKey do
     let(:unknown_bindings) { [@mock.class] }
   end
 
-  it "returns the object's cache key, or nil" do
-    subject.apply(@mock).should == "mocks/4"
+  describe "apply" do
+    it "returns the object's cache key, or nil" do
+      subject.apply(@mock).should == "mocks/4"
+    end
   end
 end

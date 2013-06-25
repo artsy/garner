@@ -6,6 +6,7 @@
 * Removed the `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_invalidation_key_strategy`. Garner now uses just one default key/invalidation strategy pair for all binding types.
 * Added an ActiveRecord mixin, `Garner::Mixins::ActiveRecord::Base`, per #35.
 * Eliminated the need to `require "garner/mixins/rack"` before declaring `Garner.config.rack_context_key_strategies`, per #35.
+* Fixed a bug in binding to classes via the `SafeCacheKey` and `Touch` strategy pair, where class-bound results would not be invalidated when an instance of the class was destroyed.
 
 0.4.0 (6/14/2013)
 -----------------

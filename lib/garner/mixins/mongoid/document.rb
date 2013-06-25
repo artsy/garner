@@ -16,14 +16,16 @@ module Garner
             _latest_by_updated_at
           end
 
-          def self.identify(id)
-            Garner::Mixins::Mongoid::Identity.from_class_and_id(self, id)
+          def self.identify(handle)
+            Mongoid::Identity.from_class_and_handle(self, handle)
           end
 
-          def self.garnered_find(id)
-            return nil unless (binding = identify(id))
+          def self.garnered_find(handle)
+            return nil unless (binding = identify(handle))
             identity = Garner::Cache::Identity.new
-            identity.bind(binding).key({ :source => :garnered_find }) { find(id) }
+            identity.bind(binding).key({ :source => :garnered_find }) do
+              find(handle)
+            end
           end
 
           after_create    :_garner_after_create

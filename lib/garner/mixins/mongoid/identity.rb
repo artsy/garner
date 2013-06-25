@@ -4,14 +4,15 @@ module Garner
       class Identity
         include Garner::Cache::Binding
 
-        attr_accessor :document, :collection_name, :conditions
+        attr_accessor :klass, :handle, :proxy_binding, :conditions
 
-        def self.from_class_and_id(klass, id)
+        def self.from_class_and_handle(klass, handle)
           validate_class!(klass)
 
           self.new.tap do |identity|
-            identity.collection_name = klass.collection_name
-            identity.conditions = conditions_for(klass, id)
+            identity.klass = klass
+            identity.handle = handle
+            identity.conditions = conditions_for(klass, handle)
           end
         end
 
@@ -19,55 +20,8 @@ module Garner
           @conditions = {}
         end
 
-        def key_strategy
-          Garner.config.binding_key_strategy
-        end
-
-        def invalidation_strategy
-          Garner.config.binding_invalidation_strategy
-        end
-
-        def cache_key
-          # See https://github.com/mongoid/mongoid/blob/f5ba1295/lib/mongoid/document.rb#L242
-          if updated_at
-            "#{model_cache_key}/#{_id}-#{updated_at.utc.to_s(:number)}"
-          elsif _id
-            "#{model_cache_key}/#{_id}"
-          else
-            "#{model_cache_key}/new"
-          end
-        end
-
-        def model_cache_key
-          if _type
-            ActiveModel::Name.new(_type.constantize).cache_key
-          else
-            @collection_name.to_s
-          end
-        end
-
-        def collection
-          ::Mongoid.default_session[@collection_name]
-        end
-
-        def document
-          @document ||= collection.where(@conditions).select({
-            :_id => 1,
-            :_type => 1,
-            :updated_at => 1
-          }).limit(1).first
-        end
-
-        def _id
-          document["_id"] if document
-        end
-
-        def updated_at
-          document["updated_at"] if document
-        end
-
-        def _type
-          document["_type"] if document
+        def proxy_binding
+          @proxy_binding ||= klass.where(conditions).only(:_id, :_type, :updated_at).first
         end
 
         private
@@ -79,11 +33,11 @@ module Garner
           end
         end
 
-        def self.conditions_for(klass, id)
+        def self.conditions_for(klass, handle)
           # multiple-ID conditions
           conditions = {
             "$or" => Garner.config.mongoid_identity_fields.map { |field|
-              { field => id }
+              { field => handle }
             }
           }
 

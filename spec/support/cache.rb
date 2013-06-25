@@ -7,3 +7,10 @@ if (server = ENV["GARNER_MEMCACHE_SERVER"])
     })
   end
 end
+
+# Purge cache before each test example
+RSpec.configure do |config|
+  config.before(:each) do
+    Garner.config.cache.clear
+  end
+end
