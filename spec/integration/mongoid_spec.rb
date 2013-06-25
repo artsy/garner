@@ -205,37 +205,50 @@ describe "Mongoid integration" do
         end
 
         context "binding at the class level" do
-          let(:cached_object_name_concatenator) do
-            lambda do
-              @app.garner.bind(Monger) { Monger.all.map(&:name).join(", ") }
+          ["top-level class", "subclass"].each do |level|
+            context "to a #{level}" do
+              let (:klass) { level == "subclass" ? Cheese : Food }
+
+              let(:cached_object_name_concatenator) do
+                lambda do
+                  @app.garner.bind(klass) do
+                    klass.all.order_by(:_id => :asc).map(&:name).join(", ")
+                  end
+                end
+              end
+
+              it "invalidates on create" do
+                m1 = Cheese.create({ :name => "M1" })
+                cached_object_name_concatenator.call.should == "M1"
+                m1 = Cheese.create({ :name => "M3" })
+                cached_object_name_concatenator.call.should == "M1, M3"
+              end
+
+              it "invalidates on update" do
+                m1 = Cheese.create({ :name => "M1" })
+                m3 = Cheese.create({ :name => "M3" })
+                cached_object_name_concatenator.call.should == "M1, M3"
+                m1.update_attributes({ :name => "M2" })
+                cached_object_name_concatenator.call.should == "M2, M3"
+              end
+
+              it "invalidates on destroy" do
+                m1 = Cheese.create({ :name => "M1" })
+                m3 = Cheese.create({ :name => "M3" })
+                cached_object_name_concatenator.call.should == "M1, M3"
+                m1.destroy
+                cached_object_name_concatenator.call.should == "M3"
+              end
+
+              it "invalidates by explicit call to invalidate_garner_caches" do
+                m1 = Cheese.create({ :name => "M1" })
+                m3 = Cheese.create({ :name => "M3" })
+                cached_object_name_concatenator.call.should == "M1, M3"
+                m1.set(:name, "M2")
+                klass.invalidate_garner_caches
+                cached_object_name_concatenator.call.should == "M2, M3"
+              end
             end
-          end
-          it "invalidates on create" do
-            cached_object_name_concatenator.call.should == ""
-            Monger.create({ :name => "M1" })
-            cached_object_name_concatenator.call.should == "M1"
-          end
-
-          it "invalidates on update" do
-            monger = Monger.create({ :name => "M1" })
-            cached_object_name_concatenator.call.should == "M1"
-            monger.update_attributes({ :name => "M2" })
-            cached_object_name_concatenator.call.should == "M2"
-          end
-
-          it "invalidates on destroy" do
-            monger = Monger.create({ :name => "M1" })
-            cached_object_name_concatenator.call.should == "M1"
-            monger.destroy
-            cached_object_name_concatenator.call.should == ""
-          end
-
-          it "invalidates by explicit call to invalidate_garner_caches" do
-            monger = Monger.create({ :name => "M1" })
-            cached_object_name_concatenator.call.should == "M1"
-            monger.set(:name, "M2")
-            Monger.invalidate_garner_caches
-            cached_object_name_concatenator.call.should == "M2"
           end
         end
       end
