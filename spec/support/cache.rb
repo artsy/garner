@@ -1,3 +1,4 @@
+require "garner"
 require "active_support/cache/dalli_store"
 
 if (server = ENV["GARNER_MEMCACHE_SERVER"])

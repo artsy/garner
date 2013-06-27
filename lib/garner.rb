@@ -17,10 +17,12 @@ require "garner/strategies/context/key/jsonp"
 require "garner/strategies/binding/key/base"
 require "garner/strategies/binding/key/cache_key"
 require "garner/strategies/binding/key/safe_cache_key"
+require "garner/strategies/binding/key/binding_index"
 
 # Invalidation strategies
 require "garner/strategies/binding/invalidation/base"
 require "garner/strategies/binding/invalidation/touch"
+require "garner/strategies/binding/invalidation/binding_index"
 
 # Cache
 require "garner/cache"

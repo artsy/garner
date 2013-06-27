@@ -6,6 +6,12 @@ module Garner
 
         attr_accessor :klass, :handle, :proxy_binding, :conditions
 
+        # Instantiate a new Mongoid::Identity.
+        #
+        # @param klass [Class] A
+        # @param handle [Object] A String, Fixnum, BSON::ObjectId, etc.
+        #   identifying the object.
+        # @return [Garner::Mixins::Mongoid::Identity]
         def self.from_class_and_handle(klass, handle)
           validate_class!(klass)
 
@@ -20,8 +26,18 @@ module Garner
           @conditions = {}
         end
 
+        # Return an object that can act as a binding on this identity's behalf.
+        #
+        # @return [Mongoid::Document]
         def proxy_binding
           @proxy_binding ||= klass.where(conditions).only(:_id, :_type, :updated_at).first
+        end
+
+        # Stringize this identity for purposes of marshaling.
+        #
+        # @return [String]
+        def to_s
+          "#{self.class.name}/klass=#{klass},handle=#{handle}"
         end
 
         private

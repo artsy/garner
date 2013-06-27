@@ -7,6 +7,7 @@
 * Added an ActiveRecord mixin, `Garner::Mixins::ActiveRecord::Base`, per #35.
 * Eliminated the need to `require "garner/mixins/rack"` before declaring `Garner.config.rack_context_key_strategies`, per #35.
 * Fixed a bug in binding to classes via the `SafeCacheKey` and `Touch` strategy pair, where class-bound results would not be invalidated when an instance of the class was destroyed.
+* Added `BindingIndex` binding key/invalidation strategy pair, which uses a two-level lookup for computing cache keys.
 
 0.4.0 (6/14/2013)
 -----------------

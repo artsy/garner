@@ -2,6 +2,24 @@ require "spec_helper"
 require "garner/mixins/mongoid"
 
 describe Garner::Mixins::Mongoid::Document do
+  context "at the instance level" do
+    before(:each) do
+      Garner.configure do |config|
+        config.mongoid_identity_fields = [:_id, :_slugs]
+      end
+
+      @monger = Monger.create({ :name => "M1" })
+      @cheese = Cheese.create({ :name => "M1" })
+    end
+
+    describe "proxied_classes" do
+      it "returns all Mongoid superclasses" do
+        @monger.proxied_classes.should == [Monger]
+        @cheese.proxied_classes.should == [Cheese, Food]
+      end
+    end
+  end
+
   context "at the class level" do
     subject { Monger }
 
@@ -41,26 +59,20 @@ describe Garner::Mixins::Mongoid::Document do
         subject.any_instance.should_receive(:touch)
         subject.proxy_binding.touch
       end
-    end
 
-    describe "cache_key" do
-      it "return's the _latest_by_updated_at document's cache key" do
-        monger = subject.create
-        subject.any_instance.should_receive(:cache_key)
-        subject.cache_key
-      end
-
-      it "matches what would be returned from the full object" do
-        monger = subject.create
-        subject.cache_key.should == monger.reload.cache_key
-      end
-
-      context "with Mongoid subclasses" do
-        subject { Cheese }
-
+      describe "cache_key" do
         it "matches what would be returned from the full object" do
-          cheese = subject.create
-          subject.cache_key.should == cheese.reload.cache_key
+          monger = subject.create
+          subject.proxy_binding.cache_key.should == monger.reload.cache_key
+        end
+
+        context "with Mongoid subclasses" do
+          subject { Cheese }
+
+          it "matches what would be returned from the full object" do
+            cheese = subject.create
+            subject.proxy_binding.cache_key.should == cheese.reload.cache_key
+          end
         end
       end
     end

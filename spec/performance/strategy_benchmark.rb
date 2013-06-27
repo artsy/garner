@@ -52,7 +52,9 @@ class StrategyBenchmark
       Garner::Strategies::Binding::Key::Base =>
         Garner::Strategies::Binding::Invalidation::Base,
       Garner::Strategies::Binding::Key::SafeCacheKey =>
-        Garner::Strategies::Binding::Invalidation::Touch
+        Garner::Strategies::Binding::Invalidation::Touch,
+      Garner::Strategies::Binding::Key::BindingIndex =>
+        Garner::Strategies::Binding::Invalidation::BindingIndex
     }
   end
 
