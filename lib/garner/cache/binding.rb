@@ -21,6 +21,8 @@ module Garner
       end
 
       # Apply the cache key strategy to this binding.
+      #
+      # @return [String] A cache key string.
       def garner_cache_key
         key_strategy.apply(self)
       end
@@ -33,8 +35,11 @@ module Garner
       end
 
       # Apply the invalidation strategy to this binding.
+      #
+      # @return [Boolean] Returns true on success.
       def invalidate_garner_caches
         invalidation_strategy.apply(self)
+        true
       end
 
       protected

@@ -38,4 +38,15 @@ describe Garner::Strategies::Binding::Key::SafeCacheKey do
       subject.apply(@persisted_mock).should be_nil
     end
   end
+
+  context "with real objects" do
+    it_behaves_like "Garner::Strategies::Binding::Key strategy" do
+      let(:known_bindings) do
+        document = Monger.create({ :name => "M1" })
+        identity = Monger.identify(document.id)
+        [Activist.create, document, identity, Monger]
+      end
+      let(:unknown_bindings) { [Monger.identify("m2"), Monger.new, Activist.new] }
+    end
+  end
 end

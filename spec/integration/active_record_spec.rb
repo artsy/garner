@@ -1,11 +1,6 @@
 require "spec_helper"
 
 describe "ActiveRecord integration" do
-  before(:each) do
-    class Activist < ActiveRecord::Base
-    end
-  end
-
   context "using the Garner::Strategies::Binding::Key::CacheKey strategy" do
 
     describe "cache key generation" do
