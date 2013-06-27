@@ -7,6 +7,13 @@ ActiveRecord::Base.establish_connection({
   :database => ":memory:"
 })
 
+# Include mixin
+module ActiveRecord
+  class ActiveRecord::Base
+    include Garner::Mixins::ActiveRecord::Base
+  end
+end
+
 # Stub classes
 ActiveRecord::Migration.verbose = false
 ActiveRecord::Migration.create_table :activists do |t|
@@ -14,11 +21,7 @@ ActiveRecord::Migration.create_table :activists do |t|
   t.timestamps
 end
 
-# Include mixin
-module ActiveRecord
-  class ActiveRecord::Base
-    include Garner::Mixins::ActiveRecord::Base
-  end
+class Activist < ActiveRecord::Base
 end
 
 # Wrap each test example in a failing transaction to ensure a clean
