@@ -171,7 +171,7 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
     end
 
     it_behaves_like "Garner::Strategies::Binding::Key strategy" do
-      let(:known_bindings) { [Activist.create, Monger.create, Monger.identify("m1"), Monger] }
+      let(:known_bindings) { [Monger.create, Monger.identify("m1"), Monger] }
       let(:unknown_bindings) { [] }
     end
 

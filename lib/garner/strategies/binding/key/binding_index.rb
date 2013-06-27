@@ -81,8 +81,8 @@ module Garner
           # @return [Boolean]
           def self.canonical?(binding)
             # TODO: Implement real logic for determining canonicity.
-            valid_types = [ Class, Mongoid::Document, ActiveRecord::Base ]
-            valid_types.any? { |type| binding.is_a?(type) }
+            binding.is_a?(Mongoid::Document) ||
+            (binding.is_a?(Class) && binding.include?(Mongoid::Document))
           end
 
           private
