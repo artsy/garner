@@ -57,6 +57,24 @@ describe Garner::Mixins::Mongoid::Identity do
     end
   end
 
+  describe "to_s" do
+    subject { Monger.identify("m1").to_s }
+
+    it "stringizes the binding and includes klass and handle" do
+      subject.should be_a(String)
+      subject.should =~ /Monger/
+      subject.should =~ /m1/
+    end
+
+    it "should not change across identical instances" do
+      subject.should == Monger.identify("m1").to_s
+    end
+
+    it "should be different across different instances" do
+      subject.should_not == Monger.identify("m2").to_s
+    end
+  end
+
   context "with default configuration and real documents" do
     before(:each) do
       Garner.configure do |config|
@@ -65,6 +83,7 @@ describe Garner::Mixins::Mongoid::Identity do
 
       @monger = Monger.create({ :name => "M1" })
       @cheese = Cheese.create({ :name => "Havarti" })
+      @cheese.reload
     end
 
     describe "proxy_binding" do
@@ -96,16 +115,16 @@ describe Garner::Mixins::Mongoid::Identity do
           end
         end
       end
+
       describe "updated_at" do
         it "returns :updated_at equal to Mongoid::Document's" do
           Monger.identify("m1").proxy_binding.updated_at.should == Monger.find("m1").updated_at
 
           # Also test for Mongoid subclasses
-          Cheese.identify("havarti").proxy_binding.updated_at.should == @cheese.reload.updated_at
-          Food.identify(@cheese.id).proxy_binding.updated_at.should == @cheese.reload.updated_at
+          Cheese.identify("havarti").proxy_binding.updated_at.should == @cheese.updated_at
+          Food.identify(@cheese.id).proxy_binding.updated_at.should == @cheese.updated_at
         end
       end
     end
-
   end
 end

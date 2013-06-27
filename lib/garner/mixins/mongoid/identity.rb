@@ -33,6 +33,13 @@ module Garner
           @proxy_binding ||= klass.where(conditions).only(:_id, :_type, :updated_at).first
         end
 
+        # Stringize this identity for purposes of marshaling.
+        #
+        # @return [String]
+        def to_s
+          "#{self.class.name}/klass=#{klass},handle=#{handle}"
+        end
+
         private
         def self.validate_class!(klass)
           if !klass.include?(::Mongoid::Document)

@@ -5,11 +5,26 @@ module Garner
         extend ActiveSupport::Concern
         include Garner::Cache::Binding
 
+        def proxied_classes
+          self.class.mongoid_superclasses
+        end
+
+        def identity_string
+          "#{self.class.name}/id=#{id}"
+        end
+
         included do
           extend Garner::Cache::Binding
 
-          def self.cache_key
-            _latest_by_updated_at.try(:cache_key)
+          # Return an array of this class and all Mongoid superclasses.
+          #
+          # @return [Array] An array of classes.
+          def self.mongoid_superclasses
+            if superclass.include?(Mongoid::Document)
+              [self] + superclass.mongoid_superclasses
+            else
+              [self]
+            end
           end
 
           # Return an object that can act as a binding on this class's behalf.
