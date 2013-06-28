@@ -1,5 +1,8 @@
-0.4.1 (TBD)
------------
+Next Release (TBD)
+------------------
+
+0.4.1 (6/28/2013)
+-----------------
 * Added a `rake benchmark` task to compare different binding key/invalidation strategy pairs.
 * Improved the performance of the `SafeCacheKey` strategy on virtual `Garner::Mixins::Mongoid::Identity` bindings by properly memoizing the corresponding document.
 * Improved the performance of the `SafeCacheKey` strategy on class bindings by making 1 database call per key application, instead of 3.
