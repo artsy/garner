@@ -1,6 +1,10 @@
 Next Release (TBD)
 ------------------
 
+0.4.2 (6/28/2013)
+-----------------
+* Fixed `Caller` strategy when using Rails.
+
 0.4.1 (6/28/2013)
 -----------------
 * Added a `rake benchmark` task to compare different binding key/invalidation strategy pairs.
