@@ -111,7 +111,7 @@ module Garner
     #
     # @return [String] The newly set caller_root.
     def caller_root=(caller_root)
-      settings[:caller_root] = caller_root
+      settings[:caller_root] = caller_root && caller_root.to_s
     end
 
     # Reset the configuration options to the defaults.

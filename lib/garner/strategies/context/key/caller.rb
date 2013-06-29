@@ -18,7 +18,7 @@ module Garner
           # @return [String] The default root path.
           def self.default_root
             if defined?(::Rails) && ::Rails.respond_to?(:root)
-              ::Rails.root
+              ::Rails.root.realpath.to_s
             else
               # Try to use the nearest ancestor directory containing a Gemfile.
               requiring_caller = send(:caller).detect do |line|

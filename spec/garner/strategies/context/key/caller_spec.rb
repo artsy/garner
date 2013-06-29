@@ -53,15 +53,15 @@ describe Garner::Strategies::Context::Key::Caller do
     before(:each) do
       class ::Rails
       end
-      ::Rails.stub(:root) { File.dirname(__FILE__) }
+      ::Rails.stub(:root) { Pathname.new(File.dirname(__FILE__)) }
     end
 
     it "sets default_root to Rails.root" do
-      subject.default_root.should == ::Rails.root
+      subject.default_root.should == ::Rails.root.realpath.to_s
     end
 
     it "sets Garner.config.caller_root to Rails.root" do
-      Garner.config.caller_root.should == ::Rails.root
+      Garner.config.caller_root.should == ::Rails.root.realpath.to_s
     end
 
     it "sets an appropriate value for :caller" do
