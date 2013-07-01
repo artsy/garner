@@ -24,11 +24,6 @@ describe Garner::Mixins::Rack do
       lambda { @mock_app.garner }
     end
 
-    it "forces a cache miss if cache_enabled? returns false" do
-      @mock_app.stub(:cache_enabled?) { false }
-      subject.call.options_hash[:force_miss].should be_true
-    end
-
     it "returns a Garner::Cache::Identity" do
       subject.call.should be_a(Garner::Cache::Identity)
     end

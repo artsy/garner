@@ -16,7 +16,17 @@ module Garner
       end
 
       def fetch(&block)
-        Garner::Cache.fetch(@bindings, @key_hash, @options_hash, &block)
+        if @nocache
+          yield
+        else
+          Garner::Cache.fetch(@bindings, @key_hash, @options_hash, &block)
+        end
+      end
+
+      # Disable caching for this identity.
+      def nocache
+        @nocache = true
+        block_given? ? fetch(&block) : self
       end
 
       # Bind this cache identity to a (bindable) object.
