@@ -12,6 +12,13 @@ describe Garner::Cache::Identity do
     subject.options_hash[:expires_in].should == 5.minutes
   end
 
+  describe "nocache" do
+    it "forces a cache bypass" do
+      Garner::Cache.should_not_receive :fetch
+      subject.nocache.fetch { "foo" }
+    end
+  end
+
   describe "bind" do
     it "adds to the object identity's bindings" do
       subject.bind("foo")

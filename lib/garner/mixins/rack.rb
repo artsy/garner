@@ -24,9 +24,7 @@ module Garner
           identity = strategy.apply(identity, self)
         end
 
-        unless cache_enabled?
-          identity.options({ :force_miss => true })
-        end
+        identity = identity.nocache unless cache_enabled?
 
         block_given? ? identity.fetch(&block) : identity
       end

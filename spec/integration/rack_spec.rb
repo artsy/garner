@@ -48,7 +48,7 @@ describe "Rack integration" do
       response1 = JSON.parse(last_response.body)[0]
       get "/"
       response2 = JSON.parse(last_response.body)[0]
-      response1.should == response2
+      response1.should_not == response2
     end
 
     it "caches different results for different paths" do
