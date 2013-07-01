@@ -19,7 +19,7 @@ module Garner
       #   end
       # @return [Garner::Cache::Identity] The cache identity.
       def garner(&block)
-        identity = Garner::Cache::Identity.new
+        identity = Garner::Cache::Identity.new(self)
         Garner.config.rack_context_key_strategies.each do |strategy|
           identity = strategy.apply(identity, self)
         end
