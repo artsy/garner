@@ -62,8 +62,16 @@ module Garner
               :updated_at => :desc
             }).first
           end
-        end
 
+          def _invalidate
+            invalidation_strategy.apply(self)
+
+            if _root != self && Garner.config.invalidate_mongoid_root
+              invalidation_strategy.apply(_root)
+            end
+          end
+
+        end
       end
     end
   end
