@@ -33,6 +33,10 @@ describe Garner::Mixins::Rack do
       subject.call.should be_a(Garner::Cache::Identity)
     end
 
+    it "sets the identity's ruby_binding to self" do
+      subject.call.ruby_context.should == @mock_app
+    end
+
     it "applies each of Garner.config.rack_context_key_strategies" do
       # Default :context_key_strategies
       subject.call.key_hash[:caller].should_not be_nil

@@ -1,5 +1,6 @@
 Next Release (TBD)
 ------------------
+* Stored `ruby_context` from which a `Garner::Cache::Identity` was initialized as an `attr_accessor` on the object.
 
 0.4.2 (6/28/2013)
 -----------------

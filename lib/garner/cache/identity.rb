@@ -1,9 +1,12 @@
 module Garner
   module Cache
     class Identity
+      attr_accessor :ruby_context
       attr_accessor :bindings, :key_hash, :options_hash
 
-      def initialize
+      def initialize(ruby_context = nil)
+        @ruby_context = ruby_context
+
         @bindings = []
         @key_hash = {}
 
