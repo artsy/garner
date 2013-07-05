@@ -9,8 +9,8 @@ describe "Mongoid integration" do
   end
 
   {
-    Garner::Strategies::Binding::Key::SafeCacheKey =>
-      Garner::Strategies::Binding::Invalidation::Touch,
+    # Garner::Strategies::Binding::Key::SafeCacheKey =>
+    #   Garner::Strategies::Binding::Invalidation::Touch,
     Garner::Strategies::Binding::Key::BindingIndex =>
       Garner::Strategies::Binding::Invalidation::BindingIndex
   }.each do |key_strategy, invalidation_strategy|
@@ -160,7 +160,8 @@ describe "Mongoid integration" do
 
               context "with an embedded document" do
                 before(:each) do
-                  @fish = Monger.create!({ :name => "M1" }).create_fish({ :name => "Trout" })
+                  @monger = Monger.create!({ :name => "M1" })
+                  @fish = @monger.create_fish({ :name => "Trout" })
                 end
 
                 let(:cached_object_namer) do
@@ -174,6 +175,27 @@ describe "Mongoid integration" do
                   cached_object_namer.call.should == "Trout"
                   @fish.update_attributes!({ :name => "Sockeye" })
                   cached_object_namer.call.should == "Sockeye"
+                end
+
+                context "with :invalidate_mongoid_root = true" do
+                  before(:each) do
+                    Garner.configure do |config|
+                      config.invalidate_mongoid_root = true
+                    end
+                  end
+
+                  let(:root_cached_object_namer) do
+                    lambda do
+                      binding = Monger.send(selection_method, @monger.id)
+                      @app.garner.bind(binding) { @monger.fish.name }
+                    end
+                  end
+
+                  it "invalidates the root document" do
+                    root_cached_object_namer.call.should == "Trout"
+                    @fish.update_attributes!({ :name => "Sockeye" })
+                    root_cached_object_namer.call.should == "Sockeye"
+                  end
                 end
               end
 
