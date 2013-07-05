@@ -56,6 +56,20 @@ describe "Mongoid integration" do
               @object.destroy
               Monger.garnered_find("m1").should be_nil
             end
+
+            context "with case-insensitive find" do
+              before(:each) do
+                _find = Monger.method(:find)
+                Monger.stub(:find) do |param|
+                  _find.call(param.to_s.downcase)
+                end
+              end
+
+              it "does not cache a nil identity" do
+                Monger.garnered_find("M1").should == @object
+                Monger.garnered_find("foobar").should be_nil
+              end
+            end
           end
 
           [:find, :identify].each do |selection_method|

@@ -94,6 +94,24 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
           :proxied_binding => "Mocker/id=4"
         }).should == @mock_key
       end
+
+      context "whose canonical binding is nil" do
+        before(:each) do
+          @persisted_mock_alias.stub(:proxy_binding) { nil }
+        end
+
+        it "returns a nil cache key" do
+          subject.fetch_cache_key_for(@persisted_mock_alias).should be_nil
+        end
+
+        it "does not store the cache key to cache" do
+          subject.fetch_cache_key_for(@persisted_mock_alias)
+          Garner.config.cache.read({
+            :strategy => subject,
+            :proxied_binding => ""
+          }).should be_nil
+        end
+      end
     end
   end
 
@@ -107,6 +125,16 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
     context "with a non-canonical binding" do
       it "returns a cache key string" do
         subject.write_cache_key_for(@persisted_mock_alias).should == @mock_key
+      end
+
+      context "whose canonical binding is nil" do
+        before(:each) do
+          @persisted_mock_alias.stub(:proxy_binding) { nil }
+        end
+
+        it "returns a nil cache key" do
+          subject.write_cache_key_for(@persisted_mock_alias).should be_nil
+        end
       end
     end
   end
@@ -171,7 +199,11 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
     end
 
     it_behaves_like "Garner::Strategies::Binding::Key strategy" do
-      let(:known_bindings) { [Monger.create, Monger.identify("m1"), Monger] }
+      let(:known_bindings) do
+        document = Monger.create({ :name => "M1" })
+        identity = Monger.identify("m1")
+        [Monger, document, identity]
+      end
       let(:unknown_bindings) { [] }
     end
 
