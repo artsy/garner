@@ -26,6 +26,7 @@ module Garner
           # @return [String] A cache key string.
           def self.fetch_cache_key_for(binding)
             canonical_binding = fetch_canonical_binding_for(binding)
+            return nil unless canonical_binding
             key = index_key_for(canonical_binding)
             Garner.config.cache.fetch(key) { new_cache_key_for(canonical_binding) }
           end
@@ -36,6 +37,7 @@ module Garner
           # @return [String] A cache key string.
           def self.write_cache_key_for(binding)
             canonical_binding = fetch_canonical_binding_for(binding)
+            return nil unless canonical_binding
             key = index_key_for(canonical_binding)
             value = new_cache_key_for(canonical_binding)
             value.tap { |v| Garner.config.cache.write(key, v) }
