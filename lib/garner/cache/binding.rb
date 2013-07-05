@@ -8,6 +8,9 @@ Garner.config.option(:binding_invalidation_strategy, {
 Garner.config.option(:mongoid_identity_fields, {
   :default => [:_id]
 })
+Garner.config.option(:invalidate_mongoid_root, {
+  :default => true
+})
 
 module Garner
   module Cache
@@ -38,27 +41,25 @@ module Garner
       #
       # @return [Boolean] Returns true on success.
       def invalidate_garner_caches
-        invalidation_strategy.apply(self)
+        _invalidate
         true
       end
 
       protected
+      def _invalidate
+        invalidation_strategy.apply(self)
+      end
+
       def _garner_after_create
-        if invalidation_strategy.apply_on_callback?(:create)
-          invalidation_strategy.apply(self)
-        end
+        _invalidate if invalidation_strategy.apply_on_callback?(:create)
       end
 
       def _garner_after_update
-        if invalidation_strategy.apply_on_callback?(:update)
-          invalidation_strategy.apply(self)
-        end
+        _invalidate if invalidation_strategy.apply_on_callback?(:update)
       end
 
       def _garner_after_destroy
-        if invalidation_strategy.apply_on_callback?(:destroy)
-          invalidation_strategy.apply(self)
-        end
+        _invalidate if invalidation_strategy.apply_on_callback?(:destroy)
       end
 
     end
