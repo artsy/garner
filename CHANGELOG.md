@@ -1,5 +1,5 @@
-Next Release (TBD)
-------------------
+0.4.3 (7/5/2013)
+----------------
 * Stored `ruby_context` from which a `Garner::Cache::Identity` was initialized as an `attr_accessor` on the object.
 * Fixed `cache_enabled?` logic and added a `nocache` declaration to `Garner::Cache::Identity`.
 * Fixed #44, in which the BindingIndex was mistakenly storing values to cache for bindings with a nil canonical binding.
