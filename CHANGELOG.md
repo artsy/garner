@@ -1,9 +1,13 @@
+Next Release
+------------
+* Fixed [#47](https://github.com/artsy/garner/issues/47): avoid `$or` query where possible in `Garner::Mixins::Mongoid::Identity` - [@dblock](https://github.com/dblock).
+
 0.4.3 (7/5/2013)
 ----------------
-* Stored `ruby_context` from which a `Garner::Cache::Identity` was initialized as an `attr_accessor` on the object.
-* Fixed `cache_enabled?` logic and added a `nocache` declaration to `Garner::Cache::Identity`.
-* Fixed #44, in which the BindingIndex was mistakenly storing values to cache for bindings with a nil canonical binding.
-* Added `Garner.config.invalidate_mongoid_root` option, to always invalidate the root document when an embedded document is invalidated.
+* Stored `ruby_context` from which a `Garner::Cache::Identity` was initialized as an `attr_accessor` on the object - [@fancyremarker](https://github.com/fancyremarker).
+* Fixed `cache_enabled?` logic and added a `nocache` declaration to `Garner::Cache::Identity` - [@fancyremarker](https://github.com/fancyremarker).
+* Fixed #44, in which the BindingIndex was mistakenly storing values to cache for bindings with a nil canonical binding - [@fancyremarker](https://github.com/fancyremarker).
+* Added `Garner.config.invalidate_mongoid_root` option, to always invalidate the root document when an embedded document is invalidated - [@fancyremarker](https://github.com/fancyremarker).
 
 0.4.2 (6/28/2013)
 -----------------
@@ -11,14 +15,14 @@
 
 0.4.1 (6/28/2013)
 -----------------
-* Added a `rake benchmark` task to compare different binding key/invalidation strategy pairs.
-* Improved the performance of the `SafeCacheKey` strategy on virtual `Garner::Mixins::Mongoid::Identity` bindings by properly memoizing the corresponding document.
-* Improved the performance of the `SafeCacheKey` strategy on class bindings by making 1 database call per key application, instead of 3.
-* Removed the `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_invalidation_key_strategy`. Garner now uses just one default key/invalidation strategy pair for all binding types.
-* Added an ActiveRecord mixin, `Garner::Mixins::ActiveRecord::Base`, per #35.
-* Eliminated the need to `require "garner/mixins/rack"` before declaring `Garner.config.rack_context_key_strategies`, per #35.
-* Fixed a bug in binding to classes via the `SafeCacheKey` and `Touch` strategy pair, where class-bound results would not be invalidated when an instance of the class was destroyed.
-* Added `BindingIndex` binding key/invalidation strategy pair, which uses a two-level lookup for computing cache keys.
+* Added a `rake benchmark` task to compare different binding key/invalidation strategy pairs - [@fancyremarker](https://github.com/fancyremarker).
+* Improved the performance of the `SafeCacheKey` strategy on virtual `Garner::Mixins::Mongoid::Identity` bindings by properly memoizing the corresponding document - [@fancyremarker](https://github.com/fancyremarker).
+* Improved the performance of the `SafeCacheKey` strategy on class bindings by making 1 database call per key application, instead of 3 - [@fancyremarker](https://github.com/fancyremarker).
+* Removed the `Garner.config.mongoid_binding_key_strategy` and `Garner.config.mongoid_invalidation_key_strategy`. Garner now uses just one default key/invalidation strategy pair for all binding types - [@fancyremarker](https://github.com/fancyremarker).
+* Added an ActiveRecord mixin, `Garner::Mixins::ActiveRecord::Base`, per #35 - [@fancyremarker](https://github.com/fancyremarker).
+* Eliminated the need to `require "garner/mixins/rack"` before declaring `Garner.config.rack_context_key_strategies`, per #35 - [@fancyremarker](https://github.com/fancyremarker).
+* Fixed a bug in binding to classes via the `SafeCacheKey` and `Touch` strategy pair, where class-bound results would not be invalidated when an instance of the class was destroyed - [@fancyremarker](https://github.com/fancyremarker).
+* Added `BindingIndex` binding key/invalidation strategy pair, which uses a two-level lookup for computing cache keys - [@fancyremarker](https://github.com/fancyremarker).
 
 0.4.0 (6/14/2013)
 -----------------
@@ -31,12 +35,12 @@
 * Fixed #15: Remove need for `cache_as` from subclassed Mongoid models - [@fancyremarker](https://github.com/fancyremarker).
 * Closed #23: Abstract all Grape mixins to be more generically Rack mixins - [@fancyremarker](https://github.com/fancyremarker).
 * Closed #24: Implement `garnered_find` method for `Mongoid::Document` classes - [@fancyremarker](https://github.com/fancyremarker).
-* Extracted `Binding`, `Context` and `Identity` as explicit classes from `ObjectIdentity`.
-* Added support for all ActiveModel-compliant ORMs.
-* Removed HTTP caching responsibilities from the library entirely.
-* Introduced a `SafeCacheKey` binding key strategy, which appends subsecond precision to cache keys, to make them usable.
-* Added a `cache_key` implementation at the class level in Mongoid, which returns the `cache_key` of the most recently updated document in the collection (by `:updated_at`).
-* Fixed #29: Restrict the filename string used for the `Caller` context key strategy to just the portion of the path relevant to the current app. In a Rails app, this defaults to Rails.root; otherwise we search for the nearest ancestor directory containing a Gemfile.
+* Extracted `Binding`, `Context` and `Identity` as explicit classes from `ObjectIdentity` - [@fancyremarker](https://github.com/fancyremarker).
+* Added support for all ActiveModel-compliant ORMs - [@fancyremarker](https://github.com/fancyremarker).
+* Removed HTTP caching responsibilities from the library entirely - [@fancyremarker](https://github.com/fancyremarker).
+* Introduced a `SafeCacheKey` binding key strategy, which appends subsecond precision to cache keys, to make them usable - [@fancyremarker](https://github.com/fancyremarker).
+* Added a `cache_key` implementation at the class level in Mongoid, which returns the `cache_key` of the most recently updated document in the collection (by `:updated_at`) - [@fancyremarker](https://github.com/fancyremarker).
+* Fixed #29: Restrict the filename string used for the `Caller` context key strategy to just the portion of the path relevant to the current app. In a Rails app, this defaults to Rails.root; otherwise we search for the nearest ancestor directory containing a Gemfile - [@fancyremarker](https://github.com/fancyremarker).
 
 0.3.3 (6/10/2013)
 -----------------

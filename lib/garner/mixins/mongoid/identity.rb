@@ -50,12 +50,23 @@ module Garner
         end
 
         def self.conditions_for(klass, handle)
-          # multiple-ID conditions
-          conditions = {
-            "$or" => Garner.config.mongoid_identity_fields.map { |field|
-              { field => handle }
+          conditions = case
+          when Garner.config.mongoid_identity_fields.length == 1
+            # a single field
+            { Garner.config.mongoid_identity_fields.first => handle }
+          when Garner.config.mongoid_identity_fields.length == 2 && Garner.config.mongoid_identity_fields.include?(:_id)
+            # a BSON ID and a mutually exclusive extra field
+            Moped::BSON::ObjectId.legal?(handle) ?
+              { _id: handle } :
+              { Garner.config.mongoid_identity_fields.detect { |field| field != :_id } => handle }
+          else
+            # multiple-ID conditions
+            {
+              "$or" => Garner.config.mongoid_identity_fields.map { |field|
+                { field => handle }
+              }
             }
-          }
+          end
 
           # _type conditions
           selector = klass.where({})

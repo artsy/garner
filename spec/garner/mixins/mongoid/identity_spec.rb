@@ -10,12 +10,6 @@ describe Garner::Mixins::Mongoid::Identity do
   end
 
   describe "from_class_and_handle" do
-    before(:each) do
-      Garner.configure do |config|
-        config.mongoid_identity_fields = [:_id, :_slugs]
-      end
-    end
-
     subject { Garner::Mixins::Mongoid::Identity }
 
     it "raises an exception if called on a non-Mongoid class" do
@@ -34,26 +28,136 @@ describe Garner::Mixins::Mongoid::Identity do
       }.to raise_error
     end
 
-    it "sets klass, handle and a conditions hash" do
-      identity = subject.from_class_and_handle(Monger, "id")
-      identity.klass.should == Monger
-      identity.handle.should == "id"
-      identity.conditions["$or"].should == [
-        { :_id => "id" },
-        { :_slugs => "id" }
-      ]
-    end
+    context "mongoid_identity_fields" do
 
-    context "on a Mongoid subclass" do
-      it "sets klass to parent and includes the _type field" do
-        identity = subject.from_class_and_handle(Cheese, "id")
-        identity.klass.should == Cheese
-        identity.conditions[:_type].should == { "$in" => ["Cheese"] }
-        identity.conditions["$or"].should == [
-          { :_id => "id" },
-          { :_slugs => "id" }
-        ]
+      describe "[:_id]" do
+        before(:each) do
+          Garner.configure do |config|
+            config.mongoid_identity_fields = [:_id]
+          end
+        end
+
+        it "sets klass to parent and uses id in condition" do
+          id = Moped::BSON::ObjectId.new
+          identity = subject.from_class_and_handle(Monger, id)
+          identity.klass.should == Monger
+          identity.handle.should == id
+          identity.conditions.should == { :_id => id }
+        end
+
+        context "on a Mongoid subclass" do
+          it "sets klass to parent, uses id in condition and includes the _type field" do
+            id = Moped::BSON::ObjectId.new
+            identity = subject.from_class_and_handle(Cheese, id)
+            identity.klass.should == Cheese
+            identity.conditions[:_type].should == { "$in" => ["Cheese"] }
+            identity.conditions[:_id].should == id
+          end
+        end
       end
+
+      describe "[:_id, :_slugs]" do
+        before(:each) do
+          Garner.configure do |config|
+            config.mongoid_identity_fields = [:_id, :_slugs]
+          end
+        end
+
+        it "sets klass to parent and uses slug in condition" do
+          identity = subject.from_class_and_handle(Monger, "slug")
+          identity.klass.should == Monger
+          identity.handle.should == "slug"
+          identity.conditions.should == { :_slugs => "slug" }
+        end
+
+        it "sets klass to parent and uses id in condition" do
+          id = Moped::BSON::ObjectId.new
+          identity = subject.from_class_and_handle(Monger, id)
+          identity.klass.should == Monger
+          identity.handle.should == id
+          identity.conditions.should == { :_id => id }
+        end
+
+        context "on a Mongoid subclass" do
+          it "sets klass to parent, uses slug in condition and includes the _type field" do
+            identity = subject.from_class_and_handle(Cheese, "slug")
+            identity.klass.should == Cheese
+            identity.conditions[:_type].should == { "$in" => ["Cheese"] }
+            identity.conditions[:_slugs].should == "slug"
+          end
+
+          it "sets klass to parent, uses id in condition and includes the _type field" do
+            id = Moped::BSON::ObjectId.new
+            identity = subject.from_class_and_handle(Cheese, id)
+            identity.klass.should == Cheese
+            identity.conditions[:_type].should == { "$in" => ["Cheese"] }
+            identity.conditions[:_id].should == id
+          end
+        end
+      end
+
+      describe "[:_id, :_foo, :_bar]" do
+        before(:each) do
+          Garner.configure do |config|
+            config.mongoid_identity_fields = [:_id, :_foo, :_bar]
+          end
+        end
+
+        it "sets klass, handle and a conditions hash" do
+          identity = subject.from_class_and_handle(Monger, "id")
+          identity.klass.should == Monger
+          identity.handle.should == "id"
+          identity.conditions["$or"].should == [
+            { :_id => "id" },
+            { :_foo => "id" },
+            { :_bar => "id" }
+          ]
+        end
+
+        context "on a Mongoid subclass" do
+          it "sets klass to parent and includes the _type field" do
+            identity = subject.from_class_and_handle(Cheese, "id")
+            identity.klass.should == Cheese
+            identity.conditions[:_type].should == { "$in" => ["Cheese"] }
+            identity.conditions["$or"].should == [
+              { :_id => "id" },
+              { :_foo => "id" },
+              { :_bar => "id" }
+            ]
+          end
+        end
+      end
+
+      describe "[:_foo, :_bar]" do
+        before(:each) do
+          Garner.configure do |config|
+            config.mongoid_identity_fields = [:_foo, :_bar]
+          end
+        end
+
+        it "sets klass, handle and a conditions hash" do
+          identity = subject.from_class_and_handle(Monger, "id")
+          identity.klass.should == Monger
+          identity.handle.should == "id"
+          identity.conditions["$or"].should == [
+            { :_foo => "id" },
+            { :_bar => "id" }
+          ]
+        end
+
+        context "on a Mongoid subclass" do
+          it "sets klass to parent and includes the _type field" do
+            identity = subject.from_class_and_handle(Cheese, "id")
+            identity.klass.should == Cheese
+            identity.conditions[:_type].should == { "$in" => ["Cheese"] }
+            identity.conditions["$or"].should == [
+              { :_foo => "id" },
+              { :_bar => "id" }
+            ]
+          end
+        end
+      end
+
     end
   end
 
