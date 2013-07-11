@@ -91,6 +91,11 @@ describe Garner::Mixins::Mongoid::Identity do
         Monger.identify("m2").proxy_binding.should be_nil
       end
 
+      it "limits the query" do
+        Mongoid::Criteria.any_instance.should_receive(:limit).and_return([ @m ])
+        Monger.identify("m1").proxy_binding
+      end
+
       describe "cache_key" do
         it "generates a cache key equal to Mongoid::Document's" do
           Monger.identify("m1").proxy_binding.cache_key.should == @monger.cache_key
