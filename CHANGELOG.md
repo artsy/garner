@@ -1,5 +1,5 @@
-Next Release (7/11/2013)
-------------------------
+0.4.4 (7/11/2013)
+-----------------
 * Fixed [#47](https://github.com/artsy/garner/issues/47): use a database index when generating proxy binding in `Garner::Mixins::Mongoid::Identity` with multiple `Garner.config.mongoid_identity_fields` - [@dblock](https://github.com/dblock).
 
 0.4.3 (7/5/2013)
