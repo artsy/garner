@@ -1,4 +1,4 @@
-Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://travis-ci.org/artsy/garner) [![Dependency Status](https://gemnasium.com/artsy/garner.png)](https://gemnasium.com/artsy/garner) [![Coverage Status](https://coveralls.io/repos/artsy/garner/badge.png)](https://coveralls.io/r/artsy/garner)
+Garner [![Build Status](https://secure.travis-ci.org/artsy/garner.png)](http://travis-ci.org/artsy/garner) [![Dependency Status](https://gemnasium.com/artsy/garner.png)](https://gemnasium.com/artsy/garner) [![Coverage Status](https://coveralls.io/repos/artsy/garner/badge.png)](https://coveralls.io/r/artsy/garner) [![Code Climate](https://codeclimate.com/github/artsy/garner.png)](https://codeclimate.com/github/artsy/garner)
 ======
 
 Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
