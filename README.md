@@ -122,8 +122,8 @@ module ActiveRecord
 end
 ```
 
-Binding Options
----------------
+Cache Options
+-------------
 
 You can pass additional options directly to the cache implementation:
 
