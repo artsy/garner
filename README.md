@@ -122,6 +122,19 @@ module ActiveRecord
 end
 ```
 
+Binding Options
+---------------
+
+You can pass additional options directly to the cache implementation:
+
+``` ruby
+get "/latest_order" do
+  # Expire the latest order every 15 minutes
+  garner.options(expires_in: 15.minutes) do
+    Order.latest
+  end
+end
+```
 
 Under The Hood: Bindings
 ------------------------
