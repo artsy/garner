@@ -18,7 +18,7 @@ Usage
 Add Garner to your Gemfile with `gem "garner"` and run `bundle install`. Next, include the appropriate mixin in your app:
 
 * For plain-old Ruby apps, `include Garner::Cache::Context`.
-* For Rack apps, `include Garner::Mixins::Rack`. (This provides saner defaults for injecting request parameters into the cache context key. More on cache context keys later.)
+* For Rack apps, first `require "garner/mixins/rack"`, then `include Garner::Mixins::Rack`. (This provides saner defaults for injecting request parameters into the cache context key. More on cache context keys later.)
 
 Now, to use Garner's cache, invoke `garner` with a logic block from within your application. The result of the block will be computed once, and then stored in the cache.
 
@@ -54,6 +54,8 @@ ORM Integrations
 To use Mongoid documents and classes for Garner bindings, use `Garner::Mixins::Mongoid::Document`. You can set it up in an initializer:
 
 ``` ruby
+require "garner/mixins/mongoid"
+
 module Mongoid
   module Document
     include Garner::Mixins::Mongoid::Document
