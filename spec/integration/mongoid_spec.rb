@@ -224,6 +224,36 @@ describe "Mongoid integration" do
               end
             end
           end
+
+          context "with non-unique identities" do
+            before(:each) do
+              Garner.configure do |config|
+                config.mongoid_identity_fields = [:_id, :_slugs]
+              end
+
+              class Other
+                include Mongoid::Document
+                include Mongoid::Slug
+
+                field :name, :type => String
+                slug :name
+              end
+            end
+
+            it "honors objects that take another object's identity" do
+              one = Other.create!({ :name => "foo" })
+              garnered_one = Other.garnered_find("foo")
+              garnered_one.should == one
+
+              one.update_attributes!({ :name => "bar" })
+
+              two = Other.create!({ :name => "foo" })
+              garnered_one = Other.garnered_find("bar")
+              garnered_two = Other.garnered_find("foo")
+              garnered_one.should == one
+              garnered_two.should == two
+            end
+          end
         end
 
         context "binding at the class level" do
