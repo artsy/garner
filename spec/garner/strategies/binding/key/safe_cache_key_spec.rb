@@ -40,13 +40,22 @@ describe Garner::Strategies::Binding::Key::SafeCacheKey do
   end
 
   context "with real objects" do
+    before(:each) do
+      Garner.configure do |config|
+        config.mongoid_identity_fields = [:_id, :_slugs]
+      end
+
+      @monger = Monger.create({ :name => "M1" })
+      @food = Food.create({ :name => "F1" })
+    end
+
     it_behaves_like "Garner::Strategies::Binding::Key strategy" do
       let(:known_bindings) do
-        document = Monger.create({ :name => "M1" })
-        identity = Monger.identify(document.id)
-        [Activist.create, document, identity, Monger]
+        [Activist.create, @monger, Monger.identify(@monger.id), Monger.identify("m1"), Monger]
       end
-      let(:unknown_bindings) { [Monger.identify("m2"), Monger.new, Activist.new] }
+      let(:unknown_bindings) do
+        [Monger.identify("m2"), Food.identify(nil), Monger.new, Activist.new]
+      end
     end
   end
 end
