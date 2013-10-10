@@ -196,15 +196,17 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
       end
 
       @cheese = Cheese.create({ :name => "M1" })
+      @food = Food.create({ :name => "F1" })
     end
 
     it_behaves_like "Garner::Strategies::Binding::Key strategy" do
       let(:known_bindings) do
-        document = Monger.create({ :name => "M1" })
-        identity = Monger.identify("m1")
-        [Monger, document, identity]
+        [Cheese, @cheese, Cheese.identify(@cheese.id), Cheese.identify("m1")]
       end
-      let(:unknown_bindings) { [] }
+
+      let(:unknown_bindings) do
+        [Cheese.identify("m2"), Food.identify(nil)]
+      end
     end
 
     describe "apply" do

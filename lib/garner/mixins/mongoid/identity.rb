@@ -30,6 +30,7 @@ module Garner
         #
         # @return [Mongoid::Document]
         def proxy_binding
+          return nil unless handle
           @proxy_binding ||= klass.where(conditions).only(:_id, :_type, :updated_at).limit(1).entries.first
         end
 
@@ -50,7 +51,7 @@ module Garner
         end
 
         def self.conditions_for(klass, handle)
-          # multiple-ID conditions
+          # Multiple-ID conditions
           conditions = {
             "$or" => Garner.config.mongoid_identity_fields.map { |field|
               { field => handle }
