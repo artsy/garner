@@ -91,6 +91,11 @@ describe Garner::Mixins::Mongoid::Identity do
         Monger.identify("m2").proxy_binding.should be_nil
       end
 
+      it "returns nil for nil bindings" do
+        @monger.unset(:_slugs)
+        Monger.identify(nil).proxy_binding.should be_nil
+      end
+
       it "limits the query" do
         Mongoid::Criteria.any_instance.should_receive(:limit).and_return([ @m ])
         Monger.identify("m1").proxy_binding
