@@ -38,15 +38,30 @@ module Garner
             Mongoid::Identity.from_class_and_handle(self, handle)
           end
 
-          # Find an object by _id, or other findable field, first trying to
-          # fetch from Garner's cache.
+          # Find an object by _id, or other findable field, or by multiple findable
+          # fields, first trying to fetch from Garner's cache.
           #
-          # @return [Mongoid::Document]
-          def self.garnered_find(handle)
-            return nil unless (binding = identify(handle))
+          #
+          # @example Find by an id.
+          #   Garner::Mixins::Mongoid::Document.garnered_find(BSON::ObjectId.new)
+          #
+          # @example Find by multiple id's.
+          #   Garner::Mixins::Mongoid::Document.garnered_find(BSON::ObjectId.new, BSON::ObjectId.new)
+          #
+          # @example Find by multiple id's in an array.
+          #   Garner::Mixins::Mongoid::Document.garnered_find([ BSON::ObjectId.new, BSON::ObjectId.new ])
+          # 
+          #
+          #
+          # @return [ Array<Mongoid::Document>, Mongoid::Document ]
+          def self.garnered_find(*args)
             identity = Garner::Cache::Identity.new
-            identity.bind(binding).key({ :source => :garnered_find }) do
-              find(handle)
+            args.each do |arg|
+              binding = identify(arg)
+              identity = identity.bind(binding)
+            end
+            identity.key({ :source => :garnered_find }) do
+              args.length == 1 ? find(args.shift) : find(args)
             end
           end
 
