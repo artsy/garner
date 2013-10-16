@@ -94,6 +94,12 @@ describe "Mongoid integration" do
                 Monger.garnered_find("m1", "m2").last.name.should == "M3"
               end
 
+              it "is invalidated when one of the objects is changed, passed as an array" do
+                Monger.garnered_find(["m1", "m2"]).should == [ @object, @object2]
+                @object2.update_attributes!({ :name => "M3" })
+                Monger.garnered_find(["m1", "m2"]).last.name.should == "M3"
+              end
+
               it "does not return a match when the objects cannot be found" do
                 Monger.garnered_find("m3").should be_nil
                 Monger.garnered_find("m3","m4").should == []

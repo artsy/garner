@@ -50,8 +50,6 @@ module Garner
           #
           # @example Find by multiple id's in an array.
           #   Garner::Mixins::Mongoid::Document.garnered_find([ BSON::ObjectId.new, BSON::ObjectId.new ])
-          # 
-          #
           #
           # @return [ Array<Mongoid::Document>, Mongoid::Document ]
           def self.garnered_find(*args)
