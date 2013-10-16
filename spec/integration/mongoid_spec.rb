@@ -112,6 +112,14 @@ describe "Mongoid integration" do
                 Monger.garnered_find("m1", "m2").should == [ @object ]
               end
 
+              it "correctly returns an array or an object, respecting the arguments passed in" do
+                Monger.garnered_find("m1").should == @object
+                Monger.garnered_find(["m1"]).should == [ @object ]
+                @object.update_attributes!({ :name => "M3" })
+                Monger.garnered_find(["m1"]).should == [ @object ]
+                Monger.garnered_find("m1").should == @object
+              end
+
             end
           end
 
