@@ -54,18 +54,12 @@ module Garner
           # @return [ Array<Mongoid::Document>, Mongoid::Document ]
           def self.garnered_find(*args)
             identity = Garner::Cache::Identity.new
-            if args.length == 1 && args.first.is_a?(Array)
-              binding = identify(args.first)
+            args.each do |arg|
+              binding = identify(arg)
               identity = identity.bind(binding)
-              identity = identity.key({ :array => true })
-            else
-              args.each do |arg|
-                binding = identify(arg)
-                identity = identity.bind(binding)
-              end
             end
-            identity.key({ :source => :garnered_find }) do
-              args.length == 1 ? find(args.shift) : find(args)
+            identity.key({ :garnered_find_args => args }) do
+              find(*args)
             end
           end
 
