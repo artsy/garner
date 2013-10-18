@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "garner"
-  s.version = "0.4.4"
+  s.version = "0.4.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Doubrovkine", "Frank Macreery"]
-  s.date = "2013-07-11"
+  s.date = "2013-10-18"
   s.description = "Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation."
   s.email = "dblock@dblock.org"
   s.extra_rdoc_files = [
