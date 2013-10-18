@@ -45,6 +45,10 @@ describe "Mongoid integration" do
               Monger.garnered_find("m1").should == @object
             end
 
+            it "can be called with an array of one object, and will return an array" do
+              Monger.garnered_find(["m1"]).should == [ @object ]
+            end
+
             it "is invalidated on changing identity field" do
               Monger.garnered_find("m1").name.should == "M1"
               @object.update_attributes!({ :name => "M2" })
@@ -69,6 +73,61 @@ describe "Mongoid integration" do
                 Monger.garnered_find("M1").should == @object
                 Monger.garnered_find("foobar").should be_nil
               end
+            end
+
+            context "on finding multiple objects" do
+              before(:each) do
+                @object2 = Monger.create!({ :name => "M2" })
+              end
+
+              it "returns the instances requested" do
+                Monger.garnered_find("m1", "m2").should == [ @object, @object2 ]
+              end
+              
+              it "can take an array" do
+                Monger.garnered_find([ "m1", "m2" ]).should == [ @object, @object2 ]
+              end
+
+              it "is invalidated when one of the objects is changed" do
+                Monger.garnered_find("m1", "m2").should == [ @object, @object2]
+                @object2.update_attributes!({ :name => "M3" })
+                Monger.garnered_find("m1", "m2").last.name.should == "M3"
+              end
+
+              it "is invalidated when one of the objects is changed, passed as an array" do
+                Monger.garnered_find(["m1", "m2"]).should == [ @object, @object2]
+                @object2.update_attributes!({ :name => "M3" })
+                Monger.garnered_find(["m1", "m2"]).last.name.should == "M3"
+              end
+
+              it "does not return a match when the objects cannot be found" do
+                Monger.garnered_find("m3").should be_nil
+                Monger.garnered_find("m3","m4").should == []
+                Monger.garnered_find(["m3","m4"]).should == []
+              end
+
+              it "does not return a match when some of the objects cannot be found, and returns those that can" do
+                Monger.garnered_find("m1", "m2").should == [ @object, @object2]
+                @object2.destroy
+                Monger.garnered_find("m1", "m2").should == [ @object ]
+              end
+
+              it "correctly returns a single object when first asked for a single object as an array" do
+                Monger.garnered_find(["m1"]).should == [ @object ]
+                Monger.garnered_find("m1").should == @object
+              end
+
+              it "correctly returns an array of a single object, when first asked for a single object" do
+                Monger.garnered_find("m1").should == @object
+                Monger.garnered_find(["m1"]).should == [ @object ]
+              end
+
+              it "caches properly when called with an array" do
+                Monger.stub(:find) { @object }
+                Monger.should_receive(:find).once
+                2.times { Monger.garnered_find(["m1", "m2"]) }
+              end
+
             end
           end
 

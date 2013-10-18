@@ -1,3 +1,7 @@
+0.4.5 (10/15/2013)
+-----------------
+* Fixed [#62](https://github.com/artsy/garner/issues/62): fix garnered_find in `Garner::Mixins::Mongoid::Document.garnered_find` to support finding multiple objects, matching Mongoid's find - [@mzikherman](https://github.com/mzikherman).
+
 0.4.4 (7/11/2013)
 -----------------
 * Fixed [#47](https://github.com/artsy/garner/issues/47): use a database index when generating proxy binding in `Garner::Mixins::Mongoid::Identity` with multiple `Garner.config.mongoid_identity_fields` - [@dblock](https://github.com/dblock).
