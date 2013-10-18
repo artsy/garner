@@ -1,6 +1,7 @@
 0.4.5 (10/15/2013)
 -----------------
 * Fixed [#62](https://github.com/artsy/garner/issues/62): fix garnered_find in `Garner::Mixins::Mongoid::Document.garnered_find` to support finding multiple objects, matching Mongoid's find - [@mzikherman](https://github.com/mzikherman).
+* Fixed [#60](https://github.com/artsy/garner/issues/60): don't return cache keys for Mongoid::Document#identify(nil) - [@fancyremarker](https://github.com/fancyremarker).
 
 0.4.4 (7/11/2013)
 -----------------
