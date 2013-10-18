@@ -54,7 +54,7 @@ module Garner
           # @return [ Array<Mongoid::Document>, Mongoid::Document ]
           def self.garnered_find(*args)
             identity = Garner::Cache::Identity.new
-            args.each do |arg|
+            args.flatten.each do |arg|
               binding = identify(arg)
               identity = identity.bind(binding)
             end

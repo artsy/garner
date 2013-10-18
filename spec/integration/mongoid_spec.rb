@@ -125,7 +125,7 @@ describe "Mongoid integration" do
               it "caches properly when called with an array" do
                 Monger.stub(:find) { @object }
                 Monger.should_receive(:find).once
-                2.times { Monger.garnered_find(["m1"]) }
+                2.times { Monger.garnered_find(["m1", "m2"]) }
               end
 
             end
