@@ -15,7 +15,7 @@ module Garner
           # @return [Garner::Cache::Identity] The modified identity.
           def self.apply(identity, ruby_context = nil)
             key_hash = identity.key_hash
-            return identity unless key_hash[field]
+            return super unless key_hash[field]
 
 
             key_hash[field].delete("callback")
