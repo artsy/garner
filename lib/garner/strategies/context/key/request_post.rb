@@ -14,7 +14,7 @@ module Garner
           # @param ruby_context [Object] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def self.apply(identity, ruby_context = nil)
-            return identity unless (ruby_context.respond_to?(:request))
+            return super unless (ruby_context.respond_to?(:request))
 
             request = ruby_context.request
             if request.request_method == "POST"

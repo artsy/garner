@@ -58,7 +58,7 @@ module Garner
               end
             end
 
-            value ? identity.key(field => value) : identity
+            value ? identity.key(field => value) : super
           end
 
           private
