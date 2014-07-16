@@ -26,6 +26,9 @@ describe "Mongoid integration" do
         context "binding at the instance level" do
           before(:each) do
             @object = Monger.create!({ :name => "M1" })
+            @monger_who_is_a_thug = Monger.create!({ :name => 'Philly' })
+            @whiz = Cheese.create!({ :name => 'whiz', monger: @monger_who_is_a_thug })
+            @cheddar = Cheese.create!({ :name => 'cheddar', monger: @object })
           end
 
           describe "garnered_find" do
@@ -33,6 +36,11 @@ describe "Mongoid integration" do
               Garner.configure do |config|
                 config.mongoid_identity_fields = [:_id, :_slugs]
               end
+            end
+
+            it "respects criteria" do
+              Cheese.garnered_find("cheddar").should == @cheddar
+              @monger_who_is_a_thug.cheeses.garnered_find("cheddar").should be_nil
             end
 
             it "caches one copy across all callers" do
