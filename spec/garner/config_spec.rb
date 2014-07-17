@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Garner::Config do
   before :each do
@@ -7,12 +7,11 @@ describe Garner::Config do
   after :each do
     Garner::Config.cache = @cache
   end
-  it "configures a cache store" do
+  it 'configures a cache store' do
     cache = Class.new
     Garner.configure do |config|
       config.cache = cache
     end
-    Garner.config.cache.should == cache
+    Garner.config.cache.should eq cache
   end
 end
-

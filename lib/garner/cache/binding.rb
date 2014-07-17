@@ -1,21 +1,13 @@
 # Set up Garner configuration parameters
-Garner.config.option(:binding_key_strategy, {
-  :default => Garner::Strategies::Binding::Key::SafeCacheKey
-})
-Garner.config.option(:binding_invalidation_strategy, {
-  :default => Garner::Strategies::Binding::Invalidation::Touch
-})
-Garner.config.option(:mongoid_identity_fields, {
-  :default => [:_id]
-})
-Garner.config.option(:invalidate_mongoid_root, {
-  :default => true
-})
+
+Garner.config.option(:binding_key_strategy, default: Garner::Strategies::Binding::Key::SafeCacheKey)
+Garner.config.option(:binding_invalidation_strategy, default: Garner::Strategies::Binding::Invalidation::Touch)
+Garner.config.option(:mongoid_identity_fields, default: [:_id])
+Garner.config.option(:invalidate_mongoid_root, default: true)
 
 module Garner
   module Cache
     module Binding
-
       # Override this method to use a custom key strategy.
       #
       # @return [Object] The strategy to be used for instances of this class.
@@ -46,6 +38,7 @@ module Garner
       end
 
       protected
+
       def _invalidate
         invalidation_strategy.apply(self)
       end
@@ -61,7 +54,6 @@ module Garner
       def _garner_after_destroy
         _invalidate if invalidation_strategy.apply_on_callback?(:destroy)
       end
-
     end
   end
 end

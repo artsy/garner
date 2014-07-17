@@ -3,7 +3,6 @@ module Garner
     module Context
       module Key
         class Jsonp < Base
-
           def self.field
             :request_params
           end
@@ -17,12 +16,10 @@ module Garner
             key_hash = identity.key_hash
             return super unless key_hash[field]
 
-
-            key_hash[field].delete("callback")
-            key_hash[field].delete("_")
+            key_hash[field].delete('callback')
+            key_hash[field].delete('_')
             identity
           end
-
         end
       end
     end

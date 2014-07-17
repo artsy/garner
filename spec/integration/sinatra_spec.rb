@@ -1,8 +1,8 @@
-require "spec_helper"
-require "garner/mixins/rack"
-require "sinatra"
+require 'spec_helper'
+require 'garner/mixins/rack'
+require 'sinatra'
 
-describe "Sinatra integration" do
+describe 'Sinatra integration' do
 
   let(:app) do
     class TestSinatraApp < Sinatra::Base
@@ -11,12 +11,12 @@ describe "Sinatra integration" do
       use Rack::ETag
 
       before do
-        headers "Expires" => Time.at(0).utc.to_s
+        headers 'Expires' => Time.at(0).utc.to_s
       end
 
-      get "/" do
+      get '/' do
         garner do
-          { :meaning_of_life => 42 }.to_json
+          { meaning_of_life: 42 }.to_json
         end
       end
     end
@@ -24,6 +24,6 @@ describe "Sinatra integration" do
     TestSinatraApp.new
   end
 
-  it_behaves_like "Rack::ConditionalGet server"
+  it_behaves_like 'Rack::ConditionalGet server'
 
 end

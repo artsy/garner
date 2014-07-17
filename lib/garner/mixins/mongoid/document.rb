@@ -58,30 +58,26 @@ module Garner
               binding = identify(arg)
               identity = identity.bind(binding)
             end
-            identity.key({ :garnered_find_args => args }) do
+            identity.key(garnered_find_args: args) do
               find(*args)
             end
           end
 
-          after_create    :_garner_after_create
-          after_update    :_garner_after_update
-          after_destroy   :_garner_after_destroy
+          after_create :_garner_after_create
+          after_update :_garner_after_update
+          after_destroy :_garner_after_destroy
 
           protected
+
           def self._latest_by_updated_at
             # Only find the latest if we can order by :updated_at
-            return nil unless fields["updated_at"]
-            only(:_id, :_type, :updated_at).order_by({
-              :updated_at => :desc
-            }).first
+            return nil unless fields['updated_at']
+            only(:_id, :_type, :updated_at).order_by(updated_at: :desc).first
           end
 
           def _invalidate
             invalidation_strategy.apply(self)
-
-            if _root != self && Garner.config.invalidate_mongoid_root
-              invalidation_strategy.apply(_root)
-            end
+            invalidation_strategy.apply(_root) if _root != self && Garner.config.invalidate_mongoid_root
           end
 
         end

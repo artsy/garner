@@ -3,11 +3,10 @@ module Garner
     module Binding
       module Invalidation
         class Base
-
           # Specifies whether invalidation should happen on callbacks.
           #
           # @param kind [Symbol] One of :create, :update, :destroy
-          def self.apply_on_callback?(kind = nil)
+          def self.apply_on_callback?(_kind = nil)
             true
           end
 
@@ -16,10 +15,9 @@ module Garner
           #
           # @param binding [Object] The binding whose caches are to be
           #   invalidated.
-          def self.apply(binding)
+          def self.apply(_binding)
           end
         end
-
       end
     end
   end

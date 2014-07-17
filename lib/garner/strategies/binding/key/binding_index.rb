@@ -87,7 +87,6 @@ module Garner
             (binding.is_a?(Class) && binding.include?(Mongoid::Document))
           end
 
-          private
           def self.index_key_for(binding)
             if binding.respond_to?(:identity_string)
               binding_key = binding.identity_string
@@ -96,12 +95,12 @@ module Garner
             end
 
             {
-              :strategy => self,
-              :proxied_binding => binding_key
+              strategy: self,
+              proxied_binding: binding_key
             }
           end
 
-          def self.new_cache_key_for(binding)
+          def self.new_cache_key_for(_binding)
             SecureRandom.hex(RANDOM_KEY_LENGTH)
           end
         end

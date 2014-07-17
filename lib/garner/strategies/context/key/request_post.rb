@@ -3,7 +3,6 @@ module Garner
     module Context
       module Key
         class RequestPost < Base
-
           def self.field
             :request_params
           end
@@ -14,15 +13,14 @@ module Garner
           # @param ruby_context [Object] An optional Ruby context.
           # @return [Garner::Cache::Identity] The modified identity.
           def self.apply(identity, ruby_context = nil)
-            return super unless (ruby_context.respond_to?(:request))
+            return super unless ruby_context.respond_to?(:request)
 
             request = ruby_context.request
-            if request.request_method == "POST"
+            if request.request_method == 'POST'
               identity = identity.key(field => request.POST.dup)
             end
             identity
           end
-
         end
       end
     end

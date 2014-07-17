@@ -1,21 +1,21 @@
-require "garner/mixins/mongoid"
-require "mongoid_slug"
+require 'garner/mixins/mongoid'
+require 'mongoid_slug'
 
 # Use garner_test database for integration tests
-Mongoid.load_configuration({
-  :sessions => {
-    :default => {
-      :uri => ENV["GARNER_MONGO_URL"] || "mongodb://localhost/garner_test",
-      :safe => true
+Mongoid.load_configuration(
+  sessions: {
+    default: {
+      uri: ENV['GARNER_MONGO_URL'] || 'mongodb://localhost/garner_test',
+      safe: true
     }
   },
-  :options => {
-    :raise_not_found_error => false
+  options: {
+    raise_not_found_error: false
   }
-})
+)
 
-if ENV["GARNER_MONGOID_LOG"]
-  Mongoid.logger = Logger.new(ENV["GARNER_MONGOID_LOG"])
+if ENV['GARNER_MONGOID_LOG']
+  Mongoid.logger = Logger.new(ENV['GARNER_MONGOID_LOG'])
   Moped.logger = Mongoid.logger
 end
 
@@ -38,17 +38,17 @@ class Monger
   embeds_one :fish
   has_many :cheeses
 
-  field :name, :type => String
-  slug :name, :history => true
+  field :name, type: String
+  slug :name, history: true
 
-  field :subdocument, :type => String
+  field :subdocument, type: String
 end
 
 class Food
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :name, :type => String
+  field :name, type: String
 end
 
 class Fish < Food
@@ -59,7 +59,7 @@ class Cheese < Food
   include Mongoid::Slug
   belongs_to :monger
 
-  slug :name, :history => true
+  slug :name, history: true
 end
 
 # Purge MongoDB database before each test example

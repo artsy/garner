@@ -1,9 +1,8 @@
-require "garner"
+require 'garner'
 
 module Garner
   module Mixins
     module Rack
-
       # Override this method to conditionally disable the cache.
       #
       # @return [Boolean]

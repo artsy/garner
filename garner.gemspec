@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.files = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
-  s.test_files = s.files.grep(%r{^(spec)/})
+  s.test_files = s.files.grep(/^(spec)\//)
   s.extra_rdoc_files = Dir['*.md']
   s.require_paths = ['lib']
 
@@ -37,4 +37,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redcarpet'
   s.add_development_dependency 'github-markup'
   s.add_development_dependency 'dalli'
+  s.add_development_dependency 'rubocop', '0.24.1'
 end

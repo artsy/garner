@@ -1,5 +1,5 @@
-require "garner"
-require "active_record"
+require 'garner'
+require 'active_record'
 
 module Garner
   module Mixins
