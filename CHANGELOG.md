@@ -5,6 +5,7 @@ Next Release
 * [#72](https://github.com/artsy/garner/issues/72): Fix: ActiveRecord 4 support, `cache_key` is now in `:nsec` format - [@dblock](https://github.com/dblock).
 * [#74](https://github.com/artsy/garner/pull/74): Removed Jeweler, rewritten .gemspec - [@dblock](https://github.com/dblock).
 * [#76](https://github.com/artsy/garner/pull/76): Added Rubocop, Ruby-style linter - [@dblock](https://github.com/dblock).
+* [#77](https://github.com/artsy/garner/pull/77): Running tests on Ruby 2.0, 2.1.2, Rubinius and JRuby - [@dblock](https://github.com/dblock).
 * Your contribution here.
 
 0.4.5 (10/15/2013)
