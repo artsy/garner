@@ -4,7 +4,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "coveralls"
 Coveralls.wear!("test_frameworks") if ENV["CI"]
 
-require "pry"
 require "rspec"
 require "rack/test"
 
