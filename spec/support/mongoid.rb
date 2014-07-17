@@ -10,8 +10,7 @@ Mongoid.load_configuration({
     }
   },
   :options => {
-    :raise_not_found_error => false,
-    :identity_map_enabled => false
+    :raise_not_found_error => false
   }
 })
 
@@ -24,6 +23,10 @@ end
 module Mongoid
   module Document
     include Garner::Mixins::Mongoid::Document
+  end
+
+  def self.mongoid3?
+    ::Mongoid.const_defined? :Observer # deprecated in Mongoid 4.x
   end
 end
 

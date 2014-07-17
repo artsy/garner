@@ -4,4 +4,9 @@ services:
 
 rvm:
   - 1.9.3
+  - 2.1.2
+  - rbx-2
 
+env:
+  - MONGOID_VERSION=3
+  - MONGOID_VERSION=4
