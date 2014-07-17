@@ -1,3 +1,7 @@
+Next Release
+------------
+* [#70](https://github.com/artsy/garner/pull/70): Added a `whiny_nils` configuration variable (default: `true`) which determines whether Garner raises exceptions on `nil` bindings - [@fancyremarker](https://github.com/fancyremarker).
+
 0.4.5 (10/15/2013)
 -----------------
 * Fixed [#62](https://github.com/artsy/garner/issues/62): fix garnered_find in `Garner::Mixins::Mongoid::Document.garnered_find` to support finding multiple objects, matching Mongoid's find - [@mzikherman](https://github.com/mzikherman).
