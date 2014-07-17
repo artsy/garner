@@ -6,6 +6,6 @@ describe Garner::VERSION do
   end
   it 'is valid' do
     subject.should_not be_nil
-    (!!Gem::Version.correct?(subject)).should be_true
+    (!!Gem::Version.correct?(subject)).should be_truthy
   end
 end

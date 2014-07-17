@@ -31,11 +31,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mongoid', '>= 3.0.0'
   s.add_development_dependency 'mongoid_slug'
   s.add_development_dependency 'activerecord'
-  s.add_development_dependency 'sqlite3'
+  if RUBY_PLATFORM =~ /java/
+    s.add_development_dependency 'jdbc-sqlite3'
+    s.add_development_dependency 'activerecord-jdbcsqlite3-adapter'
+  else
+    s.add_development_dependency 'sqlite3'
+  end
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'yard'
-  s.add_development_dependency 'redcarpet'
-  s.add_development_dependency 'github-markup'
   s.add_development_dependency 'dalli'
   s.add_development_dependency 'rubocop', '0.24.1'
 end

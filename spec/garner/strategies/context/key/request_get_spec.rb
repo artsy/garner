@@ -6,10 +6,7 @@ describe Garner::Strategies::Context::Key::RequestGet do
 
       before(:each) do
         @cache_identity = Garner::Cache::Identity.new
-        @request = Rack::Request.new(
-          'REQUEST_METHOD' => method,
-          'QUERY_STRING' => 'foo=bar'
-        )
+        @request = Rack::Request.new('REQUEST_METHOD' => method, 'QUERY_STRING' => 'foo=bar')
 
         @mock_context = double('object')
         @mock_context.stub(:request) { @request }

@@ -9,10 +9,8 @@ describe 'Mongoid integration' do
   end
 
   {
-    # Garner::Strategies::Binding::Key::SafeCacheKey =>
-    #   Garner::Strategies::Binding::Invalidation::Touch,
-    Garner::Strategies::Binding::Key::BindingIndex =>
-      Garner::Strategies::Binding::Invalidation::BindingIndex
+    # Garner::Strategies::Binding::Key::SafeCacheKey => Garner::Strategies::Binding::Invalidation::Touch,
+    Garner::Strategies::Binding::Key::BindingIndex => Garner::Strategies::Binding::Invalidation::BindingIndex
   }.each do |key_strategy, invalidation_strategy|
     context "using #{key_strategy} with #{invalidation_strategy}" do
       before(:each) do

@@ -3,10 +3,7 @@ require 'spec_helper'
 describe Garner::Strategies::Context::Key::Jsonp do
   before(:each) do
     @cache_identity = Garner::Cache::Identity.new
-    @request = Rack::Request.new(
-                                   'REQUEST_METHOD' => 'GET',
-                                   'QUERY_STRING' => 'callback=jQuery21435&_=34234'
-                                 )
+    @request = Rack::Request.new('REQUEST_METHOD' => 'GET', 'QUERY_STRING' => 'callback=jQuery21435&_=34234')
 
     @mock_context = double('object')
     @mock_context.stub(:request) { @request }
