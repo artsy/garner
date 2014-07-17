@@ -1,15 +1,14 @@
-Next Release
-------------
+0.5.0 (7/17/2014)
+-----------------
 
 * [#70](https://github.com/artsy/garner/pull/70): Added a `whiny_nils` configuration variable (default: `true`) which determines whether Garner raises exceptions on `nil` bindings - [@fancyremarker](https://github.com/fancyremarker).
 * [#72](https://github.com/artsy/garner/issues/72): Fix: ActiveRecord 4 support, `cache_key` is now in `:nsec` format - [@dblock](https://github.com/dblock).
 * [#74](https://github.com/artsy/garner/pull/74): Removed Jeweler, rewritten .gemspec - [@dblock](https://github.com/dblock).
 * [#76](https://github.com/artsy/garner/pull/76): Added Rubocop, Ruby-style linter - [@dblock](https://github.com/dblock).
 * [#77](https://github.com/artsy/garner/pull/77): Running tests on Ruby 2.0, 2.1.2, Rubinius and JRuby - [@dblock](https://github.com/dblock).
-* Your contribution here.
 
 0.4.5 (10/15/2013)
------------------
+------------------
 
 * Fixed [#62](https://github.com/artsy/garner/issues/62): fix garnered_find in `Garner::Mixins::Mongoid::Document.garnered_find` to support finding multiple objects, matching Mongoid's find - [@mzikherman](https://github.com/mzikherman).
 * Fixed [#60](https://github.com/artsy/garner/issues/60): don't return cache keys for Mongoid::Document#identify(nil) - [@fancyremarker](https://github.com/fancyremarker).
