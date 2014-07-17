@@ -3,7 +3,6 @@ module Garner
     module Binding
       module Invalidation
         class Touch < Base
-
           # Specifies whether invalidation should happen on callbacks.
           #
           # @param kind [Symbol] One of :create, :update, :destroy
@@ -35,7 +34,6 @@ module Garner
           end
         end
       end
-
     end
   end
 end

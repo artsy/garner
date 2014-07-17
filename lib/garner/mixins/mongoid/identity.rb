@@ -15,7 +15,7 @@ module Garner
         def self.from_class_and_handle(klass, handle)
           validate_class!(klass)
 
-          self.new.tap do |identity|
+          new.tap do |identity|
             identity.klass = klass
             identity.handle = handle
             identity.conditions = conditions_for(klass, handle)
@@ -41,21 +41,20 @@ module Garner
           "#{self.class.name}/klass=#{klass},handle=#{handle}"
         end
 
-        private
         def self.validate_class!(klass)
           if !klass.include?(::Mongoid::Document)
-            raise "Must instantiate from a Mongoid class"
+            fail 'Must instantiate from a Mongoid class'
           elsif klass.embedded?
-            raise "Cannot instantiate from an embedded document class"
+            fail 'Cannot instantiate from an embedded document class'
           end
         end
 
         def self.conditions_for(klass, handle)
           # Multiple-ID conditions
           conditions = {
-            "$or" => Garner.config.mongoid_identity_fields.map { |field|
+            '$or' => Garner.config.mongoid_identity_fields.map do |field|
               { field => handle }
-            }
+            end
           }
 
           # _type conditions

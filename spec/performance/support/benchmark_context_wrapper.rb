@@ -1,4 +1,4 @@
-require "securerandom"
+require 'securerandom'
 
 class BenchmarkContextWrapper
   include Garner::Cache::Context
@@ -11,10 +11,10 @@ class BenchmarkContextWrapper
   def setup!(options)
     Monger.destroy_all
     Garner.config.cache.clear
-    @binding = Monger.create!({ :name => "M1" })
-    @binding.update_attributes!({
-      :subdocument => SecureRandom.hex(options[:d])
-    }) if options[:d]
+    @binding = Monger.create!(name: 'M1')
+    @binding.update_attributes!(
+      subdocument: SecureRandom.hex(options[:d])
+    ) if options[:d]
     @r = options[:r]
     @context = BenchmarkContext.new
 
@@ -51,16 +51,17 @@ class BenchmarkContextWrapper
   end
 
   private
+
   def warm_caches
     klass, handle = binding.class, binding.slug
     json = binding.reload.to_json
-    garner.bind(klass.identify(handle)).key({ :caller => nil }) { json }
-    garner.bind(klass).key({ :caller => nil }) { json }
+    garner.bind(klass.identify(handle)).key(caller: nil) { json }
+    garner.bind(klass).key(caller: nil) { json }
   end
 
   def update_binding
     # Randomly shuffle name between M1, M2, M3
-    name = (["M1", "M2", "M3"] - [binding.reload.name]).sample
-    binding.update_attributes!({ :name => name })
+    name = (%w(M1 M2 M3) - [binding.reload.name]).sample
+    binding.update_attributes!(name: name)
   end
 end

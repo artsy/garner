@@ -3,11 +3,10 @@ module Garner
     module Binding
       module Invalidation
         class BindingIndex < Base
-
           # Specifies whether invalidation should happen on callbacks.
           #
           # @param kind [Symbol] One of :create, :update, :destroy
-          def self.apply_on_callback?(kind = nil)
+          def self.apply_on_callback?(_kind = nil)
             true
           end
 
@@ -29,7 +28,6 @@ module Garner
           end
         end
       end
-
     end
   end
 end

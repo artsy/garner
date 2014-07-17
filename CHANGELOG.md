@@ -3,8 +3,9 @@ Next Release
 
 * [#70](https://github.com/artsy/garner/pull/70): Added a `whiny_nils` configuration variable (default: `true`) which determines whether Garner raises exceptions on `nil` bindings - [@fancyremarker](https://github.com/fancyremarker).
 * [#72](https://github.com/artsy/garner/issues/72): Fix: ActiveRecord 4 support, `cache_key` is now in `:nsec` format - [@dblock](https://github.com/dblock).
-* Your contribution here.
 * [#74](https://github.com/artsy/garner/pull/74): Removed Jeweler, rewritten .gemspec - [@dblock](https://github.com/dblock).
+* [#76](https://github.com/artsy/garner/pull/76): Added Rubocop, Ruby-style linter - [@dblock](https://github.com/dblock).
+* Your contribution here.
 
 0.4.5 (10/15/2013)
 -----------------

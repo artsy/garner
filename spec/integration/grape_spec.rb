@@ -1,11 +1,11 @@
-require "spec_helper"
-require "garner/mixins/rack"
-require "grape"
+require 'spec_helper'
+require 'garner/mixins/rack'
+require 'grape'
 
-describe "Grape integration" do
+describe 'Grape integration' do
   class TestCachebuster < Grape::Middleware::Base
     def after
-      @app_response[1]["Expires"] = Time.at(0).utc.to_s
+      @app_response[1]['Expires'] = Time.at(0).utc.to_s
       @app_response
     end
   end
@@ -19,9 +19,9 @@ describe "Grape integration" do
 
       format :json
 
-      get "/" do
+      get '/' do
         garner do
-          { :meaning_of_life => 42 }.to_json
+          { meaning_of_life: 42 }.to_json
         end
       end
     end
@@ -29,5 +29,5 @@ describe "Grape integration" do
     TestGrapeApp.new
   end
 
-  it_behaves_like "Rack::ConditionalGet server"
+  it_behaves_like 'Rack::ConditionalGet server'
 end

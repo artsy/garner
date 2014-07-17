@@ -1,9 +1,9 @@
-require "spec_support"
-require "method_profiler"
+require 'spec_support'
+require 'method_profiler'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require "support/benchmark_context"
-require "support/benchmark_context_wrapper"
+require 'support/benchmark_context'
+require 'support/benchmark_context_wrapper'
 
 class StrategyBenchmark
   attr_accessor :n, :d, :r
@@ -23,7 +23,7 @@ class StrategyBenchmark
         config.binding_invalidation_strategy = invalidation_strategy
       end
 
-      proxy = BenchmarkContextWrapper.new({ :d => d, :r => r })
+      proxy = BenchmarkContextWrapper.new(d: d, r: r)
 
       # Workaround for MethodProfiler bug
       profiler.instance_variable_set(:@data, Hash.new { |h, k| h[k] = [] })
@@ -39,14 +39,13 @@ class StrategyBenchmark
         ].shuffle.each { |method| proxy.send(method) }
       end
 
-      puts "Key: #{key_strategy.to_s.split("::")[-1]}"
-      puts "Invalidation: #{invalidation_strategy.to_s.split("::")[-1]}"
+      puts "Key: #{key_strategy.to_s.split('::')[-1]}"
+      puts "Invalidation: #{invalidation_strategy.to_s.split('::')[-1]}"
       puts profiler.report.sort_by(:method).order(:ascending)
       puts "\n\n"
     end
   end
 
-  private
   def self.strategy_pairs
     {
       Garner::Strategies::Binding::Key::Base =>
@@ -57,5 +56,4 @@ class StrategyBenchmark
         Garner::Strategies::Binding::Invalidation::BindingIndex
     }
   end
-
 end

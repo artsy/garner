@@ -8,7 +8,7 @@ module Garner
     #        bound. These objects' keys are injected into the compound cache key.
     # @param key_hash [Hash] Hash to comprise the compound cache key.
     # @param options_hash [Hash] Options to be passed to Garner.config.cache.
-    def self.fetch(bindings, key_hash, options_hash, &block)
+    def self.fetch(bindings, key_hash, options_hash, &_block)
       if (compound_key = compound_key(bindings, key_hash))
         result = Garner.config.cache.fetch(compound_key, options_hash) do
           yield
@@ -20,14 +20,13 @@ module Garner
       result
     end
 
-    private
     def self.compound_key(bindings, key_hash)
       binding_keys = bindings.map { |binding| key_for(binding) }.compact
       if binding_keys.size == bindings.size
         # All bindings have non-nil cache keys, proceed.
         {
-          :binding_keys => binding_keys,
-          :context_keys => key_hash
+          binding_keys: binding_keys,
+          context_keys: key_hash
         }
       else
         # A nil cache key was generated. Skip caching.
@@ -40,7 +39,7 @@ module Garner
     def self.key_for(binding)
       if binding.nil?
         return nil unless Garner.config.whiny_nils?
-        raise NilBinding
+        fail NilBinding
       else
         binding.garner_cache_key
       end

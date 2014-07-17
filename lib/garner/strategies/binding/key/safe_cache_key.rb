@@ -3,7 +3,7 @@ module Garner
     module Binding
       module Key
         class SafeCacheKey < Base
-          VALID_FORMAT = /^(?<model>[^\/]+)\/(?<id>.+)-(?<timestamp>[0-9]{14,})$/
+          VALID_FORMAT = %r{^(?<model>[^\/]+)\/(?<id>.+)-(?<timestamp>[0-9]{14,})$}
 
           # Compute a cache key from an object binding. Only return a key if
           # :cache_key and :updated_at are both defined and present on the
@@ -24,10 +24,9 @@ module Garner
             return unless binding.cache_key =~ VALID_FORMAT
 
             decimal_portion = binding.updated_at.utc.to_f % 1
-            decimal_string = sprintf("%.10f", decimal_portion).gsub(/^0/, "")
+            decimal_string = format('%.10f', decimal_portion).gsub(/^0/, '')
             "#{binding.cache_key}#{decimal_string}"
           end
-
         end
       end
     end

@@ -1,5 +1,4 @@
 module Garner
-
   class << self
     # Set the configuration options. Best used by passing a block.
     #
@@ -12,7 +11,7 @@ module Garner
     def configure
       block_given? ? yield(Garner::Config) : Garner::Config
     end
-    alias :config :configure
+    alias_method :config, :configure
   end
 
   module Config
@@ -77,7 +76,7 @@ module Garner
     #
     # @return [Cache] The configured cache or a default cache instance.
     def cache
-      settings[:cache] = default_cache unless settings.has_key?(:cache)
+      settings[:cache] = default_cache unless settings.key?(:cache)
       settings[:cache]
     end
 
@@ -103,7 +102,7 @@ module Garner
     #
     # @return [String] The configured caller_root or a default.
     def caller_root
-      settings[:caller_root] = default_caller_root unless settings.has_key?(:caller_root)
+      settings[:caller_root] = default_caller_root unless settings.key?(:caller_root)
       settings[:caller_root]
     end
 
@@ -123,17 +122,16 @@ module Garner
     end
 
     # Default cache options
-    option(:global_cache_options, :default => {})
+    option(:global_cache_options, default: {})
 
     # Default cache expiration time.
-    option(:expires_in, :default => nil)
+    option(:expires_in, default: nil)
 
     # Default behavior on nil bindings
-    option(:whiny_nils, :default => true)
+    option(:whiny_nils, default: true)
 
     def whiny_nils?
       whiny_nils
     end
   end
 end
-
