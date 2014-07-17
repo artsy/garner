@@ -8,7 +8,7 @@ If you're not familiar with HTTP caching, ETags and If-Modified-Since, watch us 
 Upgrading
 ---------
 
-The current stable release line of Garner is 0.4.x, and contains many breaking changes from the previous 0.3.x series. For a summary of important changes, see [UPGRADING](UPGRADING.md).
+The current stable release line of Garner is 0.5.x, and contains many breaking changes from the previous 0.3.x series. For a summary of important changes, see [UPGRADING](UPGRADING.md).
 
 Usage
 -----
