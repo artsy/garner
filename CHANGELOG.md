@@ -1,18 +1,24 @@
 Next Release
 ------------
+
 * [#70](https://github.com/artsy/garner/pull/70): Added a `whiny_nils` configuration variable (default: `true`) which determines whether Garner raises exceptions on `nil` bindings - [@fancyremarker](https://github.com/fancyremarker).
+* [#72](https://github.com/artsy/garner/issues/72): Fix: ActiveRecord 4 support, `cache_key` is now in `:nsec` format - [@dblock](https://github.com/dblock).
+* Your contribution here.
 
 0.4.5 (10/15/2013)
 -----------------
+
 * Fixed [#62](https://github.com/artsy/garner/issues/62): fix garnered_find in `Garner::Mixins::Mongoid::Document.garnered_find` to support finding multiple objects, matching Mongoid's find - [@mzikherman](https://github.com/mzikherman).
 * Fixed [#60](https://github.com/artsy/garner/issues/60): don't return cache keys for Mongoid::Document#identify(nil) - [@fancyremarker](https://github.com/fancyremarker).
 
 0.4.4 (7/11/2013)
 -----------------
+
 * Fixed [#47](https://github.com/artsy/garner/issues/47): use a database index when generating proxy binding in `Garner::Mixins::Mongoid::Identity` with multiple `Garner.config.mongoid_identity_fields` - [@dblock](https://github.com/dblock).
 
 0.4.3 (7/5/2013)
 ----------------
+
 * Stored `ruby_context` from which a `Garner::Cache::Identity` was initialized as an `attr_accessor` on the object - [@fancyremarker](https://github.com/fancyremarker).
 * Fixed `cache_enabled?` logic and added a `nocache` declaration to `Garner::Cache::Identity` - [@fancyremarker](https://github.com/fancyremarker).
 * Fixed #44, in which the BindingIndex was mistakenly storing values to cache for bindings with a nil canonical binding - [@fancyremarker](https://github.com/fancyremarker).
@@ -20,10 +26,12 @@ Next Release
 
 0.4.2 (6/28/2013)
 -----------------
+
 * Fixed `Caller` strategy when using Rails - [@fancyremarker](https://github.com/fancyremarker).
 
 0.4.1 (6/28/2013)
 -----------------
+
 * Added a `rake benchmark` task to compare different binding key/invalidation strategy pairs - [@fancyremarker](https://github.com/fancyremarker).
 * Improved the performance of the `SafeCacheKey` strategy on virtual `Garner::Mixins::Mongoid::Identity` bindings by properly memoizing the corresponding document - [@fancyremarker](https://github.com/fancyremarker).
 * Improved the performance of the `SafeCacheKey` strategy on class bindings by making 1 database call per key application, instead of 3 - [@fancyremarker](https://github.com/fancyremarker).

@@ -97,7 +97,7 @@ describe Garner::Mixins::Mongoid::Identity do
       end
 
       it "limits the query" do
-        Mongoid::Criteria.any_instance.should_receive(:limit).and_return([ @m ])
+        Mongoid::Slug::Criteria.any_instance.should_receive(:limit).with(1).and_return([ @monger ])
         Monger.identify("m1").proxy_binding
       end
 

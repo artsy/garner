@@ -16,7 +16,7 @@ describe "ActiveRecord integration" do
         subject.apply(new_activist).should == "activists/new"
 
         persisted_activist = Activist.create
-        timestamp = persisted_activist.updated_at.utc.to_s(:number)
+        timestamp = persisted_activist.updated_at.utc.to_s(persisted_activist.cache_timestamp_format)
         expected_key = "activists/#{persisted_activist.id}-#{timestamp}"
         subject.apply(persisted_activist).should == expected_key
       end

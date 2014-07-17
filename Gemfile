@@ -6,14 +6,21 @@ gem "multi_json",   ">= 1.3.0"
 gem "activesupport"
 
 group :development, :test do
-  gem "bundler",    ">= 1.3.0"
-  gem "grape",      ">= 0.2.0"
+  gem "bundler"
+  gem "grape",      "~> 0.8.0"
   gem "sinatra"
   gem "rack-test"
-  gem "rspec",      "~> 2.10"
+  gem "rspec",      "~> 2.10.0"
   gem "jeweler"
-  gem "mongoid",    "~> 3.0"
-  gem "mongoid_slug", ">= 1.0.0"
+  case version = ENV['MONGOID_VERSION'] || '~> 4.0'
+  when /4/
+    gem 'mongoid', '~> 4.0'
+  when /3/
+    gem 'mongoid', '~> 3.1'
+  else
+    gem 'mongoid', version
+  end
+  gem "mongoid_slug"
   gem "dalli"
   gem "activerecord"
   gem "sqlite3"

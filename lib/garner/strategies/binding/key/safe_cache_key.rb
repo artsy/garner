@@ -3,7 +3,7 @@ module Garner
     module Binding
       module Key
         class SafeCacheKey < Base
-          VALID_FORMAT = /^(?<model>[^\/]+)\/(?<id>.+)-(?<timestamp>[0-9]{14})$/
+          VALID_FORMAT = /^(?<model>[^\/]+)\/(?<id>.+)-(?<timestamp>[0-9]{14,})$/
 
           # Compute a cache key from an object binding. Only return a key if
           # :cache_key and :updated_at are both defined and present on the

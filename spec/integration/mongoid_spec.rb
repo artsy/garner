@@ -83,7 +83,7 @@ describe "Mongoid integration" do
               it "returns the instances requested" do
                 Monger.garnered_find("m1", "m2").should == [ @object, @object2 ]
               end
-              
+
               it "can take an array" do
                 Monger.garnered_find([ "m1", "m2" ]).should == [ @object, @object2 ]
               end
@@ -155,15 +155,22 @@ describe "Mongoid integration" do
 
               it "invalidates by explicit call to invalidate_garner_caches" do
                 cached_object_namer.call.should == "M1"
-                @object.set(:name, "M2")
+                if Mongoid.mongoid3?
+                  @object.set(:name, "M2")
+                else
+                  @object.set(name: "M2")
+                end
                 @object.invalidate_garner_caches
                 cached_object_namer.call.should == "M2"
               end
 
               it "does not invalidate results for other like-classed objects" do
                 cached_object_namer.call.should == "M1"
-                @object.set({ :name => "M2" })
-
+                if Mongoid.mongoid3?
+                  @object.set(:name, "M2")
+                else
+                  @object.set(name: "M2")
+                end
                 new_monger = Monger.create!({ :name => "M3" })
                 new_monger.update_attributes!({ :name => "M4" })
                 new_monger.destroy
@@ -180,7 +187,11 @@ describe "Mongoid integration" do
                 it "invalidates caches properly (Type I)" do
                   cached_object_namer.call
                   @monger1.remove
-                  @monger2.set(:name, "M2")
+                  if Mongoid.mongoid3?
+                    @monger2.set(:name, "M2")
+                  else
+                    @monger2.set(name: "M2")
+                  end
                   @monger1.destroy
                   @monger2.save
                   cached_object_namer.should raise_error
@@ -188,7 +199,11 @@ describe "Mongoid integration" do
 
                 it "invalidates caches properly (Type II)" do
                   cached_object_namer.call
-                  @monger2.set(:name, "M2")
+                  if Mongoid.mongoid3?
+                    @monger2.set(:name, "M2")
+                  else
+                    @monger2.set(name: "M2")
+                  end
                   @monger1.remove
                   @monger2.save
                   @monger1.destroy
@@ -325,7 +340,11 @@ describe "Mongoid integration" do
                 m1 = Cheese.create({ :name => "M1" })
                 m3 = Cheese.create({ :name => "M3" })
                 cached_object_name_concatenator.call.should == "M1, M3"
-                m1.set(:name, "M2")
+                if Mongoid.mongoid3?
+                  m1.set(:name, "M2")
+                else
+                  m1.set(name: "M2")
+                end
                 klass.invalidate_garner_caches
                 cached_object_name_concatenator.call.should == "M2, M3"
               end
