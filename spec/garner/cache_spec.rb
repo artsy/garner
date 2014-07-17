@@ -34,5 +34,16 @@ describe Garner::Cache do
       result1.should == "foo"
       result2.should == "bar"
     end
+
+    it "raises an exception by default for nil bindings" do
+      expect do
+        subject.fetch([nil], {}, {}) { "foo" }
+      end.to raise_error(Garner::Cache::NilBinding)
+    end
+
+    it "raises no exception for nil bindings if config.whiny_nils is false" do
+      Garner.configure { |config| config.whiny_nils = false }
+      expect { subject.fetch([nil], {}, {}) { "foo" } }.not_to raise_error
+    end
   end
 end

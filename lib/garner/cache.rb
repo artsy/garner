@@ -1,5 +1,6 @@
 module Garner
   module Cache
+    class NilBinding < StandardError; end
 
     # Fetch a result from cache.
     #
@@ -21,8 +22,7 @@ module Garner
 
     private
     def self.compound_key(bindings, key_hash)
-      binding_keys = bindings.map(&:garner_cache_key).compact
-
+      binding_keys = bindings.map { |binding| key_for(binding) }.compact
       if binding_keys.size == bindings.size
         # All bindings have non-nil cache keys, proceed.
         {
@@ -37,5 +37,13 @@ module Garner
       end
     end
 
+    def self.key_for(binding)
+      if binding.nil?
+        return nil unless Garner.config.whiny_nils?
+        raise NilBinding
+      else
+        binding.garner_cache_key
+      end
+    end
   end
 end
