@@ -16,3 +16,9 @@ require 'spec_support'
 Dir["#{File.dirname(__FILE__)}/shared/*.rb"].each do |file|
   require file
 end
+
+RSpec.configure do |rspec|
+  rspec.mock_with :rspec do |mocks|
+    mocks.patch_marshal_to_support_partial_doubles = true
+  end
+end

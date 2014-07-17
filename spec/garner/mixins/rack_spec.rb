@@ -10,10 +10,7 @@ describe Garner::Mixins::Rack do
         include Garner::Mixins::Rack
 
         def request
-          Rack::Request.new(
-                              'REQUEST_METHOD' => 'GET',
-                              'QUERY_STRING' => 'foo=bar'
-                            )
+          Rack::Request.new('REQUEST_METHOD' => 'GET', 'QUERY_STRING' => 'foo=bar')
         end
       end
 

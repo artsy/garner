@@ -22,7 +22,7 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
     load_method = Marshal.method(:load)
     Marshal.stub(:load) do |dump|
       default = load_method.call(dump)
-      if default.is_a?(RSpec::Mocks::Mock) &&
+      if default.is_a?(RSpec::Mocks::Double) &&
          default.instance_variable_get(:@name) == 'persisted_mock'
         @persisted_mock
       else
