@@ -90,7 +90,7 @@ end
 In the above example, the `Order.identify` call will not result in a database query. Instead, it just communicates to Garner's cache sweeper that whenever the order with identity `params[:id]` is updated, this cache result should be invalidated. The `identify` method is provided by the Mongoid mixin. To use it, you should configure `Garner.config.mongoid_identity_fields`, e.g.:
 
 ```ruby
-Garner.configure.do |config|
+Garner.configure do |config|
   config.mongoid_identity_fields = [:_id, :_slugs]
 end
 ```
