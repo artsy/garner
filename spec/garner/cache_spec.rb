@@ -45,5 +45,13 @@ describe Garner::Cache do
       Garner.configure { |config| config.whiny_nils = false }
       expect { subject.fetch([nil], {}, {}) { 'foo' } }.not_to raise_error
     end
+
+    it 'deletes record when cached block yields nil' do
+      binding = double('object', garner_cache_key: 'key')
+      expect(Garner.config.cache).to receive(:delete).with({ binding_keys: ['key'], context_keys: { key: 'value' } }, { namespace: 'foo' })
+      subject.fetch [binding], { key: 'value' }, namespace: 'foo' do
+        nil
+      end
+    end
   end
 end

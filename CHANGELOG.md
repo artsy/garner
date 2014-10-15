@@ -1,6 +1,7 @@
 0.5.1 (Next)
 ------------
 
+* Fixed [#81](https://github.com/artsy/garner/issues/81): `Garner.cache` loses namespace options when calling delete when cache block yields `nil` - [@dblock](https://github.com/dblock).
 * Your contribution here.
 
 0.5.0 (7/17/2014)
