@@ -13,7 +13,7 @@ module Garner
         result = Garner.config.cache.fetch(compound_key, options_hash) do
           yield
         end
-        Garner.config.cache.delete(compound_key) unless result
+        Garner.config.cache.delete(compound_key, options_hash) unless result
       else
         result = yield
       end
