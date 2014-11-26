@@ -84,7 +84,7 @@ module Garner
           def self.canonical?(binding)
             # TODO: Implement real logic for determining canonicity.
             binding.is_a?(Mongoid::Document) ||
-            (binding.is_a?(Class) && binding.include?(Mongoid::Document))
+              (binding.is_a?(Class) && binding.include?(Mongoid::Document))
           end
 
           def self.index_key_for(binding)

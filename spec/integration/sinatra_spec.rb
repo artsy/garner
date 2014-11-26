@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'garner/mixins/rack'
 require 'sinatra'
 
-describe 'Sinatra integration' do
+describe 'Sinatra integration', type: :request do
 
   let(:app) do
     class TestSinatraApp < Sinatra::Base

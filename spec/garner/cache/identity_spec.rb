@@ -4,17 +4,17 @@ describe Garner::Cache::Identity do
 
   it 'includes Garner.config.global_cache_options' do
     Garner.configure { |config| config.global_cache_options = { foo: 'bar' } }
-    subject.options_hash[:foo].should eq 'bar'
+    expect(subject.options_hash[:foo]).to eq 'bar'
   end
 
   it 'includes Garner.config.expires_in' do
     Garner.configure { |config| config.expires_in = 5.minutes }
-    subject.options_hash[:expires_in].should eq 5.minutes
+    expect(subject.options_hash[:expires_in]).to eq 5.minutes
   end
 
   describe 'nocache' do
     it 'forces a cache bypass' do
-      Garner::Cache.should_not_receive :fetch
+      expect(Garner::Cache).not_to receive :fetch
       subject.nocache.fetch { 'foo' }
     end
   end
@@ -23,7 +23,7 @@ describe Garner::Cache::Identity do
     it "adds to the object identity's bindings" do
       subject.bind('foo')
       subject.bind('bar')
-      subject.bindings.should eq %w(foo bar)
+      expect(subject.bindings).to eq %w(foo bar)
     end
 
     it 'raises an error for <> 1 arguments' do
@@ -36,7 +36,7 @@ describe Garner::Cache::Identity do
     it "adds to the object identity's key_hash" do
       subject.key(foo: 1)
       subject.key(bar: 2)
-      subject.key_hash.should eq(foo: 1, bar: 2)
+      expect(subject.key_hash).to eq(foo: 1, bar: 2)
     end
 
     it 'raises an error for <> 1 arguments' do
@@ -53,7 +53,7 @@ describe Garner::Cache::Identity do
     it "adds to the object identity's options_hash" do
       subject.options(foo: 1)
       subject.options(bar: 2)
-      subject.options_hash.should eq(expires_in: nil, foo: 1, bar: 2)
+      expect(subject.options_hash).to eq(expires_in: nil, foo: 1, bar: 2)
     end
 
     it 'raises an error for <> 1 arguments' do

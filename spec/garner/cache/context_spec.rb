@@ -16,22 +16,22 @@ describe Garner::Cache::Context do
     end
 
     it 'returns a Garner::Cache::Identity' do
-      subject.call.should be_a(Garner::Cache::Identity)
+      expect(subject.call).to be_a(Garner::Cache::Identity)
     end
 
     it "sets the identity's ruby_binding to self" do
-      subject.call.ruby_context.should eq @test_context
+      expect(subject.call.ruby_context).to eq @test_context
     end
 
     it 'applies each of Garner.config.context_key_strategies' do
       # Default :context_key_strategies
-      subject.call.key_hash[:caller].should_not be_nil
+      expect(subject.call.key_hash[:caller]).not_to be_nil
 
       # Custom :context_key_strategies
       Garner.configure do |config|
         config.context_key_strategies = []
       end
-      subject.call.key_hash[:caller].should be_nil
+      expect(subject.call.key_hash[:caller]).to be_nil
     end
 
   end

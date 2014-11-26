@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'garner/mixins/rack'
 require 'grape'
 
-describe 'Grape integration' do
+describe 'Grape integration', type: :request do
   class TestCachebuster < Grape::Middleware::Base
     def after
       @app_response[1]['Expires'] = Time.at(0).utc.to_s

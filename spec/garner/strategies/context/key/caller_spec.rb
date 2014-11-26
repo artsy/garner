@@ -11,21 +11,21 @@ describe Garner::Strategies::Context::Key::Caller do
   it_behaves_like 'Garner::Strategies::Context::Key strategy'
 
   it 'ignores nil caller' do
-    @mock_context.stub(:caller) { nil }
+    allow(@mock_context).to receive(:caller) { nil }
     subject.apply(@cache_identity, @mock_context)
-    @cache_identity.key_hash[:caller].should be_nil
+    expect(@cache_identity.key_hash[:caller]).to be_nil
   end
 
   it 'ignores nil caller location' do
-    @mock_context.stub(:caller) { [nil] }
+    allow(@mock_context).to receive(:caller) { [nil] }
     subject.apply(@cache_identity, @mock_context)
-    @cache_identity.key_hash[:caller].should be_nil
+    expect(@cache_identity.key_hash[:caller]).to be_nil
   end
 
   it 'ignores blank caller location' do
-    @mock_context.stub(:caller) { [''] }
+    allow(@mock_context).to receive(:caller) { [''] }
     subject.apply(@cache_identity, @mock_context)
-    @cache_identity.key_hash[:caller].should be_nil
+    expect(@cache_identity.key_hash[:caller]).to be_nil
   end
 
   context 'with default Garner.config.caller_root' do
@@ -35,17 +35,17 @@ describe Garner::Strategies::Context::Key::Caller do
     end
 
     it 'sets default_root to the nearest ancestor with a Gemfile' do
-      subject.default_root.should eq @gemfile_root
+      expect(subject.default_root).to eq @gemfile_root
     end
 
     it 'sets Garner.config.caller_root to the nearest ancestor with a Gemfile' do
-      Garner.config.caller_root.should eq @gemfile_root
+      expect(Garner.config.caller_root).to eq @gemfile_root
     end
 
     it 'sets an appropriate value for :caller' do
       truncated = __FILE__.gsub(@gemfile_root + File::SEPARATOR, '')
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should eq "#{truncated}:#{__LINE__ - 1}"
+      expect(@cache_identity.key_hash[:caller]).to eq "#{truncated}:#{__LINE__ - 1}"
     end
   end
 
@@ -53,21 +53,21 @@ describe Garner::Strategies::Context::Key::Caller do
     before(:each) do
       class Rails
       end
-      Rails.stub(:root) { Pathname.new(File.dirname(__FILE__)) }
+      allow(Rails).to receive(:root) { Pathname.new(File.dirname(__FILE__)) }
     end
 
     it 'sets default_root to Rails.root' do
-      subject.default_root.should eq ::Rails.root.realpath.to_s
+      expect(subject.default_root).to eq ::Rails.root.realpath.to_s
     end
 
     it 'sets Garner.config.caller_root to Rails.root' do
-      Garner.config.caller_root.should eq ::Rails.root.realpath.to_s
+      expect(Garner.config.caller_root).to eq ::Rails.root.realpath.to_s
     end
 
     it 'sets an appropriate value for :caller' do
       truncated = File.basename(__FILE__)
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should eq "#{truncated}:#{__LINE__ - 1}"
+      expect(@cache_identity.key_hash[:caller]).to eq "#{truncated}:#{__LINE__ - 1}"
     end
   end
 
@@ -81,7 +81,7 @@ describe Garner::Strategies::Context::Key::Caller do
     it 'sets an appropriate value for :caller' do
       truncated = File.basename(__FILE__)
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should eq "#{truncated}:#{__LINE__ - 1}"
+      expect(@cache_identity.key_hash[:caller]).to eq "#{truncated}:#{__LINE__ - 1}"
     end
   end
 
@@ -94,13 +94,13 @@ describe Garner::Strategies::Context::Key::Caller do
 
     it 'sets an appropriate value for :caller' do
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should eq "#{__FILE__}:#{__LINE__ - 1}"
+      expect(@cache_identity.key_hash[:caller]).to eq "#{__FILE__}:#{__LINE__ - 1}"
     end
 
     it "doesn't require ActiveSupport" do
-      String.any_instance.stub(:blank?) { fail NoMethodError.new }
+      allow_any_instance_of(String).to receive(:blank?) { fail NoMethodError.new }
       subject.apply(@cache_identity, self)
-      @cache_identity.key_hash[:caller].should eq "#{__FILE__}:#{__LINE__ - 1}"
+      expect(@cache_identity.key_hash[:caller]).to eq "#{__FILE__}:#{__LINE__ - 1}"
     end
   end
 end

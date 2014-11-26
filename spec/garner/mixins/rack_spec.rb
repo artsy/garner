@@ -22,17 +22,17 @@ describe Garner::Mixins::Rack do
     end
 
     it 'returns a Garner::Cache::Identity' do
-      subject.call.should be_a(Garner::Cache::Identity)
+      expect(subject.call).to be_a(Garner::Cache::Identity)
     end
 
     it "sets the identity's ruby_binding to self" do
-      subject.call.ruby_context.should eq @mock_app
+      expect(subject.call.ruby_context).to eq @mock_app
     end
 
     it 'applies each of Garner.config.rack_context_key_strategies' do
       # Default :context_key_strategies
-      subject.call.key_hash[:caller].should_not be_nil
-      subject.call.key_hash[:request_params].should eq('foo' => 'bar')
+      expect(subject.call.key_hash[:caller]).not_to be_nil
+      expect(subject.call.key_hash[:request_params]).to eq('foo' => 'bar')
 
       # Custom :context_key_strategies
       Garner.configure do |config|
@@ -40,8 +40,8 @@ describe Garner::Mixins::Rack do
           Garner::Strategies::Context::Key::RequestGet
         ]
       end
-      subject.call.key_hash[:caller].should be_nil
-      subject.call.key_hash[:request_params].should eq('foo' => 'bar')
+      expect(subject.call.key_hash[:caller]).to be_nil
+      expect(subject.call.key_hash[:request_params]).to eq('foo' => 'bar')
     end
 
   end

@@ -2,6 +2,7 @@
 ------------
 
 * Fixed [#81](https://github.com/artsy/garner/issues/81): `Garner.cache` loses namespace options when calling delete when cache block yields `nil` - [@dblock](https://github.com/dblock).
+* Upgraded RSpec to 3.x and RuboCop to 0.27.1 - [@dblock](https://github.com/dblock).
 * Your contribution here.
 
 0.5.0 (7/17/2014)

@@ -21,18 +21,18 @@ describe Garner::Cache do
       result2 = subject.fetch([], {}, {}) { 'foo' }
       result3 = subject.fetch([], {}, {}) { 'bar' }
 
-      result1.should.nil?
-      result2.should eq 'foo'
-      result3.should eq 'foo'
+      expect(result1).to be nil
+      expect(result2).to eq 'foo'
+      expect(result3).to eq 'foo'
     end
 
     it 'does not cache results with un-bindable bindings' do
       unbindable = double('object')
-      unbindable.stub(:garner_cache_key) { nil }
+      allow(unbindable).to receive(:garner_cache_key) { nil }
       result1 = subject.fetch([unbindable], {}, {}) { 'foo' }
       result2 = subject.fetch([unbindable], {}, {}) { 'bar' }
-      result1.should eq 'foo'
-      result2.should eq 'bar'
+      expect(result1).to eq 'foo'
+      expect(result2).to eq 'bar'
     end
 
     it 'raises an exception by default for nil bindings' do

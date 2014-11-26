@@ -4,7 +4,7 @@ describe Garner::Strategies::Binding::Invalidation::BindingIndex do
 
   before(:each) do
     @mock = double('model')
-    @mock.stub(:touch)
+    allow(@mock).to receive(:touch)
   end
 
   subject { Garner::Strategies::Binding::Invalidation::BindingIndex }

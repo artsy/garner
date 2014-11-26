@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'activesupport'
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', '~> 2.10'
+  s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'grape', '~> 0.8.0'
   s.add_development_dependency 'sinatra'
@@ -40,5 +40,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'dalli'
-  s.add_development_dependency 'rubocop', '0.24.1'
+  s.add_development_dependency 'rubocop', '0.27.1'
 end

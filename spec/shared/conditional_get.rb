@@ -14,35 +14,35 @@ shared_examples_for 'Rack::ConditionalGet server' do
 
   it "writes the cached object's ETag from binding" do
     get '/'
-    last_response.headers['ETag'].length.should eq 32 + 2
+    expect(last_response.headers['ETag'].length).to eq 32 + 2
   end
 
   it 'sends a 304 response if content has not changed (If-None-Match)' do
     get '/'
-    last_response.status.should eq 200
-    last_response.headers['ETag'].should eq %Q("#{etag_for(last_response.body)}")
+    expect(last_response.status).to eq 200
+    expect(last_response.headers['ETag']).to eq %("#{etag_for(last_response.body)}")
     get '/', {},  'HTTP_IF_NONE_MATCH' => last_response.headers['ETag']
-    last_response.status.should eq 304
+    expect(last_response.status).to eq 304
   end
 
   it 'sends a 200 response if content has changed (If-None-Match)' do
     get '/'
-    last_response.status.should eq 200
-    get '/', {},  'HTTP_IF_NONE_MATCH' => %Q("#{etag_for('foobar')}")
-    last_response.status.should eq 200
+    expect(last_response.status).to eq 200
+    get '/', {},  'HTTP_IF_NONE_MATCH' => %("#{etag_for('foobar')}")
+    expect(last_response.status).to eq 200
   end
 
   it 'sends a 200 response if content has changed (valid If-Modified-Since but invalid If-None-Match)' do
     get '/'
-    last_response.status.should eq 200
-    get '/', {},  'HTTP_IF_MODIFIED_SINCE' => (Time.now + 1).httpdate, 'HTTP_IF_NONE_MATCH' => %Q("#{etag_for(last_response.body)}")
-    last_response.status.should eq 200
+    expect(last_response.status).to eq 200
+    get '/', {},  'HTTP_IF_MODIFIED_SINCE' => (Time.now + 1).httpdate, 'HTTP_IF_NONE_MATCH' => %("#{etag_for(last_response.body)}")
+    expect(last_response.status).to eq 200
   end
 
   it 'adds Cache-Control, Pragma and Expires headers' do
     get '/'
-    last_response.headers['Cache-Control'].split(', ').sort.should eq %w(max-age=0 must-revalidate private)
-    last_response.headers['Pragma'].should be_nil
-    Time.parse(last_response.headers['Expires']).should be < Time.now
+    expect(last_response.headers['Cache-Control'].split(', ').sort).to eq %w(max-age=0 must-revalidate private)
+    expect(last_response.headers['Pragma']).to be_nil
+    expect(Time.parse(last_response.headers['Expires'])).to be < Time.now
   end
 end

@@ -4,9 +4,9 @@ require 'garner/mixins/mongoid'
 describe Garner::Mixins::Mongoid::Identity do
   before(:each) do
     @mock_strategy = double('strategy')
-    @mock_strategy.stub(:apply)
+    allow(@mock_strategy).to receive(:apply)
     @mock_mongoid_strategy = double('mongoid_strategy')
-    @mock_mongoid_strategy.stub(:apply)
+    allow(@mock_mongoid_strategy).to receive(:apply)
   end
 
   describe 'from_class_and_handle' do
@@ -36,9 +36,9 @@ describe Garner::Mixins::Mongoid::Identity do
 
     it 'sets klass, handle and a conditions hash' do
       identity = subject.from_class_and_handle(Monger, 'id')
-      identity.klass.should eq Monger
-      identity.handle.should eq 'id'
-      identity.conditions['$or'].should eq [
+      expect(identity.klass).to eq Monger
+      expect(identity.handle).to eq 'id'
+      expect(identity.conditions['$or']).to eq [
         { _id: 'id' },
         { _slugs: 'id' }
       ]
@@ -47,9 +47,9 @@ describe Garner::Mixins::Mongoid::Identity do
     context 'on a Mongoid subclass' do
       it 'sets klass to parent and includes the _type field' do
         identity = subject.from_class_and_handle(Cheese, 'id')
-        identity.klass.should eq Cheese
-        identity.conditions[:_type].should eq('$in' => ['Cheese'])
-        identity.conditions['$or'].should eq [
+        expect(identity.klass).to eq Cheese
+        expect(identity.conditions[:_type]).to eq('$in' => ['Cheese'])
+        expect(identity.conditions['$or']).to eq [
           { _id: 'id' },
           { _slugs: 'id' }
         ]
@@ -61,17 +61,17 @@ describe Garner::Mixins::Mongoid::Identity do
     subject { Monger.identify('m1').to_s }
 
     it 'stringizes the binding and includes klass and handle' do
-      subject.should be_a(String)
-      subject.should =~ /Monger/
-      subject.should =~ /m1/
+      expect(subject).to be_a(String)
+      expect(subject).to match(/Monger/)
+      expect(subject).to match(/m1/)
     end
 
     it 'should not change across identical instances' do
-      subject.should eq Monger.identify('m1').to_s
+      expect(subject).to eq Monger.identify('m1').to_s
     end
 
     it 'should be different across different instances' do
-      subject.should_not == Monger.identify('m2').to_s
+      expect(subject).not_to eq(Monger.identify('m2').to_s)
     end
   end
 
@@ -88,26 +88,26 @@ describe Garner::Mixins::Mongoid::Identity do
 
     describe 'proxy_binding' do
       it 'returns nil for nonexistent bindings' do
-        Monger.identify('m2').proxy_binding.should be_nil
+        expect(Monger.identify('m2').proxy_binding).to be_nil
       end
 
       it 'returns nil for nil bindings' do
         @monger.unset(:_slugs)
-        Monger.identify(nil).proxy_binding.should be_nil
+        expect(Monger.identify(nil).proxy_binding).to be_nil
       end
 
       it 'limits the query' do
-        Mongoid::Slug::Criteria.any_instance.should_receive(:limit).with(1).and_return([@monger])
+        expect_any_instance_of(Mongoid::Slug::Criteria).to receive(:limit).with(1).and_return([@monger])
         Monger.identify('m1').proxy_binding
       end
 
       describe 'cache_key' do
         it "generates a cache key equal to Mongoid::Document's" do
-          Monger.identify('m1').proxy_binding.cache_key.should eq @monger.cache_key
+          expect(Monger.identify('m1').proxy_binding.cache_key).to eq @monger.cache_key
 
           # Also test for Mongoid subclasses
-          Cheese.identify('havarti').proxy_binding.cache_key.should eq @cheese.cache_key
-          Food.identify(@cheese.id).proxy_binding.cache_key.should eq @cheese.cache_key
+          expect(Cheese.identify('havarti').proxy_binding.cache_key).to eq @cheese.cache_key
+          expect(Food.identify(@cheese.id).proxy_binding.cache_key).to eq @cheese.cache_key
         end
 
         context 'without Mongoid::Timestamps' do
@@ -117,22 +117,22 @@ describe Garner::Mixins::Mongoid::Identity do
           end
 
           it "generates a cache key equal to Mongoid::Document's" do
-            Monger.identify('m1').proxy_binding.cache_key.should eq @monger.cache_key
+            expect(Monger.identify('m1').proxy_binding.cache_key).to eq @monger.cache_key
 
             # Also test for Mongoid subclasses
-            Cheese.identify('havarti').proxy_binding.cache_key.should eq @cheese.cache_key
-            Food.identify(@cheese.id).proxy_binding.cache_key.should eq @cheese.cache_key
+            expect(Cheese.identify('havarti').proxy_binding.cache_key).to eq @cheese.cache_key
+            expect(Food.identify(@cheese.id).proxy_binding.cache_key).to eq @cheese.cache_key
           end
         end
       end
 
       describe 'updated_at' do
         it "returns :updated_at equal to Mongoid::Document's" do
-          Monger.identify('m1').proxy_binding.updated_at.should eq Monger.find('m1').updated_at
+          expect(Monger.identify('m1').proxy_binding.updated_at).to eq Monger.find('m1').updated_at
 
           # Also test for Mongoid subclasses
-          Cheese.identify('havarti').proxy_binding.updated_at.should eq @cheese.updated_at
-          Food.identify(@cheese.id).proxy_binding.updated_at.should eq @cheese.updated_at
+          expect(Cheese.identify('havarti').proxy_binding.updated_at).to eq @cheese.updated_at
+          expect(Food.identify(@cheese.id).proxy_binding.updated_at).to eq @cheese.updated_at
         end
       end
     end

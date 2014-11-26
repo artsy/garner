@@ -9,7 +9,7 @@ describe Garner::Strategies::Context::Key::RequestGet do
         @request = Rack::Request.new('REQUEST_METHOD' => method, 'QUERY_STRING' => 'foo=bar')
 
         @mock_context = double('object')
-        @mock_context.stub(:request) { @request }
+        allow(@mock_context).to receive(:request) { @request }
       end
 
       subject { Garner::Strategies::Context::Key::RequestGet }
@@ -18,12 +18,12 @@ describe Garner::Strategies::Context::Key::RequestGet do
 
       it 'adds :request_params to the key' do
         subject.apply(@cache_identity, @mock_context)
-        @cache_identity.key_hash[:request_params].should eq('foo' => 'bar')
+        expect(@cache_identity.key_hash[:request_params]).to eq('foo' => 'bar')
       end
 
       it 'appends to an existing key hash' do
         @cache_identity.key(x: :y)
-        subject.apply(@cache_identity, @mock_context).key_hash.should eq(
+        expect(subject.apply(@cache_identity, @mock_context).key_hash).to eq(
           x: :y,
           request_params: { 'foo' => 'bar' }
         )

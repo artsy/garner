@@ -18,6 +18,7 @@ Dir["#{File.dirname(__FILE__)}/shared/*.rb"].each do |file|
 end
 
 RSpec.configure do |rspec|
+  rspec.raise_errors_for_deprecations!
   rspec.mock_with :rspec do |mocks|
     mocks.patch_marshal_to_support_partial_doubles = true
   end

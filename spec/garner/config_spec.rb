@@ -12,6 +12,6 @@ describe Garner::Config do
     Garner.configure do |config|
       config.cache = cache
     end
-    Garner.config.cache.should eq cache
+    expect(Garner.config.cache).to eq cache
   end
 end

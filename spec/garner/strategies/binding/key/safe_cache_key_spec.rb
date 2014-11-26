@@ -4,11 +4,11 @@ describe Garner::Strategies::Binding::Key::SafeCacheKey do
 
   before(:each) do
     @new_mock = double('model')
-    @new_mock.stub(:cache_key) { 'mocks/4' }
+    allow(@new_mock).to receive(:cache_key) { 'mocks/4' }
     @persisted_mock = double('model')
     @time_dot_now = Time.now
-    @persisted_mock.stub(:cache_key) { "mocks/4-#{@time_dot_now.utc.to_s(:number)}" }
-    @persisted_mock.stub(:updated_at) { @time_dot_now }
+    allow(@persisted_mock).to receive(:cache_key) { "mocks/4-#{@time_dot_now.utc.to_s(:number)}" }
+    allow(@persisted_mock).to receive(:updated_at) { @time_dot_now }
   end
 
   subject { Garner::Strategies::Binding::Key::SafeCacheKey }
@@ -21,21 +21,21 @@ describe Garner::Strategies::Binding::Key::SafeCacheKey do
   describe 'apply' do
     it "returns the object's cache key + milliseconds if defined" do
       timestamp = @time_dot_now.utc.to_s(:number)
-      subject.apply(@persisted_mock).should =~ /^mocks\/4-#{timestamp}.[0-9]{10}$/
+      expect(subject.apply(@persisted_mock)).to match(/^mocks\/4-#{timestamp}.[0-9]{10}$/)
     end
 
     it 'returns nil if :cache_key is undefined or nil' do
-      @persisted_mock.unstub(:cache_key)
-      subject.apply(@persisted_mock).should be_nil
-      @persisted_mock.stub(:cache_key) { nil }
-      subject.apply(@persisted_mock).should be_nil
+      allow(@persisted_mock).to receive(:cache_key)
+      expect(subject.apply(@persisted_mock)).to be_nil
+      allow(@persisted_mock).to receive(:cache_key) { nil }
+      expect(subject.apply(@persisted_mock)).to be_nil
     end
 
     it 'returns nil if :updated_at is undefined or nil' do
-      @persisted_mock.unstub(:updated_at)
-      subject.apply(@persisted_mock).should be_nil
-      @persisted_mock.stub(:updated_at) { nil }
-      subject.apply(@persisted_mock).should be_nil
+      allow(@persisted_mock).to receive(:updated_at)
+      expect(subject.apply(@persisted_mock)).to be_nil
+      allow(@persisted_mock).to receive(:updated_at) { nil }
+      expect(subject.apply(@persisted_mock)).to be_nil
     end
   end
 

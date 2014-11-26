@@ -5,7 +5,7 @@ describe Garner::VERSION do
     Garner::VERSION
   end
   it 'is valid' do
-    subject.should_not be_nil
-    (!!Gem::Version.correct?(subject)).should be_truthy
+    expect(subject).not_to be_nil
+    expect(!!Gem::Version.correct?(subject)).to be_truthy
   end
 end

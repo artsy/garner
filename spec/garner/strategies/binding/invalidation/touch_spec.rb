@@ -4,7 +4,7 @@ describe Garner::Strategies::Binding::Invalidation::Touch do
 
   before(:each) do
     @mock = double('model')
-    @mock.stub(:touch)
+    allow(@mock).to receive(:touch)
   end
 
   subject { Garner::Strategies::Binding::Invalidation::Touch }
@@ -12,12 +12,12 @@ describe Garner::Strategies::Binding::Invalidation::Touch do
   it_behaves_like 'Garner::Strategies::Binding::Invalidation strategy'
 
   it 'calls :touch on the object' do
-    @mock.should_receive(:touch)
+    expect(@mock).to receive(:touch)
     subject.apply(@mock)
   end
 
   it 'does not raise error if :touch is undefined' do
-    @mock.unstub(:touch)
+    allow(@mock).to receive(:touch)
     expect { subject.apply(@mock) }.to_not raise_error
   end
 end

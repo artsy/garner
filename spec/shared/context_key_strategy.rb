@@ -6,7 +6,7 @@ shared_examples_for 'Garner::Strategies::Context::Key strategy' do
   end
 
   it 'inherits from Garner::Strategies::Context::Key::Base' do
-    subject.new.should be_a(Garner::Strategies::Context::Key::Base)
+    expect(subject.new).to be_a(Garner::Strategies::Context::Key::Base)
   end
 
   it 'requires a Garner::Cache::Identity' do
@@ -19,6 +19,6 @@ shared_examples_for 'Garner::Strategies::Context::Key strategy' do
 
   it 'returns a Garner::Cache::Identity' do
     modified_identity = subject.apply(@cache_identity, self)
-    modified_identity.should eq @cache_identity
+    expect(modified_identity).to eq @cache_identity
   end
 end

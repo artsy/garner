@@ -14,8 +14,8 @@ describe Garner::Mixins::Mongoid::Document do
 
     describe 'proxied_classes' do
       it 'returns all Mongoid superclasses' do
-        @monger.proxied_classes.should eq [Monger]
-        @cheese.proxied_classes.should eq [Cheese, Food]
+        expect(@monger.proxied_classes).to eq [Monger]
+        expect(@cheese.proxied_classes).to eq [Cheese, Food]
       end
     end
   end
@@ -26,44 +26,44 @@ describe Garner::Mixins::Mongoid::Document do
     describe '_latest_by_updated_at' do
       it 'returns a Mongoid::Document instance' do
         subject.create
-        subject.send(:_latest_by_updated_at).should be_a(subject)
+        expect(subject.send(:_latest_by_updated_at)).to be_a(subject)
       end
 
       it 'returns the _latest_by_updated_at document by :updated_at' do
         mongers = 3.times.map { |i| subject.create(name: "M#{i}") }
         mongers[1].touch
 
-        subject.send(:_latest_by_updated_at)._id.should eq mongers[1]._id
-        subject.send(:_latest_by_updated_at).updated_at.should eq mongers[1].reload.updated_at
+        expect(subject.send(:_latest_by_updated_at)._id).to eq mongers[1]._id
+        expect(subject.send(:_latest_by_updated_at).updated_at).to eq mongers[1].reload.updated_at
       end
 
       it 'returns nil if there are no documents' do
-        subject.send(:_latest_by_updated_at).should be_nil
+        expect(subject.send(:_latest_by_updated_at)).to be_nil
       end
 
       it 'returns nil if updated_at does not exist' do
         subject.create
-        subject.stub(:fields) { {} }
-        subject.send(:_latest_by_updated_at).should be_nil
+        allow(subject).to receive(:fields) { {} }
+        expect(subject.send(:_latest_by_updated_at)).to be_nil
       end
     end
 
     describe 'proxy_binding' do
       it 'returns the _latest_by_updated_at document' do
         subject.create
-        subject.proxy_binding.should be_a(Monger)
+        expect(subject.proxy_binding).to be_a(Monger)
       end
 
       it 'responds to :touch' do
         subject.create
-        subject.any_instance.should_receive(:touch)
+        expect_any_instance_of(subject).to receive(:touch)
         subject.proxy_binding.touch
       end
 
       describe 'cache_key' do
         it 'matches what would be returned from the full object' do
           monger = subject.create
-          subject.proxy_binding.cache_key.should eq monger.reload.cache_key
+          expect(subject.proxy_binding.cache_key).to eq monger.reload.cache_key
         end
 
         context 'with Mongoid subclasses' do
@@ -71,7 +71,7 @@ describe Garner::Mixins::Mongoid::Document do
 
           it 'matches what would be returned from the full object' do
             cheese = subject.create
-            subject.proxy_binding.cache_key.should eq cheese.reload.cache_key
+            expect(subject.proxy_binding.cache_key).to eq cheese.reload.cache_key
           end
         end
       end

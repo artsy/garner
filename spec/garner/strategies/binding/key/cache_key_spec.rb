@@ -4,7 +4,7 @@ describe Garner::Strategies::Binding::Key::CacheKey do
 
   before(:each) do
     @mock = double('model')
-    @mock.stub(:cache_key) { 'mocks/4' }
+    allow(@mock).to receive(:cache_key) { 'mocks/4' }
   end
 
   subject { Garner::Strategies::Binding::Key::CacheKey }
@@ -16,7 +16,7 @@ describe Garner::Strategies::Binding::Key::CacheKey do
 
   describe 'apply' do
     it "returns the object's cache key, or nil" do
-      subject.apply(@mock).should eq 'mocks/4'
+      expect(subject.apply(@mock)).to eq 'mocks/4'
     end
   end
 

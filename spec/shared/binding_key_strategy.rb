@@ -6,13 +6,13 @@ shared_examples_for 'Garner::Strategies::Binding::Key strategy' do
   end
 
   it 'inherits from Garner::Strategies::Binding::Key::Base' do
-    subject.new.should be_a(Garner::Strategies::Binding::Key::Base)
+    expect(subject.new).to be_a(Garner::Strategies::Binding::Key::Base)
   end
 
   describe 'given a known binding' do
     it 'returns a valid cache key' do
       known_bindings.each do |binding|
-        subject.apply(binding).should be_a(String)
+        expect(subject.apply(binding)).to be_a(String)
       end
     end
 
@@ -20,7 +20,7 @@ shared_examples_for 'Garner::Strategies::Binding::Key strategy' do
       known_bindings.each do |binding|
         key1 = subject.apply(binding)
         key2 = subject.apply(binding)
-        key1.should eq key2
+        expect(key1).to eq key2
       end
     end
   end
@@ -28,7 +28,7 @@ shared_examples_for 'Garner::Strategies::Binding::Key strategy' do
   describe 'given an unknown binding' do
     it 'returns a nil cache key' do
       unknown_bindings.each do |binding|
-        subject.apply(binding).should be_nil
+        expect(subject.apply(binding)).to be_nil
       end
     end
   end

@@ -6,7 +6,7 @@ describe Garner::Strategies::Context::Key::Jsonp do
     @request = Rack::Request.new('REQUEST_METHOD' => 'GET', 'QUERY_STRING' => 'callback=jQuery21435&_=34234')
 
     @mock_context = double('object')
-    @mock_context.stub(:request) { @request }
+    allow(@mock_context).to receive(:request) { @request }
   end
 
   subject { Garner::Strategies::Context::Key::Jsonp }
@@ -17,6 +17,6 @@ describe Garner::Strategies::Context::Key::Jsonp do
     request_get = Garner::Strategies::Context::Key::RequestGet
     applied_identity = request_get.apply(@cache_identity, @mock_context)
     subject.apply(applied_identity, @mock_context)
-    @cache_identity.key_hash[:request_params].should eq({})
+    expect(@cache_identity.key_hash[:request_params]).to eq({})
   end
 end

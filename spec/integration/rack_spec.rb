@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'garner/mixins/rack'
 require 'securerandom'
 
-describe 'Rack integration' do
+describe 'Rack integration', type: :request do
   include Rack::Test::Methods
 
   let(:app) do
@@ -37,18 +37,18 @@ describe 'Rack integration' do
       response1 = JSON.parse(last_response.body)[0]
       get '/foo?q=2'
       response2 = JSON.parse(last_response.body)[0]
-      response1.should eq response2
+      expect(response1).to eq response2
     end
   end
 
   context 'with default configuration' do
     it 'bypasses cache if cache_enabled? returns false' do
-      TestRackApp.any_instance.stub(:cache_enabled?) { false }
+      allow_any_instance_of(TestRackApp).to receive(:cache_enabled?) { false }
       get '/'
       response1 = JSON.parse(last_response.body)[0]
       get '/'
       response2 = JSON.parse(last_response.body)[0]
-      response1.should_not == response2
+      expect(response1).not_to eq(response2)
     end
 
     it 'caches different results for different paths' do
@@ -56,7 +56,7 @@ describe 'Rack integration' do
       response1 = JSON.parse(last_response.body)[0]
       get '/bar'
       response2 = JSON.parse(last_response.body)[0]
-      response1.should_not == response2
+      expect(response1).not_to eq(response2)
     end
 
     it 'caches different results for different query strings' do
@@ -64,14 +64,14 @@ describe 'Rack integration' do
       response1 = JSON.parse(last_response.body)[0]
       get '/foo?q=2'
       response2 = JSON.parse(last_response.body)[0]
-      response1.should_not == response2
+      expect(response1).not_to eq(response2)
     end
 
     it 'caches multiple blocks separately within an endpoint' do
       get '/'
       random1 = JSON.parse(last_response.body)[0]
       random2 = JSON.parse(last_response.body)[1]
-      random1.should_not == random2
+      expect(random1).not_to eq(random2)
     end
   end
 end
