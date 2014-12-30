@@ -2,9 +2,7 @@ require 'spec_helper'
 require 'garner/mixins/rack'
 
 describe Garner::Mixins::Rack do
-
   describe 'garner' do
-
     before(:each) do
       class MockApp
         include Garner::Mixins::Rack
@@ -43,6 +41,5 @@ describe Garner::Mixins::Rack do
       expect(subject.call.key_hash[:caller]).to be_nil
       expect(subject.call.key_hash[:request_params]).to eq('foo' => 'bar')
     end
-
   end
 end

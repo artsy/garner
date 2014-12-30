@@ -79,7 +79,6 @@ module Garner
             invalidation_strategy.apply(self)
             invalidation_strategy.apply(_root) if _root != self && Garner.config.invalidate_mongoid_root
           end
-
         end
       end
     end

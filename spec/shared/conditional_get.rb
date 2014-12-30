@@ -14,13 +14,13 @@ shared_examples_for 'Rack::ConditionalGet server' do
 
   it "writes the cached object's ETag from binding" do
     get '/'
-    expect(last_response.headers['ETag'].length).to eq 32 + 2
+    expect(last_response.headers['ETag'].length).to eq 32 + 2 + 2
   end
 
   it 'sends a 304 response if content has not changed (If-None-Match)' do
     get '/'
     expect(last_response.status).to eq 200
-    expect(last_response.headers['ETag']).to eq %("#{etag_for(last_response.body)}")
+    expect(last_response.headers['ETag']).to eq "W/\"#{etag_for(last_response.body)}\""
     get '/', {},  'HTTP_IF_NONE_MATCH' => last_response.headers['ETag']
     expect(last_response.status).to eq 304
   end
@@ -35,7 +35,7 @@ shared_examples_for 'Rack::ConditionalGet server' do
   it 'sends a 200 response if content has changed (valid If-Modified-Since but invalid If-None-Match)' do
     get '/'
     expect(last_response.status).to eq 200
-    get '/', {},  'HTTP_IF_MODIFIED_SINCE' => (Time.now + 1).httpdate, 'HTTP_IF_NONE_MATCH' => %("#{etag_for(last_response.body)}")
+    get '/', {},  'HTTP_IF_MODIFIED_SINCE' => (Time.now + 1).httpdate, 'HTTP_IF_NONE_MATCH' => etag_for(last_response.body)
     expect(last_response.status).to eq 200
   end
 

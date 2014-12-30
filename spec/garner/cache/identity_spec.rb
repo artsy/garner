@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Garner::Cache::Identity do
-
   it 'includes Garner.config.global_cache_options' do
     Garner.configure { |config| config.global_cache_options = { foo: 'bar' } }
     expect(subject.options_hash[:foo]).to eq 'bar'

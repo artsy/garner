@@ -125,7 +125,6 @@ describe 'Mongoid integration', type: :request do
                 expect(Monger).to receive(:find).once
                 2.times { Monger.garnered_find(%w(m1 m2)) }
               end
-
             end
           end
 

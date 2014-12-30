@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Garner::Strategies::Binding::Key::BindingIndex do
-
   before(:each) do
     @new_mock = double('new_mock')
 

@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Garner::Cache::Context do
-
   describe 'garner' do
-
     before(:each) do
       class TestContext
         include Garner::Cache::Context
@@ -33,6 +31,5 @@ describe Garner::Cache::Context do
       end
       expect(subject.call.key_hash[:caller]).to be_nil
     end
-
   end
 end

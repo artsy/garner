@@ -40,5 +40,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coveralls'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'dalli'
-  s.add_development_dependency 'rubocop', '0.27.1'
+  s.add_development_dependency 'rubocop', '0.28.0'
 end

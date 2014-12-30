@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'ActiveRecord integration', type: :request do
   context 'using the Garner::Strategies::Binding::Key::CacheKey strategy' do
-
     describe 'cache key generation' do
       subject { Garner::Strategies::Binding::Key::CacheKey }
 

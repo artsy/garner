@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Garner::Strategies::Context::Key::RequestGet do
   %w(GET HEAD).each do |method|
     context method do
-
       before(:each) do
         @cache_identity = Garner::Cache::Identity.new
         @request = Rack::Request.new('REQUEST_METHOD' => method, 'QUERY_STRING' => 'foo=bar')

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Garner::Strategies::Binding::Key::CacheKey do
-
   before(:each) do
     @mock = double('model')
     allow(@mock).to receive(:cache_key) { 'mocks/4' }

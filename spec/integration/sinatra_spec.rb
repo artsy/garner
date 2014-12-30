@@ -1,9 +1,10 @@
+# encoding: utf-8
+
 require 'spec_helper'
 require 'garner/mixins/rack'
 require 'sinatra'
 
 describe 'Sinatra integration', type: :request do
-
   let(:app) do
     class TestSinatraApp < Sinatra::Base
       helpers Garner::Mixins::Rack
@@ -25,5 +26,4 @@ describe 'Sinatra integration', type: :request do
   end
 
   it_behaves_like 'Rack::ConditionalGet server'
-
 end

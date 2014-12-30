@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Garner::Strategies::Binding::Invalidation::Touch do
-
   before(:each) do
     @mock = double('model')
     allow(@mock).to receive(:touch)
