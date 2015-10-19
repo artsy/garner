@@ -1,11 +1,11 @@
-Garner 
+Garner
 ======
 
-[![Gem Version](http://img.shields.io/gem/v/garner.svg)](http://badge.fury.io/rb/garner)
-[![Build Status](http://img.shields.io/travis/artsy/garner.svg)](https://travis-ci.org/artsy/garner)
+[![Gem Version](https://badge.fury.io/rb/garner.svg)](https://badge.fury.io/rb/garner)
+[![Build Status](https://travis-ci.org/artsy/garner.svg?branch=master)](https://travis-ci.org/artsy/garner)
 [![Dependency Status](https://gemnasium.com/artsy/garner.svg)](https://gemnasium.com/artsy/garner)
 [![Code Climate](https://codeclimate.com/github/artsy/garner.svg)](https://codeclimate.com/github/artsy/garner)
-[![Coverage Status](https://img.shields.io/coveralls/artsy/garner.svg)](https://coveralls.io/r/artsy/garner?branch=master)
+[![Coverage Status](https://coveralls.io/repos/artsy/garner/badge.svg?branch=master&service=github)](https://coveralls.io/github/artsy/garner?branch=master)
 
 Garner is a cache layer for Ruby and Rack applications, supporting model and instance binding and hierarchical invalidation. To "garner" means to gather data from various sources and to make it readily available in one place, kind of like a cache!
 
@@ -57,7 +57,7 @@ ORM Integrations
 
 ### Mongoid
 
-To use Mongoid documents and classes for Garner bindings, use `Garner::Mixins::Mongoid::Document`. You can set it up in an initializer:
+To use Mongoid 3, 4 or 5 documents and classes for Garner bindings, use `Garner::Mixins::Mongoid::Document`. You can set it up in an initializer:
 
 ``` ruby
 require "garner/mixins/mongoid"

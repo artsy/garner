@@ -1,7 +1,7 @@
 # Set up Garner configuration parameters
 Garner.config.option(:context_key_strategies,
                      default: [Garner::Strategies::Context::Key::Caller]
-)
+                    )
 Garner.config.option(:rack_context_key_strategies,
                      default: [
                        Garner::Strategies::Context::Key::Caller,
@@ -9,7 +9,7 @@ Garner.config.option(:rack_context_key_strategies,
                        Garner::Strategies::Context::Key::RequestPost,
                        Garner::Strategies::Context::Key::RequestPath
                      ]
-)
+                    )
 
 module Garner
   module Cache

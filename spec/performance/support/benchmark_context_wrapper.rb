@@ -53,7 +53,8 @@ class BenchmarkContextWrapper
   private
 
   def warm_caches
-    klass, handle = binding.class, binding.slug
+    klass = binding.class
+    handle = binding.slug
     json = binding.reload.to_json
     garner.bind(klass.identify(handle)).key(caller: nil) { json }
     garner.bind(klass).key(caller: nil) { json }

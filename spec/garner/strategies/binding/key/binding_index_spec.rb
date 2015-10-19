@@ -67,9 +67,9 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
       it 'stores the cache key to cache' do
         subject.fetch_cache_key_for(@persisted_mock)
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: 'Mocker/id=4'
-                                 )).to eq @mock_key
+                 strategy: subject,
+                 proxied_binding: 'Mocker/id=4'
+        )).to eq @mock_key
       end
     end
 
@@ -81,17 +81,17 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
       it 'stores the canonical binding to cache' do
         subject.fetch_cache_key_for(@persisted_mock_alias)
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: 'MockerAlias/id=alias-4'
-                                 )).to eq @persisted_mock
+                 strategy: subject,
+                 proxied_binding: 'MockerAlias/id=alias-4'
+        )).to eq @persisted_mock
       end
 
       it 'stores the cache key to cache' do
         subject.fetch_cache_key_for(@persisted_mock_alias)
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: 'Mocker/id=4'
-                                 )).to eq @mock_key
+                 strategy: subject,
+                 proxied_binding: 'Mocker/id=4'
+        )).to eq @mock_key
       end
 
       context 'whose canonical binding is nil' do
@@ -106,9 +106,9 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
         it 'does not store the cache key to cache' do
           subject.fetch_cache_key_for(@persisted_mock_alias)
           expect(Garner.config.cache.read(
-                                     strategy: subject,
-                                     proxied_binding: ''
-                                   )).to be_nil
+                   strategy: subject,
+                   proxied_binding: ''
+          )).to be_nil
         end
       end
     end
@@ -153,9 +153,9 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
       it 'stores the canonical binding to cache' do
         subject.fetch_canonical_binding_for(@persisted_mock_alias)
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: 'MockerAlias/id=alias-4'
-                                 )).to eq @persisted_mock
+                 strategy: subject,
+                 proxied_binding: 'MockerAlias/id=alias-4'
+        )).to eq @persisted_mock
       end
     end
 
@@ -220,24 +220,24 @@ describe Garner::Strategies::Binding::Key::BindingIndex do
         expect(key1).to eq key2
 
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: "Garner::Mixins::Mongoid::Identity/klass=Food,handle=#{@cheese.id}"
-                                 )).to eq @cheese
+                 strategy: subject,
+                 proxied_binding: "Garner::Mixins::Mongoid::Identity/klass=Food,handle=#{@cheese.id}"
+        )).to eq @cheese
 
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: 'Garner::Mixins::Mongoid::Identity/klass=Cheese,handle=m1'
-                                 )).to eq @cheese
+                 strategy: subject,
+                 proxied_binding: 'Garner::Mixins::Mongoid::Identity/klass=Cheese,handle=m1'
+        )).to eq @cheese
 
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: "Cheese/id=#{@cheese.id}"
-                                 )).to eq key1
+                 strategy: subject,
+                 proxied_binding: "Cheese/id=#{@cheese.id}"
+        )).to eq key1
 
         expect(Garner.config.cache.read(
-                                   strategy: subject,
-                                   proxied_binding: "Food/id=#{@cheese.id}"
-                                 )).to be_nil
+                 strategy: subject,
+                 proxied_binding: "Food/id=#{@cheese.id}"
+        )).to be_nil
       end
     end
   end

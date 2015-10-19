@@ -82,6 +82,7 @@ describe Garner::Mixins::Mongoid::Identity do
       end
 
       @monger = Monger.create(name: 'M1')
+      @monger.reload
       @cheese = Cheese.create(name: 'Havarti')
       @cheese.reload
     end

@@ -1,23 +1,13 @@
 require 'garner/mixins/mongoid'
 require 'mongoid_slug'
 
-# Use garner_test database for integration tests
-Mongoid.load_configuration(
-  sessions: {
-    default: {
-      uri: ENV['GARNER_MONGO_URL'] || 'mongodb://localhost/garner_test',
-      safe: true
-    }
-  },
-  options: {
-    raise_not_found_error: false
-  }
-)
-
-if ENV['GARNER_MONGOID_LOG']
-  Mongoid.logger = Logger.new(ENV['GARNER_MONGOID_LOG'])
-  Moped.logger = Mongoid.logger
+Mongoid.configure do |config|
+  config.connect_to 'garner_test'
+  config.raise_not_found_error = false
 end
+
+Mongoid.logger.level = Logger::INFO
+Mongo::Logger.logger.level = Logger::INFO if Mongoid::Compatibility::Version.mongoid5?
 
 # Include mixin
 module Mongoid
