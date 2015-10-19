@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sinatra'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'mongoid', '>= 3.0.0'
-  s.add_development_dependency 'mongoid_slug'
+  s.add_development_dependency 'mongoid-slug'
   s.add_development_dependency 'activerecord'
   if RUBY_PLATFORM =~ /java/
     s.add_development_dependency 'jdbc-sqlite3'

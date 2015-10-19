@@ -1,6 +1,7 @@
 Next
 ----
 
+* [#89](https://github.com/artsy/garner/pull/89): Added support for Mongoid 5 - [@dblock](https://github.com/dblock).
 * Your contribution here.
 
 0.5.1 (11/26/2014)
