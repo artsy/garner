@@ -27,10 +27,10 @@ YARD::Rake::YardocTask.new(:doc)
 task :benchmark do
   require 'performance/strategy_benchmark'
   StrategyBenchmark.new(
-                          n: ENV['N'].try(&:to_i),
-                          d: ENV['D'].try(&:to_i),
-                          r: ENV['R'].try(&:to_i)
-                        ).run!
+    n: ENV['N'].try(&:to_i),
+    d: ENV['D'].try(&:to_i),
+    r: ENV['R'].try(&:to_i)
+  ).run!
 end
 
 require 'rubocop/rake_task'

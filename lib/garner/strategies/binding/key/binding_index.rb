@@ -3,7 +3,7 @@ module Garner
     module Binding
       module Key
         class BindingIndex < Base
-          RANDOM_KEY_LENGTH = 12  # In bytes.
+          RANDOM_KEY_LENGTH = 12 # In bytes.
 
           # Compute a cache key as follows:
           # 1. Determine whether the binding is canonical.
