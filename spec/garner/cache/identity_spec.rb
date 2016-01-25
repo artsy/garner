@@ -1,14 +1,36 @@
 require 'spec_helper'
 
 describe Garner::Cache::Identity do
-  it 'includes Garner.config.global_cache_options' do
-    Garner.configure { |config| config.global_cache_options = { foo: 'bar' } }
-    expect(subject.options_hash[:foo]).to eq 'bar'
+  context 'with global_cache_options defined' do
+    before do
+      Garner.configure { |config| config.global_cache_options = { foo: 'bar' } }
+    end
+
+    it 'includes Garner.config.global_cache_options' do
+      expect(subject.options_hash[:foo]).to eq 'bar'
+    end
   end
 
-  it 'includes Garner.config.expires_in' do
-    Garner.configure { |config| config.expires_in = 5.minutes }
-    expect(subject.options_hash[:expires_in]).to eq 5.minutes
+  context 'with global_cache_options[:expires_in] defined ' do
+    before do
+      Garner.configure do |config|
+        config.global_cache_options = { expires_in: 5.minutes }
+      end
+    end
+
+    it 'includes Garner.config.global_cache_options[:expires_in]' do
+      expect(subject.options_hash[:expires_in]).to eq 5.minutes
+    end
+  end
+
+  context 'with config.expires_in defined' do
+    before do
+      Garner.configure { |config| config.expires_in = 5.minutes }
+    end
+
+    it 'includes Garner.config.expires_in' do
+      expect(subject.options_hash[:expires_in]).to eq 5.minutes
+    end
   end
 
   describe 'nocache' do

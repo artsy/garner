@@ -11,8 +11,8 @@ module Garner
         @key_hash = {}
 
         # Set up options hash with defaults
-        @options_hash = Garner.config.global_cache_options || {}
-        @options_hash.merge!(expires_in: Garner.config.expires_in)
+        @options_hash = Garner.config.global_cache_options.dup || {}
+        @options_hash[:expires_in] ||= Garner.config.expires_in
       end
 
       def fetch(&block)
