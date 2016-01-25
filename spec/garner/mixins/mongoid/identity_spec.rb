@@ -48,7 +48,7 @@ describe Garner::Mixins::Mongoid::Identity do
       it 'sets klass to parent and includes the _type field' do
         identity = subject.from_class_and_handle(Cheese, 'id')
         expect(identity.klass).to eq Cheese
-        expect(identity.conditions[:_type]).to eq('$in' => ['Cheese'])
+        expect(identity.conditions[:_type]).to eq('Cheese')
         expect(identity.conditions['$or']).to eq [
           { _id: 'id' },
           { _slugs: 'id' }
