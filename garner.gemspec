@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.1'
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'grape', '~> 0.8.0'
+  s.add_development_dependency 'grape', '~> 0.16.2'
   s.add_development_dependency 'sinatra'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'mongoid', '>= 3.0.0'
