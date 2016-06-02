@@ -1,7 +1,6 @@
-0.5.3 (Next)
-------------
+0.5.3 (6/2/2016)
+----------------
 
-* Your contribution here.
 * [#92](https://github.com/artsy/garner/pull/92): Properly set `options[:expires_in]` from `global_cache_options` - [@fancyremarker](https://github.com/fancyremarker).
 
 0.5.2 (10/19/2015)
